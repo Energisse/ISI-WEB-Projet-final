@@ -13,16 +13,6 @@ class Categorie extends Modele
         $this->id = $data['id'];
     }
 
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
     public static function getAllCategories()
     {
         $sql = 'select * from categories';
@@ -62,5 +52,21 @@ class Categorie extends Modele
     public function __toString()
     {
         return 'Categorie : ' . $this->name . '#' . $this->id;
+    }
+
+    /**
+     * Get the value of name
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Get the value of id
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

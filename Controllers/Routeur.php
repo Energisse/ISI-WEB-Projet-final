@@ -2,7 +2,9 @@
 // require_once 'Controleur/ControleurAccueil.php';
 // require_once 'Controleur/ControleurBillet.php';
 // require_once 'Vue/Vue.php';
-require_once 'Controllers/ControllerCategorie.php';
+require_once 'Controllers/CategorieController.php';
+require_once 'Controllers/UserController.php';
+require_once 'Controllers/AccueilController.php';
 
 class Routeur
 {
@@ -10,7 +12,9 @@ class Routeur
 
     public function __construct()
     {
-        $this->addController(new ControllerCategorie());
+        $this->addController(new CategorieController());
+        $this->addController(new UserController());
+        $this->addController(new AccueilController());
     }
 
     private function addController($controller)
@@ -18,20 +22,27 @@ class Routeur
         $this->controllers[$controller->getName()] = $controller;
     }
     // Traite une requête entrante
-    public function routerRequete()
+    public function routerRequete(Request $request)
     {
         try {
-            if (isset($this->controllers[$_GET['controller']])) {
-                $this->controllers[$_GET['controller']]->call();
+            if (isset($this->controllers[$request->getController()])) {
+                $result = $this->controllers[$request->getController()]->call($request);
+
+                if ($result) //On verifie que la requete a bien été traité
+                    return;
             }
+            //La requete n'a pas été traité par le controller
+            //Retourne 404
+            (new View("404"))->generer();
         } catch (Exception $e) {
-            $this->erreur($e->getMessage());
+            echo ($e);
+            //$this->erreur($e->getMessage());
         }
     }
     // Affiche une erreur
     private function erreur($msgErreur)
     {
-        $vue = new Vue('Erreur');
+        $vue = new View('Erreur');
         $vue->generer(['msgErreur' => $msgErreur]);
     }
 

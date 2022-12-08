@@ -17,8 +17,15 @@ abstract class Controller
         return $this->name;
     }
 
-    abstract protected function notFound();
+    protected function sendView($view, $donnees = [])
+    {
+        (new view($this->name . "/" . $view))->generer($donnees);
+    }
 
+    protected function redirect(string $path)
+    {
+        header('Location: /' . $path);
+    }
     protected function get($action, $path)
     {
         $this->addRoute('GET', $action, $path);
@@ -39,18 +46,18 @@ abstract class Controller
         ]);
     }
 
-    public function call()
+    public function call(Request $request): mixed
     {
         //On verifie toutes les routes du controller
-        foreach ($this->routes[$_SERVER['REQUEST_METHOD']] as $route) {
-            $matches = PathToRegexp::match($route['path'], $_GET['action']);
+        foreach ($this->routes[$request->getMethod()] as $route) {
+            $matches = PathToRegexp::match ($route['path'], $request->getAction());
             //Si aucun match alors on passe a la suite
             if ($matches == null) {
                 continue;
             }
 
             //Création d'un tableau contenant les données a passer a l'action
-            $data = ['url' => $_GET['action']];
+            $data = ['url' => $request->getAction()];
             //Recréation des parametre par rapport au clé = ([0]=>foo,[1]=>bar) et aux matchs = ([0]=>xxx/xxx,[1]=>valeur1,[2]=>valeur2)
             for ($i = 1; $i < count($matches); $i++) {
                 $data['params'] = [
@@ -59,8 +66,11 @@ abstract class Controller
             }
 
             //On appel l'action avec les données
-            return $this->{$route['action']}($data);
+            $result = $this->{$route['action']}($data);
+            if (!$result)
+                return true;
+            return $result;
         }
-        return $this->NotFound();
+        return false;
     }
 }

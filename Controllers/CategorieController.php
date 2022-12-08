@@ -3,7 +3,7 @@ require_once 'Controllers/Controller.php';
 require_once 'Views/View.php';
 require_once 'Models/Categorie.php';
 
-class ControllerCategorie extends Controller
+class CategorieController extends Controller
 {
     function __construct()
     {
@@ -14,20 +14,15 @@ class ControllerCategorie extends Controller
 
     public function index($data)
     {
-        return (new view('Categorie/viewAccueil'))->generer([
+        $this->sendView('viewAccueil', [
             'categories' => Categorie::getALlCategories(),
         ]);
     }
 
     public function getCategorieById($data)
     {
-        return (new view('Categorie/viewCategorie'))->generer([
+        $this->sendView('viewCategorie', [
             'categorie' => Categorie::getCategorieById($data['params']['id']),
         ]);
-    }
-
-    protected function notFound()
-    {
-        echo "Wesh t'abuse frerot";
     }
 }
