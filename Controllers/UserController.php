@@ -16,6 +16,10 @@ class UserController extends Controller
 
     public function loginForm($data)
     {
+        if (isset($_SESSION["login"])) {
+            $this->redirect("categorie/");
+            return;
+        }
         $this->sendView("viewLogin");
     }
 
@@ -27,6 +31,10 @@ class UserController extends Controller
 
     public function login($data)
     {
+        if (isset($_SESSION["login"])) {
+            $this->redirect("categorie/");
+            return;
+        }
         if (isset($_POST["username"]) && $_POST["password"]) {
             $login = Login::getLoginByUsernameAndPassword($_POST["username"], $_POST["password"]);
             if ($login != null) {

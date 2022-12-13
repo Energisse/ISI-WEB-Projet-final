@@ -38,10 +38,9 @@ class Categorie extends Modele
     {
         $sql = 'select * from categories where id=:id';
         $result = Categorie::executerRequete($sql, [':id' => $id])->fetch();
-        if ($result != null) {
-            $result = new Categorie($result);
-        }
-        return $result;
+        if ($result == null)
+            return null;
+        return new Categorie($result);
     }
 
     public function getAllProducts()

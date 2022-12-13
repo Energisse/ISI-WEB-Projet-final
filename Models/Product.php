@@ -21,16 +21,26 @@ class Product extends Modele
         $this->quantity = $data['quantity'];
     }
 
-    public static function getAllProducts()
+    public static function getAllProducts(): array
     {
         $sql = 'select * from products';
-        $categories = Product::executerRequete($sql);
-        $listeCategorie = [];
-        foreach ($categories->fetchAll() as $categorie) {
-            array_push($listeCategorie, new Categorie($categorie));
+        $products = Product::executerRequete($sql);
+        $listeProduct = [];
+        foreach ($products->fetchAll() as $product) {
+            array_push($listeProduct, new Categorie($product));
         }
-        return $listeCategorie;
+        return $listeProduct;
     }
+
+    public static function getProductById($id): ?Product
+    {
+        $sql = 'select * from products where id=:id';
+        $result = Product::executerRequete($sql, [":id" => $id])->fetch();
+        if ($result == null)
+            return null;
+        return new Product($result);
+    }
+
 
     public function getCategorie()
     {
