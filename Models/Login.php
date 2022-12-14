@@ -30,6 +30,10 @@ class Login extends Modele
         return null;
     }
 
+    function getAllDeliveryAddress(){
+        return DeliveryAddress::getAllDeliveryAddressByUserId($this->id);
+    }
+
     public static function getLoginByUserName(string $username): ?Login
     {
         $sql = 'select * from logins where username=:username';
