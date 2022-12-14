@@ -2,6 +2,7 @@
 require_once 'Controllers/Controller.php';
 require_once 'Views/View.php';
 require_once 'Models/Categorie.php';
+require_once 'Models/DeliveryAddress.php';
 
 class BasketController extends Controller
 {
@@ -9,6 +10,7 @@ class BasketController extends Controller
     {
         parent::__construct('basket');
         $this->get('index', '/');
+        $this->get('buy', '/buy');
         $this->get('clear', '/clear');
     }
 
@@ -17,9 +19,19 @@ class BasketController extends Controller
         $this->sendView('viewBasket', ["basket" => $_SESSION["basket"]]);
     }
 
+    public function buy($data)
+    {
+        if(!isset($_SESSION["login"])){
+            $this->redirect("/user/login?goTo=/basket/buy");
+            return;
+        }
+        
+        $this->sendView('viewBasketBuy', ["deliveryAddresses"=>DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["login"]->getId())]);
+
+    }
+
     public function clear($data)
     {
-
         $_SESSION["basket"]->clear();
         $this->sendView('viewBasket', ["basket" => $_SESSION["basket"]]);
     }

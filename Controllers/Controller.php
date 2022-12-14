@@ -24,7 +24,7 @@ abstract class Controller
 
     protected function redirect(string $path)
     {
-        header('Location: /' . $path);
+        header('Location: ' . $path);
     }
     protected function get($action, $path)
     {

@@ -17,32 +17,37 @@ class UserController extends Controller
     public function loginForm($data)
     {
         if (isset($_SESSION["login"])) {
-            $this->redirect("categorie/");
+            $this->redirect("/categorie");
             return;
         }
-        $this->sendView("viewLogin");
+        $this->sendView("viewLogin",["goTo"=>isset($_GET["goTo"]) ? $_GET["goTo"] : null]);
     }
 
     public function logout($data)
     {
         session_destroy();
-        $this->redirect("user/login");
+        $this->redirect("/user/login");
     }
 
     public function login($data)
     {
         if (isset($_SESSION["login"])) {
-            $this->redirect("categorie/");
+            $this->redirect("/categorie");
             return;
         }
+
         if (isset($_POST["username"]) && $_POST["password"]) {
             $login = Login::getLoginByUsernameAndPassword($_POST["username"], $_POST["password"]);
             if ($login != null) {
                 $_SESSION["login"] = $login;
-                $this->redirect("categorie/");
+                //Si la connexion a été demandé par une autre page on y repars 
+                if(isset($_GET["goTo"]))  $this->redirect($_GET["goTo"]);
+                else $this->redirect("/categorie");
+                return;
+
             }
         }
-        $this->sendView("viewLogin", ["error" => true, "username" => $_POST["username"]]);
+        $this->sendView("viewLogin", ["error" => true, "username" => $_POST["username"],"goTo"=>isset($_GET["goTo"]) ? $_GET["goTo"] : null]);
 
     }
 

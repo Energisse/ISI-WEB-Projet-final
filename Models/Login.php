@@ -43,4 +43,19 @@ class Login extends Modele
         return new Login($result);
     }
 
+
+	/**
+	 * @return mixed
+	 */
+	public function getUsername() {
+		return $this->username;
+	}
+
+
+	/**
+	 * @return mixed
+	 */
+	public function getId() {
+		return $this->id;
+	}
 }

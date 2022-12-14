@@ -7,3 +7,4 @@ foreach ($basket->getProducts() as $product) {
 }
 ?>
 <a href="/basket/clear">Clear</a>
+<a href="/basket/buy"  class="btn btn-primary">Acheter</a>
