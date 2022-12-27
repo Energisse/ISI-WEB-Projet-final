@@ -9,7 +9,7 @@ class ProductController extends Controller
     {
         parent::__construct('product');
         $this->get('getProductById', '/:id');
-        $this->post('buyProduct', '/:id');
+        $this->post('buyProduct', '/');
     }
 
     public function getProductById($data)
@@ -21,7 +21,10 @@ class ProductController extends Controller
 
     public function buyProduct($data)
     {
-        $product = Product::getProductById($data['params']['id']);
+        if (!isset($_POST['id'])) {
+            $this->redirect("accueil"); //A tester
+        }
+        $product = Product::getProductById($_POST['id']);
         if (!isset($_POST['quantity'])) {
             $this->sendView('viewProduct', [
                 'product' => $product,

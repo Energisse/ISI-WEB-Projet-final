@@ -4,15 +4,15 @@ require_once 'Models/Product.php';
 
 class OrderItem extends Modele
 {
-    private $orderId;
-    private $date;
-    private $status;
+    private int $status;
+    private int $orderId;
+    private int $date;
 
     function __construct($data)
     {
-        $this->id = $data['id'];
+        $this->status = $data['status'];
+        $this->date = $data['date'];
         $this->orderId = $data['order_id'];
-        $this->productId = $data['product_id'];
-        $this->quantity = $data['quantity'];
     }
+
 }

@@ -1,5 +1,5 @@
 <div class="d-flex d-flex flex-column bd-highlight">
-    <form action="/product/<?= $product->getId() ?>" method="post" class="d-flex">
+    <form action="/product/" method="post" class="d-flex">
         <div class="p-5 flex-fill bd-highlight text-end">
             <img src="/assets/productimages/<?= $product->getImage() ?>" alt="<?= $product->getName() ?>" width="250"
                 height="250">
@@ -17,6 +17,8 @@
                 <button type="submit" class="btn btn-primary">Acheter <?= $product->getPrice() ?>€</button>
                 <input type="number" min="0" name="quantity" value="1" />
             </div>
+            <input type="hidden" name="id" value="<?= $product->getId() ?>" />
+
         </div>
     </form>
     <?php

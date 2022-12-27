@@ -7,15 +7,12 @@ class Login extends Modele
     private $username;
     private $id;
 
-    private $role;
-
     private $password;
 
     function __construct($data)
     {
         $this->username = $data['username'];
         $this->id = $data['id'];
-        $this->role = $data['role'];
         $this->password = $data['password'];
     }
 

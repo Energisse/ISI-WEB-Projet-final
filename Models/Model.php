@@ -16,4 +16,8 @@
         Modele::$bdd = new PDO('mysql:host=localhost;dbname=web4shop;charset=utf8', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION)); 
         return Modele::$bdd; 
     }
+
+    protected static function lastInsertId(){
+        return Modele::getBdd()->lastInsertId();
+    }
 }

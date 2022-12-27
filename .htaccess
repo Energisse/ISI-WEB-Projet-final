@@ -1,3 +1,4 @@
 # Réécrit une URL de type xxx/yyy/zzz en index.php?controleur=xxx&action=yyy&id=zzz
 RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^([a-z]*)(.*)$ index.php?controller=$1&action=$2 [NC,L,QSA]

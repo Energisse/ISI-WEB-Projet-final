@@ -48,7 +48,5 @@ class UserController extends Controller
             }
         }
         $this->sendView("viewLogin", ["error" => true, "username" => $_POST["username"],"goTo"=>isset($_GET["goTo"]) ? $_GET["goTo"] : null]);
-
-    }
-
+    }  
 }

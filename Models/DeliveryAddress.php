@@ -9,7 +9,6 @@ class DeliveryAddress extends Modele
     private string $surName;
     private string $add1;
     private string $add2;
-    private string $add3;
     private string $city;
     private string $postCode;
     private string $phone;
@@ -23,7 +22,6 @@ class DeliveryAddress extends Modele
         $this->surName = $data['surname'];
         $this->add1 = $data['add1'];
         $this->add2 = $data['add2'];
-        $this->add3 = $data['add3'];
         $this->city = $data['city'];
         $this->postCode = $data['postcode'];
         $this->phone = $data['phone'];
@@ -31,14 +29,22 @@ class DeliveryAddress extends Modele
         $this->user_id = $data['user_id'];
     }
 
-    static function getAllDeliveryAddressByUserId($id){
+    static function getAllDeliveryAddressByUserId($user_id){
         $sql = 'select * from delivery_addresses where user_id = :user_id';
-        $deliverys = DeliveryAddress::executerRequete($sql, [":user_id"=>$id]);
+        $deliverys = DeliveryAddress::executerRequete($sql, [":user_id"=>$user_id]);
         $listeDeliveryAddress = [];
         foreach ($deliverys->fetchAll() as $delivery) {
             array_push($listeDeliveryAddress,new DeliveryAddress($delivery));
         }
         return $listeDeliveryAddress;
+    }
+
+    static function getDeliveryAddressByIdAndUserId($id,$user_id): ?DeliveryAddress{
+        $sql = 'select * from delivery_addresses where id=:id and user_id = :user_id';
+        $delivery = DeliveryAddress::executerRequete($sql, [":id"=>$id,":user_id"=>$user_id])->fetch();
+        if ($delivery == null)
+            return null;
+        return new DeliveryAddress($delivery);  
     }
 
     /**
@@ -141,13 +147,4 @@ class DeliveryAddress extends Modele
         return $this->user_id;
     }
 
-    /**
-     * Get the value of add3
-     *
-     * @return string
-     */
-    public function getAdd3(): string
-    {
-        return $this->add3;
-    }
 }
