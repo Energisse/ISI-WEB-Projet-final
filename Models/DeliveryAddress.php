@@ -1,4 +1,4 @@
-<?php
+    <?php
 require_once 'Models/Model.php';
 require_once 'Models/Product.php';
 
@@ -14,7 +14,7 @@ class DeliveryAddress extends Modele
     private string $phone;
     private string $email;
     private int $user_id;
-
+ 
     function __construct($data)
     {
         $this->id = $data['id'];
@@ -46,6 +46,37 @@ class DeliveryAddress extends Modele
             return null;
         return new DeliveryAddress($delivery);  
     }
+
+    static function updateDeliveryAddressByIdAndUserId($data,$id,$user_id){
+            $sql = 'UPDATE delivery_addresses SET forename=:forename, surname=:surname, add1=:add1, add2=:add2, city=:city, postCode=:postCode, phone=:phone, email=:email WHERE id=:id and user_id=:user_id';
+            $params = [];
+            $params[":forename"] = $data["forename"];
+            $params[":surname"] = $data["surname"];
+            $params[":add1"] = $data["add1"];
+            $params[":add2"] = $data["add2"];
+            $params[":city"] = $data["city"];
+            $params[":postCode"] = $data["postCode"];
+            $params[":phone"] = $data["phone"];
+            $params[":email"] = $data["email"];
+            $params[":id"] = $id;
+            $params[":user_id"] = $user_id;
+        DeliveryAddress::executerRequete($sql,$params)->fetch();
+    }
+
+    static function createDeliveryAddress($data,$user_id){
+        $sql = 'INSERT INTO delivery_addresses (forename, surname,add1,add2,city,postCode,phone,email,user_id) VALUES (:forename, :surname, :add1, :add2, :city, :postCode, :phone, :email ,:user_id)';
+        $params = [];
+        $params[":forename"] = $data["forename"];
+        $params[":surname"] = $data["surname"];
+        $params[":add1"] = $data["add1"];
+        $params[":add2"] = $data["add2"];
+        $params[":city"] = $data["city"];
+        $params[":postCode"] = $data["postCode"];
+        $params[":phone"] = $data["phone"];
+        $params[":email"] = $data["email"];
+        $params[":user_id"] = $user_id;
+    DeliveryAddress::executerRequete($sql,$params)->fetch();
+}
 
     /**
      * Get the value of id

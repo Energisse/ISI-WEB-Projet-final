@@ -18,7 +18,7 @@ require_once 'Models/DeliveryAddress.php';
         <?= $deliveryAddress->getPostCode()?>,
         <?= $deliveryAddress->getPhone() ?>
         </label>
-        <a class="btn btn-link">Modifier</a>
+        <a class="btn btn-link" href="/user/address/<?=$deliveryAddress->getId()?>">Modifier</a>
         </div>
     <?php
     }

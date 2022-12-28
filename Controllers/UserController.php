@@ -9,9 +9,17 @@ class UserController extends Controller
     function __construct()
     {
         parent::__construct('user');
+        
         $this->get('loginForm', '/login');
         $this->post('login', '/login');
         $this->get('logout', '/logout');
+        $this->get('orders', '/orders');
+        $this->get('addresses', '/addresses');
+        $this->get('address', '/address/:id');
+        $this->get('newAddress', '/address');
+        $this->post('updateAddress', '/address/:id');
+        $this->post('createAddress', '/address');
+
     }
 
     public function loginForm($data)
@@ -48,5 +56,48 @@ class UserController extends Controller
             }
         }
         $this->sendView("viewLogin", ["error" => true, "username" => $_POST["username"],"goTo"=>isset($_GET["goTo"]) ? $_GET["goTo"] : null]);
-    }  
+    }
+    
+    public function addresses($data){
+        $addresses = DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["login"]->getId());
+        // $this->sendView("viewAddresses", ["addresses" => $addresses]);
+        var_dump($addresses);
+    }
+
+    public function address($data){
+        $address = DeliveryAddress::getDeliveryAddressByIdAndUserId($data["params"]["id"],$_SESSION["login"]->getId());
+        $this->sendView("viewEditAddress", ["address" => $address]);
+    }
+
+    public function updateAddress($data){
+        $address = DeliveryAddress::getDeliveryAddressByIdAndUserId($data["params"]["id"],$_SESSION["login"]->getId());
+        if($address == null){
+            return;
+        }
+        DeliveryAddress::updateDeliveryAddressByIdAndUserId($_POST, $data["params"]["id"], $_SESSION["login"]->getId());
+        $address = DeliveryAddress::getDeliveryAddressByIdAndUserId($data["params"]["id"],$_SESSION["login"]->getId());
+        $this->sendView("viewEditAddress", ["address" => $address]);
+    }
+
+    public function newAddress($data){
+        $this->sendView("viewCreateAddress");
+    }
+
+    public function createAddress($data){
+        DeliveryAddress::createDeliveryAddress($_POST, $_SESSION["login"]->getId());
+        $this->redirect("/user/addresses");
+    }
+
+    
+
+    public function orders($data){
+        $result = Order::getAllOrdersByUserId($_SESSION["login"]->getId());
+        foreach($result as $a){
+            $a->getOrderItems();
+        }
+        var_dump($result);
+    }
+
+
+
 }
