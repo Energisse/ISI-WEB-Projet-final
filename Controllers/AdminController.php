@@ -14,23 +14,60 @@ class AdminController extends Controller
             //est admin
             if($_SESSION["login"]->isAdmin()){
                 $this->get('index', '/');
+                $this->get('order', '/order/:id');
+                $this->post('confirmPayement', '/order/payement/:id');
+                $this->post('confirmShipment', '/order/shipment/:id');
+                $this->post('confirmReception', '/order/reception/:id');
             }
             //rien car non admin
         }
         //demande de connection
         else{
-            $this->get('redirection', '/');
+            $this->get('redirection', '/(.*)');
 
         }
     }
 
     public function index($data)
     {
-        echo "YO l'admin";
+        $orders = Order::getALlOrderNotFinished();
+        $this->sendView("viewAdmin",["orders"=>$orders]);
+    }
+
+    public function order($data)
+    {
+        $order = Order::getOrderById($data["params"]["id"]);
+        $this->sendView("viewOrder",["order"=>$order]);
     }
 
     public function redirection(){
         $this->redirect("/user/login");
+    }
+
+    public function confirmPayement($data){
+        $this->confirm($data["params"]["id"], 1);
+    }
+    public function confirmShipment($data){
+        $this->confirm($data["params"]["id"], 2);
+    }
+    public function confirmReception($data){
+        $this->confirm($data["params"]["id"], 3);
+    }
+
+    private function confirm($id,$status){
+        $order = Order::getOrderById($id);
+        if($order == null){
+            $this->redirect("/admin");
+            return;
+        }
+
+        if($order->getStatus()->getStatusCode() != $status-1){
+            $this->redirect("/admin");
+            return;
+        }
+
+        $order->setStatus($status);
+        $this->sendView("viewOrder",["order"=>$order]);
     }
 
 }

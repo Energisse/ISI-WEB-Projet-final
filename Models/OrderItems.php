@@ -4,16 +4,18 @@ require_once 'Models/Product.php';
 
 class OrderItem extends Modele
 {
-    private $id;
-    private $orderId;
-    private $productId;
-    private $quantity;
+    private int $orderId;
+    private int $productId;
+    private int $quantity;
+
+    private Product $product;
 
     function __construct($data)
     {
         $this->orderId = $data['order_id'];
         $this->productId = $data['product_id'];
         $this->quantity = $data['quantity'];
+        $this->product = new Product($data);
     }
 
     public static function getAllOrderItemByOrderId($order_id){
@@ -21,7 +23,18 @@ class OrderItem extends Modele
         $result = Order::executerRequete($sql, [":order_id" => $order_id]);
         $listeOrderItems = [];
         foreach ($result->fetchAll() as $orderItem) {
-            array_push($listeOrderItems,new OrderItem($orderItem));
+            $listeOrderItems[] = new OrderItem($orderItem);
+        }
+        return $listeOrderItems;
+    }
+
+    public static function getAllOrderItemAndProductByOrdersId($orders_id){
+        $placeholders = str_repeat ('?, ',  count ($orders_id) - 1) . '?';
+        $sql = "select * from orderitems o join products p on p.id = o.product_id  where order_id in ($placeholders) order by order_id desc";
+        $result = Order::executerRequete($sql, $orders_id);
+        $listeOrderItems = [];
+        foreach ($result->fetchAll() as $orderItem) {
+            $listeOrderItems[] = new OrderItem($orderItem);
         }
         return $listeOrderItems;
     }
@@ -41,4 +54,25 @@ class OrderItem extends Modele
             Order::executerRequete($sql,$insertData);
         }
     }
+
+	/**
+	 * @return int
+	 */
+	public function getOrderId(): int {
+		return $this->orderId;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getQuantity(): int {
+		return $this->quantity;
+	}
+
+	/**
+	 * @return Product
+	 */
+	public function getProduct(): Product {
+		return $this->product;
+	}
 }

@@ -1,0 +1,15 @@
+.container-image{
+    position: relative;
+    display: inline-block;
+}
+.quantity{
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    background: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    text-align: center;
+    font-size: 0.75em;
+}

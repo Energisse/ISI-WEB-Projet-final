@@ -2,23 +2,23 @@
 require_once 'Models/Model.php';
 class Product extends Modele
 {
-    private $id;
-    private $cat_id;
-    private $name;
-    private $description;
-    private $image;
-    private $price;
-    private $quantity;
+    private int $id;
+    private int $catId;
+    private string $name;
+    private string $description;
+    private string $image;
+    private int $price;
+    private int $quantityRemaining;
 
     function __construct($data)
     {
         $this->id = $data['id'];
-        $this->cat_id = $data['cat_id'];
+        $this->catId = $data['cat_id'];
         $this->name = $data['name'];
         $this->description = $data['description'];
         $this->image = $data['image'];
         $this->price = $data['price'];
-        $this->quantity = $data['quantity'];
+        $this->quantityRemaining = $data['quantity_remaining'];
     }
 
     public static function getAllProducts(): array
@@ -27,7 +27,19 @@ class Product extends Modele
         $products = Product::executerRequete($sql);
         $listeProduct = [];
         foreach ($products->fetchAll() as $product) {
-            array_push($listeProduct, new Categorie($product));
+           $listeProduct[] = new Product($product);
+        }
+        return $listeProduct;
+    }
+
+    public static function getProductsById($ids): array
+    {
+        $placeholders = str_repeat ('?, ',  count ($ids) - 1) . '?';
+        $sql = "select * from products wehre id in ($placeholders);";
+        $products = Product::executerRequete($sql,$ids);
+        $listeProduct = [];
+        foreach ($products->fetchAll() as $product) {
+            $listeProduct[] = new Product($product);
         }
         return $listeProduct;
     }
@@ -64,59 +76,53 @@ class Product extends Modele
     }
 
 
-    /**
-     * Get the value of price
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
+	/**
+	 * @return int
+	 */
+	public function getCatId(): int {
+		return $this->catId;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName(): string {
+		return $this->name;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDescription(): string {
+		return $this->description;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getImage(): string {
+		return $this->image;
+	}
+
 
     /**
-     * Get the value of quantity
-     */
-    public function getQuantity()
-    {
-        return $this->quantity;
-    }
+	 * @return int
+	 */
+	public function getPrice(): int {
+		return $this->price;
+	}
 
-    /**
-     * Get the value of image
-     */
-    public function getImage()
-    {
-        return $this->image;
-    }
+	/**
+	 * @return int
+	 */
+	public function getQuantityRemaining(): int {
+		return $this->quantityRemaining;
+	}
 
-    /**
-     * Get the value of description
-     */
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    /**
-     * Get the value of name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * Get the value of cat_id
-     */
-    public function getCat_id()
-    {
-        return $this->cat_id;
-    }
-
-    /**
-     * Get the value of id
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * @return int
+	 */
+	public function getId(): int {
+		return $this->id;
+	}
 }

@@ -14,6 +14,7 @@ class UserController extends Controller
         $this->post('login', '/login');
         $this->get('logout', '/logout');
         $this->get('orders', '/orders');
+        $this->get('order', '/order/:id');
         $this->get('addresses', '/addresses');
         $this->get('address', '/address/:id');
         $this->get('newAddress', '/address');
@@ -98,12 +99,20 @@ class UserController extends Controller
             return;
         }
 
-        $result = Order::getAllOrdersByUserId($_SESSION["login"]->getId());
-        foreach($result as $a){
-            $a->getOrderItems();
-        }
-        var_dump($result);
+        $orders = Order::getOrdersByUserId($_SESSION["login"]->getId());
+
+        $this->sendView("viewOrders",["orders"=>$orders]);
     }
 
+    public function order($data){
+        //SI non connecté 
+        if (!isset($_SESSION["login"])) {
+            $this->redirect("/user/login");
+            return;
+        }
 
+        $order = Order::getOrderByOrderIdAndUserId($data["params"]["id"],$_SESSION["login"]->getId());
+
+        $this->sendView("viewOrder",["order"=>$order]);
+    }
 }
