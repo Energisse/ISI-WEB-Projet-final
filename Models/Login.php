@@ -4,16 +4,19 @@ require_once 'Models/Product.php';
 
 class Login extends Modele
 {
-    private $username;
-    private $id;
+    private string $username;
+    private int $id;
 
-    private $password;
+    private string $password;
+
+    private bool $admin;
 
     function __construct($data)
     {
         $this->username = $data['username'];
         $this->id = $data['id'];
         $this->password = $data['password'];
+        $this->admin = $data['admin'];
     }
 
     public static function getLoginByUsernameAndPassword($username, $password): ?Login
@@ -55,4 +58,8 @@ class Login extends Modele
 	public function getId() {
 		return $this->id;
 	}
+
+    public function isAdmin(){
+        return $this->admin;
+    }
 }

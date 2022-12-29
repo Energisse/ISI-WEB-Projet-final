@@ -14,7 +14,7 @@ if ($address == null) {
         </div>
         <div class="row justify-content-md-center">
             <div class="col-md-8">
-                <form class="row g-3 needs-validation" method="POST" action="/user/address/<?=$address->getId()?>">
+                <form class="row g-3 needs-validation" method="POST" action="/user/address/<?=$address->getId()?><?= isset($_GET["goTo"]) ? "?goTo=".$_GET["goTo"]:""?>">
                     <div class="col-md-6">
                         <label for="input-forename" class="form-label">Forename</label>
                         <input type="text" class="form-control" id="input-forename" placeholder="forename" name="forename" value="<?=$address->getForeName()?>" required>

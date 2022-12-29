@@ -7,6 +7,7 @@ require_once 'Controllers/UserController.php';
 require_once 'Controllers/AccueilController.php';
 require_once 'Controllers/ProductController.php';
 require_once 'Controllers/BasketController.php';
+require_once 'Controllers/AdminController.php';
 
 class Routeur
 {
@@ -19,6 +20,7 @@ class Routeur
         $this->addController(new AccueilController());
         $this->addController(new ProductController());
         $this->addController(new BasketController());
+        $this->addController(new AdminController());
     }
 
     private function addController($controller)

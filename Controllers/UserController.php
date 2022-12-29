@@ -52,7 +52,6 @@ class UserController extends Controller
                 if(isset($_GET["goTo"]))  $this->redirect($_GET["goTo"]);
                 else $this->redirect("/categorie");
                 return;
-
             }
         }
         $this->sendView("viewLogin", ["error" => true, "username" => $_POST["username"],"goTo"=>isset($_GET["goTo"]) ? $_GET["goTo"] : null]);
@@ -76,7 +75,9 @@ class UserController extends Controller
         }
         DeliveryAddress::updateDeliveryAddressByIdAndUserId($_POST, $data["params"]["id"], $_SESSION["login"]->getId());
         $address = DeliveryAddress::getDeliveryAddressByIdAndUserId($data["params"]["id"],$_SESSION["login"]->getId());
-        $this->sendView("viewEditAddress", ["address" => $address]);
+        print $_GET["goTo"];
+        if(isset($_GET["goTo"]))  $this->redirect($_GET["goTo"]);
+        else $this->sendView("viewEditAddress", ["address" => $address]);
     }
 
     public function newAddress($data){
@@ -91,13 +92,18 @@ class UserController extends Controller
     
 
     public function orders($data){
+        //SI non connecté 
+        if (!isset($_SESSION["login"])) {
+            $this->redirect("/user/login");
+            return;
+        }
+
         $result = Order::getAllOrdersByUserId($_SESSION["login"]->getId());
         foreach($result as $a){
             $a->getOrderItems();
         }
         var_dump($result);
     }
-
 
 
 }
