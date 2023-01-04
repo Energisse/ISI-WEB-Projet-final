@@ -68,6 +68,9 @@
                             if (isset($_SESSION["login"])) {
                             ?>
                                 <li>
+                                    <a class="dropdown-item" href="/user/addresses">Mes addresses</a>
+                                </li>
+                                <li>
                                     <a class="dropdown-item" href="/user/orders">Mes commandes</a>
                                 </li>
                                 <li>
