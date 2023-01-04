@@ -23,17 +23,4 @@ require_once("Views/Components/OrderProductSummary.php");
         </li>
     </ul>
 </div>  
-<?php
-if ($order->getStatus()->getStatusCode() == 0) {
-?>
-    <a class="btn btn-primary">Valider l'envoie</a>
-<?php
-} else if ($order->getStatus()->getStatusCode() == 1) {
-?>
-    <a class="btn btn-primary">Valider la livraison</a>
-<?php
-}
-// OrderProductSummary($order);
-
-?>
 <link rel="stylesheet" href="/assets/styles/admin.css">

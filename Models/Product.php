@@ -7,7 +7,7 @@ class Product extends Modele
     private string $name;
     private string $description;
     private string $image;
-    private int $price;
+    private float $price;
     private int $quantityRemaining;
 
     function __construct($data)
@@ -108,7 +108,7 @@ class Product extends Modele
     /**
 	 * @return int
 	 */
-	public function getPrice(): int {
+	public function getPrice(): string {
 		return $this->price;
 	}
 

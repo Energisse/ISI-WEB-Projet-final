@@ -13,12 +13,15 @@ require_once("Views/Components/OrderProductSummary.php");
 
             switch ($order->getStatus()->getStatusCode()) {
                 case 0:
-                    echo "En préparation";
+                    echo "Validation du payement";
                     break;
                 case 1:
-                    echo "En livraison";
+                    echo "En cours de preparation";
                     break;
                 case 2:
+                    echo "En cours de livraison";
+                    break;
+                case 3:
                     echo "Livré";
                     break;
             }

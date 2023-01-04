@@ -48,17 +48,11 @@ class BasketController extends Controller
             return;
         }
 
-        //Si le panier est vide, on empeche le payement a moins de vouloir se faire livrer de l'air
-        if( count($_SESSION["basket"]->getProducts()) == 0){
-            $this->redirect("/basket");
-            return;
-        }
-
-
         if(!isset($_POST["address"]) || !isset($_POST["payement"])){
             $this->redirect("/basket/buy");
             return; 
         }
+
 
         //Addresse inexistante
         $deliveryAddress = DeliveryAddress::getDeliveryAddressByIdAndUserId($_POST["address"], $_SESSION["login"]->getId());
@@ -67,7 +61,9 @@ class BasketController extends Controller
             return;
         }
 
-        Order::createNewOrder($_SESSION["login"]->getId(),$deliveryAddress->getId() , $_SESSION["basket"]->getProducts());
+        echo $_POST["payement"];
+
+        Order::createNewOrder($_SESSION["login"]->getId(),$deliveryAddress->getId() , $_SESSION["basket"]->getProducts(),$_POST["payement"]);
         $_SESSION["basket"]->clear();
     }
 

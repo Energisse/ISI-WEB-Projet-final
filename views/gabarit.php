@@ -24,15 +24,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <?php
-                        if (isset($_SESSION["login"])) {
-                            echo '<a class="nav-link" href="/user/logout">Deconnexion</a>';
-                        } else {
-                            echo '<a class="nav-link" href="/user/login">Connexion</a>';
-                        }
-                        ?>
-                    </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Categorie
@@ -73,11 +64,26 @@
                             <i class="fa-solid fa-user"></i>
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li>
-                                <a class="dropdown-item" href="/user/orders">
-                                    Mes commandes
-                                </a>
-                            </li>
+                            <?php
+                            if (isset($_SESSION["login"])) {
+                            ?>
+                                <li>
+                                    <a class="dropdown-item" href="/user/orders">Mes commandes</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="/user/logout">Deconnexion</a>
+                                </li>
+
+                            <?php
+                            } else {
+                            ?>
+
+                                <li>
+                                    <a class="dropdown-item" href="/user/login">Connexion</a>
+                                </li>
+                            <?php
+                            }
+                            ?>
                         </ul>
                     </li>
                 </ul>

@@ -40,7 +40,7 @@ class Order extends Modele
 
     public static function getALlOrderNotFinished(): array
     {
-        $sql = 'select * from orders where id not in (SELECT order_id from orderstatus where status = 2)  order by id desc';
+        $sql = 'select * from orders where id not in (SELECT order_id from orderstatus where status = 3)  order by id desc';
         return Order::queryOrders($sql);
     }
 
@@ -123,10 +123,10 @@ class Order extends Modele
 
   
 
-    public static function createNewOrder($userId, $deliveryAddressID, $ordersItems)
+    public static function createNewOrder($userId, $deliveryAddressID, $ordersItems,$paymentType)
     {
-        $sql = 'insert into orders(user_id,delivery_add_id) values(:user_id,:delivery_add_id);';
-        Order::executerRequete($sql, [":user_id" => $userId, ":delivery_add_id" => $deliveryAddressID]);
+        $sql = 'insert into orders(user_id,delivery_add_id,payment_type) values(:user_id,:delivery_add_id,:payment_type);';
+        Order::executerRequete($sql, [":user_id" => $userId, ":delivery_add_id" => $deliveryAddressID,":payment_type"=>$paymentType]);
         $id = Order::lastInsertId();
         OrderStatus::createNewStatus($id);
         OrderItem::createOrderItems($id, $ordersItems);
