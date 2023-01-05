@@ -59,9 +59,8 @@ class UserController extends Controller
     }
     
     public function addresses($data){
-        $addresses = DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["login"]->getId());
-        // $this->sendView("viewAddresses", ["addresses" => $addresses]);
-        var_dump($addresses);
+        $deliveryAddresses = DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["login"]->getId());
+        $this->sendView("viewAddresses", ["deliveryAddresses" => $deliveryAddresses]);
     }
 
     public function address($data){

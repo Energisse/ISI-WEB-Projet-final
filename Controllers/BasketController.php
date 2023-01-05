@@ -68,15 +68,17 @@ class BasketController extends Controller
                 $this->redirect("/basket/buy");
         }
 
-        //Addresse inexistante
+        /*//Addresse inexistante
         $deliveryAddress = DeliveryAddress::getDeliveryAddressByIdAndUserId($_POST["address"], $_SESSION["login"]->getId());
         if($deliveryAddress == null){
             $this->redirect("/basket/buy");
             return;
         }
 
-        Order::createNewOrder($_SESSION["login"]->getId(),$deliveryAddress->getId() , $_SESSION["basket"]->getProducts());
-        $_SESSION["basket"]->clear();
+        echo $_POST["payement"];
+
+        Order::createNewOrder($_SESSION["login"]->getId(),$deliveryAddress->getId() , $_SESSION["basket"]->getProducts(),$_POST["payement"]);
+        $_SESSION["basket"]->clear();*/
     }
 
     public function clear($data)

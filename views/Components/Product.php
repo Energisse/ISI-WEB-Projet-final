@@ -15,7 +15,7 @@ function Product(Product $product)
                 <?= $product->getDescription() ?>
             </p>
             <p class="card-text">
-                <?= $product->getPrice() ?>€
+                <?=$product->getPrice()  ?>€
             </p>
         </div>
     </a>

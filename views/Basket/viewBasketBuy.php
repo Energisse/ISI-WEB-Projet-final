@@ -1,7 +1,7 @@
 <?php
 require_once 'Models/DeliveryAddress.php';
 ?>
-<form method="post" action="">
+<form method="post">
     <h1>Addresse de livraison</h1>
     <div class="container">
         <div class="accordion" id="accordionAddresses">
@@ -18,7 +18,7 @@ require_once 'Models/DeliveryAddress.php';
                             <?= $deliveryAddress->getForeName() ?>
                             <?= $deliveryAddress->getSurName() ?>,
 
-                          
+
                             <?= $deliveryAddress->getCity() ?>,
                             <?= $deliveryAddress->getPostCode() ?>,
 
@@ -30,19 +30,19 @@ require_once 'Models/DeliveryAddress.php';
                                 <div class="col-6 col-md-4">
                                     <p><strong>Nom :</strong> <?= $deliveryAddress->getForeName() ?></p>
                                     <p><strong>Email :</strong> <?= $deliveryAddress->getEmail() ?></p>
-                                <p><strong>Addresse 1 :</strong><?= $deliveryAddress->getAdd1() ?></p>
+                                    <p><strong>Addresse 1 :</strong><?= $deliveryAddress->getAdd1() ?></p>
 
                                 </div>
                                 <div class="col-6 col-md-4">
-                                <p><strong>Prénom :</strong> <?= $deliveryAddress->getSurName() ?></p>
-                                <p><strong>Ville :</strong> <?= $deliveryAddress->getCity() ?></p>
-                                <p><strong>Addresse 2 :</strong><?= $deliveryAddress->getAdd2() ?></p>
+                                    <p><strong>Prénom :</strong> <?= $deliveryAddress->getSurName() ?></p>
+                                    <p><strong>Ville :</strong> <?= $deliveryAddress->getCity() ?></p>
+                                    <p><strong>Addresse 2 :</strong><?= $deliveryAddress->getAdd2() ?></p>
 
                                 </div>
                                 <div class="col-6 col-md-4">
-                                <p><strong>Téléphone :</strong> <?= $deliveryAddress->getPhone() ?></p>
-                                <p><strong>Code postal :</strong> <?= $deliveryAddress->getPostCode() ?></p>
-                                <a class="btn btn-primary" href="/user/address/<?= $deliveryAddress->getId() ?>?goTo=/basket/buy">Modifier</a>
+                                    <p><strong>Téléphone :</strong> <?= $deliveryAddress->getPhone() ?></p>
+                                    <p><strong>Code postal :</strong> <?= $deliveryAddress->getPostCode() ?></p>
+                                    <a class="btn btn-primary" href="/user/address/<?= $deliveryAddress->getId() ?>?goTo=/basket/buy">Modifier</a>
 
                                 </div>
                             </div>

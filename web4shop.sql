@@ -15,7 +15,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Base de données : `web4shop`
@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `categories` (
   `id` tinyint(4) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `categories`
@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `email` varchar(150) NOT NULL,
   `registered` tinyint(4) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `customers`
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS `delivery_addresses` (
   `email` varchar(150) NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `delivery_addresses`
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `logins` (
   `password` varchar(64) NOT NULL,
   `admin` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `logins`
@@ -140,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `orderitems` (
   `order_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `orderitems`
@@ -168,9 +168,9 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `id` int(20) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `delivery_add_id` int(11) DEFAULT NULL,
-  `payment_type` varchar(6) DEFAULT NULL,
+  `payment_type` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `orders`
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `orderstatus` (
   `order_id` int(11) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Déchargement des données de la table `orderstatus`
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `price` decimal(5,2) NOT NULL,
   `quantity_remaining` int(3) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `products`
@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS `reviews` (
   `title` varchar(50) NOT NULL,
   `description` varchar(150) NOT NULL,
   KEY `review/product` (`id_product`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `reviews`

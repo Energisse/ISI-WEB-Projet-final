@@ -1,8 +1,16 @@
 
-.basket-container{
+body{
+    z-index: 1;
     position: relative;
 }
 
+.basket-container{
+    position: relative;
+}
+nav{
+    z-index: 2;
+
+}
 .basket-quantity{
     position:absolute;
     display: flex;
@@ -17,4 +25,61 @@
     color:white;
     font-size: 0.6em;
     z-index: 0 ;
+}
+
+#container-list-search{
+    width: 100%;
+    position: absolute;
+    bottom: 0.25rem;
+    z-index: -1;
+}
+
+#search{
+    border: 0.25rem solid #ced4da;
+}
+
+
+#list-search{
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 0 ;
+    transform: translateY(100%);
+    background-color: white;
+    border-radius: 0 0 15px 15px;
+    border: 0.25rem solid #ced4da;
+    font-size: 0.75rem;
+    overflow: hidden;
+    visibility: hidden;
+
+}
+
+.list-search-element{
+    padding: 7px 5px;
+    color: black;
+    border-bottom: 2px solid lightgrey;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.list-search-element img{
+   width: 30px;
+   height: 30px;
+   border-radius: 5px;
+   
+} 
+
+.list-search-element:hover{
+    background-color: lightblue;
+}
+
+
+#search:focus{
+  box-shadow:none  !important;
+}
+
+#test:focus{
+    background-color: red;
 }

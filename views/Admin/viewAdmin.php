@@ -13,13 +13,13 @@ require_once("Views/Components/OrderProductSummary.php");
 
             switch ($order->getStatus()->getStatusCode()) {
                 case 0:
-                    echo "En préparation";
+                    echo "En attente de payement";
                     break;
                 case 1:
-                    echo "En livraison";
+                    echo "En attente d'envoie";
                     break;
                 case 2:
-                    echo "Livré";
+                    echo "En attente de livraison";
                     break;
             }
             OrderProductSummary($order);
