@@ -18,108 +18,110 @@
 
 <body>
     <header>
-    <img src="assets/productimages/Web4ShopHeader.png" alt="image" class="img-responsive d-block mx-auto" style="width:30%; height:30%" />
-    </header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Accueil</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Categorie
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <?php foreach ($categories as $categorie) { ?>
-                                <li><a class="dropdown-item" href="/categorie/<?= $categorie->getId() ?>/">
-                                        <?= $categorie->getName() ?>
-                                    </a></li>
-                            <?php } ?>
-                        </ul>
-                    </li>
-                    <?php
-                    if (isset($_SESSION["login"]) && $_SESSION["login"]->isAdmin()) {
-                    ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/admin/">
-                                Admin
+        <img id="logo" src="/assets/images/Web4ShopHeader.png" alt="image" class="img-responsive d-block mx-auto" />
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Accueil</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Categorie
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <?php foreach ($categories as $categorie) { ?>
+                                    <li><a class="dropdown-item" href="/categorie/<?= $categorie->getId() ?>/">
+                                            <?= $categorie->getName() ?>
+                                        </a></li>
+                                <?php } ?>
+                            </ul>
+                        </li>
+                        <?php
+                        if (isset($_SESSION["login"]) && $_SESSION["login"]->isAdmin()) {
+                        ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/admin/">
+                                    Admin
+                                </a>
+                            </li>
+                        <?php
+                        }
+                        ?>
+                        <li class="nav-item  d-flex justify-content-center align-items-center">
+                            <a href="/basket">
+                                <div class="basket-container">
+                                    <div class="basket-quantity">
+                                        <?=
+                                        $_SESSION["basket"]->getQuantity() > 99 ? "99+" : $_SESSION["basket"]->getQuantity()
+                                        ?>
+                                    </div>
+                                    <i class=" fa-solid fa-basket-shopping "></i>
+                                </div>
                             </a>
                         </li>
-                    <?php
-                    }
-                    ?>
-                    <li class="nav-item  d-flex justify-content-center align-items-center">
-                        <a href="/basket">
-                            <div class="basket-container">
-                                <div class="basket-quantity">
-                                    <?=
-                                    $_SESSION["basket"]->getQuantity() > 99 ? "99+" : $_SESSION["basket"]->getQuantity()
-                                    ?>
-                                </div>
-                                <i class=" fa-solid fa-basket-shopping "></i>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa-solid fa-user"></i>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <?php
+                                if (isset($_SESSION["login"])) {
+                                ?>
+                                    <li>
+                                        <a class="dropdown-item" href="/user/addresses">Mes addresses</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/user/orders">Mes commandes</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" href="/user/logout">Deconnexion</a>
+                                    </li>
+
+                                <?php
+                                } else {
+                                ?>
+
+                                    <li>
+                                        <a class="dropdown-item" href="/user/login">Connexion</a>
+                                    </li>
+                                <?php
+                                }
+                                ?>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="position-relative" tabindex="-1" id="container-list-and-search">
+                        <input class="form-control me-2" type="search" id="search" placeholder="Search" aria-label="Search">
+                        <div id="container-list-search">
+                            <div id="list-search" class="d-flex flex-column ">
+
                             </div>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa-solid fa-user"></i>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <?php
-                            if (isset($_SESSION["login"])) {
-                            ?>
-                                <li>
-                                    <a class="dropdown-item" href="/user/addresses">Mes addresses</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="/user/orders">Mes commandes</a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="/user/logout">Deconnexion</a>
-                                </li>
-
-                            <?php
-                            } else {
-                            ?>
-
-                                <li>
-                                    <a class="dropdown-item" href="/user/login">Connexion</a>
-                                </li>
-                            <?php
-                            }
-                            ?>
-                        </ul>
-                    </li>
-                </ul>
-                <div class="position-relative" tabindex="-1" id="container-list-and-search">
-                    <input class="form-control me-2" type="search" id="search" placeholder="Search" aria-label="Search">
-                    <div id="container-list-search">
-                        <div id="list-search" class="d-flex flex-column ">
-
                         </div>
                     </div>
+
                 </div>
-
             </div>
-        </div>
-    </nav>
-    <div id="test"></div>
-    <?= $contenu ?>
+        </nav>
+    </header>
 
-</body>
-<footer class="fixed-bottom" >
-<p class="font-weight-light">Pour toute demande d'informations:
+    <div id="contenu">
+        <?= $contenu ?>
+    </div>
+    <footer>
+        <p class="font-weight-light">Pour toute demande d'informations:</p>
         <ul>
             <li>Contact service commercial: Mr Thomas</li>
             <li>Contact service communication: Mr Thomas</li>
             <li>Contact service juridique: Mr Thomas</li>
         </ul>
-</p>
-Retrouver nous aussi sur : <i class="fab fa-facebook-f fa-2x" style="color: #3b5998;"></i>
-                           <i class="fab fa-twitter fa-2x" style="color: #55acee;"></i>
-<small>© copyright 2023</small>
-</footer>
+        Retrouver nous aussi sur : <i class="fab fa-facebook-f fa-2x" style="color: #3b5998;"></i>
+        <i class="fab fa-twitter fa-2x" style="color: #55acee;"></i>
+        <small>© copyright 2023</small>
+    </footer>
+</body>
+
+
 </html>
