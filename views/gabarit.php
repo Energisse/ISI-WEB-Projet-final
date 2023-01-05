@@ -10,6 +10,7 @@
     <script src="https://kit.fontawesome.com/9b3d8c993e.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="/assets/scripts/gabarit.js" defer></script>
+    <link href="https://fonts.cdnfonts.com/css/amazon-ember" rel="stylesheet">
     <link rel="stylesheet" href="/assets/styles/index.css">
     <title>
         <?= $titre ?>

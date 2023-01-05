@@ -1,0 +1,12 @@
+.product{
+    width: 13rem;
+}
+
+.product a{
+    text-decoration: none;
+    color: black;
+}
+
+.prix{
+    font-size: 1.25rem;
+}
