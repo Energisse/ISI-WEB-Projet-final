@@ -10,6 +10,7 @@ class ProductController extends Controller
         parent::__construct('product');
         $this->get('getProductById', '/:id');
         $this->post('buyProduct', '/');
+
     }
 
     public function getProductById($data)

@@ -1,0 +1,13 @@
+//formulaire pdf donnant où envoyer le chèque et à qui le payer
+
+<?php
+require('fpdf.php');
+
+$pdf = new FPDF();
+$pdf->AddPage();
+$pdf->SetFont('Arial','B',16);
+$pdf->Cell(40,10,'Facture');
+$pdf->Cell(40,10,'Envoyer le chèque à cette adresse : 69100 Villeurbanne');
+$pdf->Cell(40,10,'Ordre du chèque : Direction comptable IsiWeb4Shop ');
+$pdf->Output();
+?>

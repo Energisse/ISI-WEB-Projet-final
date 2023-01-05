@@ -16,6 +16,9 @@
 </head>
 
 <body>
+    <header>
+    <img src="assets/productimages/Web4ShopHeader.png" alt="image" class="img-responsive d-block mx-auto" style="width:30%; height:30%" />
+    </header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">Accueil</a>
@@ -93,5 +96,16 @@
     <?= $contenu ?>
 
 </body>
-
+<footer class="fixed-bottom" >
+<p class="font-weight-light">Pour toute demande d'informations:
+        <ul>
+            <li>Contact service commercial: Mr Thomas</li>
+            <li>Contact service communication: Mr Thomas</li>
+            <li>Contact service juridique: Mr Thomas</li>
+        </ul>
+</p>
+Retrouver nous aussi sur : <i class="fab fa-facebook-f fa-2x" style="color: #3b5998;"></i>
+                           <i class="fab fa-twitter fa-2x" style="color: #55acee;"></i>
+<small>© copyright 2023</small>
+</footer>
 </html>

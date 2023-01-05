@@ -22,7 +22,6 @@ require_once 'Models/DeliveryAddress.php';
                             <?= $deliveryAddress->getCity() ?>,
                             <?= $deliveryAddress->getPostCode() ?>,
 
-                            getEmail
                         </label>
                     </div>
                     <div id="collapse<?= $deliveryAddress->getId() ?>" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionAddresses">

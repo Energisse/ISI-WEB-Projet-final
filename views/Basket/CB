@@ -1,0 +1,21 @@
+
+<label for="text">Vos références:</for>
+    <form action="/Basket" method="post">
+        <ul> 
+            <li>
+                <label for="text">N° de carte:</for>
+                <input type="text" name="numero"/>
+            </li>
+            <li>
+                <label for="text">Date expiration:</for>
+                <input type="text" name="date"/>
+            </li>
+            <li>
+                <label for="text">Code:</for>
+                <input type="text" name="code"/>
+            </li>
+            </br>  
+                <input type="submit" value="Valider"/>
+                <input type="submit" value="Annuler"/>
+        </ul>
+    </form>
