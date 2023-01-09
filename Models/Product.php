@@ -1,7 +1,7 @@
 <?php
 require_once 'Models/Model.php';
 require_once 'Models/Review.php';
-class Product extends Modele
+class Product extends Modele implements JsonSerializable
 {
     /**
      * Unique id
@@ -126,6 +126,11 @@ class Product extends Modele
     public function getCategorie()
     {
         return Categorie::GetCategorieById($this->catId);
+    }
+
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
     }
 
     /**
