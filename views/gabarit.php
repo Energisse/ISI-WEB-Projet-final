@@ -41,7 +41,7 @@
                             </ul>
                         </li>
                         <?php
-                        if (isset($_SESSION["login"]) && $_SESSION["login"]->isAdmin()) {
+                        if (isset($_SESSION["User"]) && $_SESSION["User"]->isAdmin()) {
                         ?>
                             <li class="nav-item">
                                 <a class="nav-link" href="/admin/">
@@ -69,7 +69,7 @@
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <?php
-                                if (isset($_SESSION["login"])) {
+                                if (isset($_SESSION["User"])) {
                                 ?>
                                     <li>
                                         <a class="dropdown-item" href="/user/addresses">Mes addresses</a>
@@ -86,7 +86,7 @@
                                 ?>
 
                                     <li>
-                                        <a class="dropdown-item" href="/user/login">Connexion</a>
+                                        <a class="dropdown-item" href="/user/User">Connexion</a>
                                     </li>
                                 <?php
                                 }

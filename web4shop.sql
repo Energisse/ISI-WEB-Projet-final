@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : ven. 30 déc. 2022 à 21:07
+-- Généré le : lun. 09 jan. 2023 à 20:17
 -- Version du serveur : 5.7.40
 -- Version de PHP : 8.0.26
 
@@ -15,7 +15,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Base de données : `web4shop`
@@ -108,30 +108,6 @@ INSERT INTO `delivery_addresses` (`id`, `forename`, `surname`, `add1`, `add2`, `
 -- --------------------------------------------------------
 
 --
--- Structure de la table `logins`
---
-
-DROP TABLE IF EXISTS `logins`;
-CREATE TABLE IF NOT EXISTS `logins` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `customer_id` varchar(100) NOT NULL,
-  `username` varchar(100) NOT NULL,
-  `password` varchar(64) NOT NULL,
-  `admin` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
-
---
--- Déchargement des données de la table `logins`
---
-
-INSERT INTO `logins` (`id`, `customer_id`, `username`, `password`, `admin`) VALUES
-(1, '1', 'thomas', '$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6', 0),
-(2, '2', 'admin', '$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6', 1);
-
--- --------------------------------------------------------
-
---
 -- Structure de la table `orderitems`
 --
 
@@ -218,7 +194,8 @@ INSERT INTO `orderstatus` (`order_id`, `date`, `status`) VALUES
 (36, '2022-12-29 20:07:15', 0),
 (36, '2022-12-29 20:22:54', 1),
 (36, '2022-12-29 20:22:57', 2),
-(36, '2022-12-29 20:22:59', 3);
+(36, '2022-12-29 20:22:59', 3),
+(34, '2023-01-08 17:26:19', 3);
 
 -- --------------------------------------------------------
 
@@ -278,11 +255,10 @@ INSERT INTO `products` (`id`, `cat_id`, `name`, `description`, `image`, `price`,
 DROP TABLE IF EXISTS `reviews`;
 CREATE TABLE IF NOT EXISTS `reviews` (
   `id_product` int(2) NOT NULL,
-  `name_user` varchar(50) NOT NULL,
-  `photo_user` varchar(50) NOT NULL,
   `stars` int(1) NOT NULL,
   `title` varchar(50) NOT NULL,
   `description` varchar(150) NOT NULL,
+  `user_id` int(11) NOT NULL,
   KEY `review/product` (`id_product`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -290,47 +266,70 @@ CREATE TABLE IF NOT EXISTS `reviews` (
 -- Déchargement des données de la table `reviews`
 --
 
-INSERT INTO `reviews` (`id_product`, `name_user`, `photo_user`, `stars`, `title`, `description`) VALUES
-(28, 'Gerard', 'homme.jpg', 5, 'Trop top', 'Trop beau et trop bon '),
-(13, 'Michelle', 'femme.png', 3, 'super', 'cool'),
-(4, 'Charlène', 'femme.png', 5, 'Excellent !', 'Ils sont trop bons, je recommande vraiment ces biscuits secs, je ne peux plus m\'en passer ! '),
-(24, 'Helène', 'femme.png', 4, 'Vraiment excellent ', 'Je recommande vivement ces macarons, ils ont un gout authentiques et en plus ils ne sont pas très chers '),
-(26, 'Marc', 'homme.jpg', 4, 'Très bon rapport qualité prix', 'Ils sont vraiment excellents. Je ne sais pas cuisiner alors je les achète et on dirait vraiment des cookies faits maison !'),
-(26, 'Sylvie', 'femme.png', 3, 'Je recommande !', 'Vraiment bons et très craquants, j\'en rachèterai '),
-(16, 'Mélanie', 'femme.png', 5, 'Tellement bon ! ', 'Ce jus est incroyablement bon c\'est un plaisir de déjeuner le matin avec un jus d\'orange si frais '),
-(23, 'Lilian', 'homme.jpg', 3, 'Je suis fan', 'Moi qui suis fan d\'infusion, c\'est vraiment de la qualité ! peut être un peu cher mais vraiment le prix a payer pour bénéficier de si bonnes infusions'),
-(15, 'Elise', 'femme.png', 5, 'Tellement bon !!', 'Je recommande vivement, j\'achète toujours ce bon jus et il fait l\'unanimité à la maison'),
-(25, 'Jean', 'homme.jpg', 4, 'Bon goût de noix de coco', 'Vraiment bon, pour les fêtes de Noël, chaque années elles sont très appréciées'),
-(11, 'Christophe', 'homme.jpg', 4, 'Trop bon et livraison rapide', 'Ces fruits secs sont vraiment à croquer, et ils sont très vite virés à la maison '),
-(12, 'Christine', 'femme.png', 3, 'Trop bon ! ', 'Les amandes sont vraiment bonnes, le paquet ne fait pas longtemps à la maison ! je recommande '),
-(7, 'Marie', 'femme.png', 4, 'Une qualité inégalable', 'Les pruneaux sont vraiment excellents je recommande'),
-(21, 'Léa', 'femme.png', 4, 'Des très bonnes infusions', 'Un goût intensément bon et une livraison rapide'),
-(6, 'Liliane', 'femme.png', 3, 'De très bons biscuits ', 'Vraiment trop bon !! '),
-(5, 'Christine', 'femme.png', 4, 'Original', 'Ces biscuits sont excellents; testés récemment! un délice!'),
-(4, 'Florian', 'homme.jpg', 5, 'J\'adore', 'Ces biscuits secs sont très bons. ils sont variés et très parfumés; je recommande ce produit.'),
-(6, 'Victor', 'homme.jpg', 4, 'une tuerie!', 'les biscuits sont vraiment très bons; très garnis; à tester sans modération!'),
-(28, 'Sophie', 'femme.png', 5, 'original!', 'si vous voulez opter pour des biscuits Originaux, vous ne serez pas déçus! et en plus, ils sont bons!'),
-(27, 'Bernard', 'homme.jpg', 5, 'un délice', 'des biscuits très parfumés qui rappellent les biscuits de mon enfance avec ce bon parfum de cannelle! Je vous le recommande...'),
-(25, 'Huguette', 'femme.png', 3, 'bon', 'Des biscuits assez parfumés, tendre et sucrés juste ce qu\'il faut. bon produit'),
-(18, 'Gilbert', 'homme.jpg', 5, 'très bien', 'des capsules de très bonne qualité; très bon rapport qualité prix; je recommande ce produit'),
-(26, 'Juliette', 'femme.png', 5, 'comme à la maison', 'excellents biscuits; aussi bons que ceux que l\'on fait soi même!'),
-(19, 'Corinne', 'femme.png', 5, 'très bon produit', 'des dosettes de très bonne qualité que je recommande'),
-(23, 'Lila', 'femme.png', 5, 'bon produit', 'Une infusion excellente pour la digestion. Un gout acidulé et un très bon rapport qualité prix. Je recommande ce produit'),
-(21, 'Julien', 'homme.jpg', 4, 'Parfumée', 'Une infusion très parfumée avec un gout authentique! très bon produit!'),
-(16, 'Claudine', 'femme.png', 5, 'Bon produit', 'ce jus d\'orange est très parfumé. Peu c!alorique, et sans additif; naturel et sa pulpe est agréable. je vous le conseille'),
-(13, 'Yvette', 'femme.png', 5, 'excellent', 'produit de qualité aussi bien en cuisine que pour désaltérer; je vous invite à l\'essayer!'),
-(15, 'Sylvie', 'femme.png', 4, 'désaltérant', 'très bon produit; sans additif donc très naturel; à essayer sans hésiter!'),
-(14, 'AHMED', 'homme.jpg', 5, 'excellent!', 'Un très bon produit; ce jus a un délicieux gout acidulé; parfait pour un gouter ou pour bien démarrer la journée!'),
-(24, 'Claudette', 'femme.png', 4, 'savoureux', 'des macarons au top; un produit qui est de très bonne qualité; tendre et fondant dans la bouche; à consommer sans modération\r\n'),
-(10, 'Hortense', 'femme.png', 4, 'à conseiller', 'un mélange idéal pour le petit déjeuner ou avant l\'effort; les amandes et les noisettes sont excellentes; je recommande'),
-(11, 'LOUIS', 'homme.jpg', 4, 'exquis!', 'des fruits secs de bonne qualité; je recommande ce produit sans hésiter'),
-(9, 'Catherine', 'femme.png', 5, 'idée cadeau', 'ce plateau très garni et excellent est une très bonne idée cadeau; à savourer sans modération ; je vous invite à essayer!'),
-(7, 'Jules', 'homme.jpg', 5, 'avant l\'effort', 'des pruneaux d\'un gros calibre; idéal avant une activité sportive ou simplement en cas de petite faim! je recommande!'),
-(8, 'Virginie', 'femme.png', 5, 'miam', 'Parfait pour commencer la journée: ces abricots sont excellents; le prix est raisonnable. Je recommande ce produit'),
-(12, 'Severine', 'femme.png', 3, 'très bon produit', 'je recommande ces amandes grillées; elles sont grillées à point et complètent agréablement une recette; à essayer!'),
-(17, 'sabrina', 'femme.png', 5, 'à essayer', 'un café doux et savoureux dans un emballage de qualité. le prix est raisonnable; je recommande!'),
-(20, 'Dominique', 'homme.jpg', 3, 'bon', 'un produit de qualité; ce thé est parfumé et on apprécie le gout délicat de la cannelle; je vous le recommande.'),
-(22, 'Sylvain', 'homme.jpg', 5, 'délicieux', 'une boisson très parfumée; idéale pour bien démarrer la journée; à essayer les yeux fermés.');
+INSERT INTO `reviews` (`id_product`, `stars`, `title`, `description`, `user_id`) VALUES
+(28, 5, 'Trop top', 'Trop beau et trop bon ', 1),
+(13, 3, 'super', 'cool', 1),
+(4, 5, 'Excellent !', 'Ils sont trop bons, je recommande vraiment ces biscuits secs, je ne peux plus m\'en passer ! ', 1),
+(24, 4, 'Vraiment excellent ', 'Je recommande vivement ces macarons, ils ont un gout authentiques et en plus ils ne sont pas très chers ', 1),
+(26, 4, 'Très bon rapport qualité prix', 'Ils sont vraiment excellents. Je ne sais pas cuisiner alors je les achète et on dirait vraiment des cookies faits maison !', 1),
+(26, 3, 'Je recommande !', 'Vraiment bons et très craquants, j\'en rachèterai ', 1),
+(16, 5, 'Tellement bon ! ', 'Ce jus est incroyablement bon c\'est un plaisir de déjeuner le matin avec un jus d\'orange si frais ', 1),
+(23, 3, 'Je suis fan', 'Moi qui suis fan d\'infusion, c\'est vraiment de la qualité ! peut être un peu cher mais vraiment le prix a payer pour bénéficier de si bonnes infusions', 1),
+(15, 5, 'Tellement bon !!', 'Je recommande vivement, j\'achète toujours ce bon jus et il fait l\'unanimité à la maison', 1),
+(25, 4, 'Bon goût de noix de coco', 'Vraiment bon, pour les fêtes de Noël, chaque années elles sont très appréciées', 1),
+(11, 4, 'Trop bon et livraison rapide', 'Ces fruits secs sont vraiment à croquer, et ils sont très vite virés à la maison ', 1),
+(12, 3, 'Trop bon ! ', 'Les amandes sont vraiment bonnes, le paquet ne fait pas longtemps à la maison ! je recommande ', 1),
+(7, 4, 'Une qualité inégalable', 'Les pruneaux sont vraiment excellents je recommande', 1),
+(21, 4, 'Des très bonnes infusions', 'Un goût intensément bon et une livraison rapide', 1),
+(6, 3, 'De très bons biscuits ', 'Vraiment trop bon !! ', 1),
+(5, 4, 'Original', 'Ces biscuits sont excellents; testés récemment! un délice!', 1),
+(4, 5, 'J\'adore', 'Ces biscuits secs sont très bons. ils sont variés et très parfumés; je recommande ce produit.', 1),
+(6, 4, 'une tuerie!', 'les biscuits sont vraiment très bons; très garnis; à tester sans modération!', 1),
+(28, 5, 'original!', 'si vous voulez opter pour des biscuits Originaux, vous ne serez pas déçus! et en plus, ils sont bons!', 1),
+(27, 5, 'un délice', 'des biscuits très parfumés qui rappellent les biscuits de mon enfance avec ce bon parfum de cannelle! Je vous le recommande...', 1),
+(25, 3, 'bon', 'Des biscuits assez parfumés, tendre et sucrés juste ce qu\'il faut. bon produit', 1),
+(18, 5, 'très bien', 'des capsules de très bonne qualité; très bon rapport qualité prix; je recommande ce produit', 1),
+(26, 5, 'comme à la maison', 'excellents biscuits; aussi bons que ceux que l\'on fait soi même!', 1),
+(19, 5, 'très bon produit', 'des dosettes de très bonne qualité que je recommande', 1),
+(23, 5, 'bon produit', 'Une infusion excellente pour la digestion. Un gout acidulé et un très bon rapport qualité prix. Je recommande ce produit', 1),
+(21, 4, 'Parfumée', 'Une infusion très parfumée avec un gout authentique! très bon produit!', 1),
+(16, 5, 'Bon produit', 'ce jus d\'orange est très parfumé. Peu c!alorique, et sans additif; naturel et sa pulpe est agréable. je vous le conseille', 1),
+(13, 5, 'excellent', 'produit de qualité aussi bien en cuisine que pour désaltérer; je vous invite à l\'essayer!', 1),
+(15, 4, 'désaltérant', 'très bon produit; sans additif donc très naturel; à essayer sans hésiter!', 1),
+(14, 5, 'excellent!', 'Un très bon produit; ce jus a un délicieux gout acidulé; parfait pour un gouter ou pour bien démarrer la journée!', 1),
+(24, 4, 'savoureux', 'des macarons au top; un produit qui est de très bonne qualité; tendre et fondant dans la bouche; à consommer sans modération\r\n', 1),
+(10, 4, 'à conseiller', 'un mélange idéal pour le petit déjeuner ou avant l\'effort; les amandes et les noisettes sont excellentes; je recommande', 1),
+(11, 4, 'exquis!', 'des fruits secs de bonne qualité; je recommande ce produit sans hésiter', 1),
+(9, 5, 'idée cadeau', 'ce plateau très garni et excellent est une très bonne idée cadeau; à savourer sans modération ; je vous invite à essayer!', 1),
+(7, 5, 'avant l\'effort', 'des pruneaux d\'un gros calibre; idéal avant une activité sportive ou simplement en cas de petite faim! je recommande!', 1),
+(8, 5, 'miam', 'Parfait pour commencer la journée: ces abricots sont excellents; le prix est raisonnable. Je recommande ce produit', 1),
+(12, 3, 'très bon produit', 'je recommande ces amandes grillées; elles sont grillées à point et complètent agréablement une recette; à essayer!', 1),
+(17, 5, 'à essayer', 'un café doux et savoureux dans un emballage de qualité. le prix est raisonnable; je recommande!', 1),
+(20, 3, 'bon', 'un produit de qualité; ce thé est parfumé et on apprécie le gout délicat de la cannelle; je vous le recommande.', 1),
+(22, 5, 'délicieux', 'une boisson très parfumée; idéale pour bien démarrer la journée; à essayer les yeux fermés.', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(64) NOT NULL,
+  `admin` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Déchargement des données de la table `users`
+--
+
+INSERT INTO `users` (`id`, `username`, `password`, `admin`) VALUES
+(1, 'thomas', '$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6', 0),
+(2, 'admin', '$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6', 1);
 
 --
 -- Contraintes pour les tables déchargées

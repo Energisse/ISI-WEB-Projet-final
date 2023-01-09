@@ -2,77 +2,109 @@
 require_once 'Models/Model.php';
 require_once 'Models/Product.php';
 
+
 class OrderItem extends Modele
 {
-    private int $orderId;
+    /**
+     * orderID unique couple with productId
+     * @var int
+     */
+    private int $orderID;
+
+    /**
+     * productId unique couple with orderID
+     * @var int
+     */
     private int $productId;
+
+    /**
+     * quantity
+     * @var int
+     */
     private int $quantity;
 
-    private Product $product;
-
-    function __construct($data)
+    /**
+     * constructor
+     * @param mixed $data
+     */
+    protected function __construct($data)
     {
-        $this->orderId = $data['order_id'];
+        $this->orderID = $data['order_id'];
         $this->productId = $data['product_id'];
         $this->quantity = $data['quantity'];
-        $this->product = new Product($data);
-    }
-
-    public static function getAllOrderItemByOrderId($order_id){
-        $sql = 'select * from orderitems where order_id=:order_id';
-        $result = Order::executerRequete($sql, [":order_id" => $order_id]);
-        $listeOrderItems = [];
-        foreach ($result->fetchAll() as $orderItem) {
-            $listeOrderItems[] = new OrderItem($orderItem);
+        if(array_key_exists("product",$data)){
+            Product::create($data["product"]);
         }
-        return $listeOrderItems;
     }
-
-    public static function getAllOrderItemAndProductByOrdersId($orders_id){
-        $placeholders = str_repeat ('?, ',  count ($orders_id) - 1) . '?';
-        $sql = "select * from orderitems o join products p on p.id = o.product_id  where order_id in ($placeholders) order by order_id desc";
-        $result = Order::executerRequete($sql, $orders_id);
-        $listeOrderItems = [];
-        foreach ($result->fetchAll() as $orderItem) {
-            $listeOrderItems[] = new OrderItem($orderItem);
-        }
-        return $listeOrderItems;
-    }
-
-    public static function createOrderItems($order_id,$ordersItems){
+  
+    /**
+     * Create a new orderItems in database
+     * @param mixed $orderID
+     * @param mixed $ordersItems
+     * @return void
+     */
+    public static function createOrderItems($orderID, $ordersItems)
+    {
         $sql = 'INSERT INTO orderitems VALUES ';
         $insertQuery = array();
         $insertData = array();
         foreach ($ordersItems as $ordersItem) {
             $insertQuery[] = '(?, ?, ?)';
-            $insertData[] = $order_id;
+            $insertData[] = $orderID;
             $insertData[] = $ordersItem["product"]->getId();
             $insertData[] = $ordersItem["quantity"];
         }
         if (!empty($insertQuery)) {
             $sql .= implode(', ', $insertQuery);
-            Order::executerRequete($sql,$insertData);
+            OrderItem::executeRequest($sql, $insertData);
         }
     }
 
-	/**
-	 * @return int
-	 */
-	public function getOrderId(): int {
-		return $this->orderId;
-	}
+     /**
+     * Return Product linked
+     * @return ?Product
+     */
+    public function getProduct(): ?Product
+    {
+        return Product::getProductById($this->getProductId());
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getQuantity(): int {
-		return $this->quantity;
-	}
+     /**
+     * Return Product linked
+     * @return ?Order
+     */
+    public function getOrder(): ?Order
+    {
+        return Order::getOrderById($this->getOrderId());
+    }
 
-	/**
-	 * @return Product
-	 */
-	public function getProduct(): Product {
-		return $this->product;
-	}
+    /**
+     * @return int
+     */
+    public function getOrderId(): int
+    {
+        return $this->orderID;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getProductId(): int
+    {
+        return $this->productId;
+    }
+
+
+    public function getId(){
+        return $this->getOrderId() . "-" . $this->getProductId();
+    } 
+
 }

@@ -10,9 +10,9 @@ class AdminController extends Controller
     {
         parent::__construct('admin');
         //est connecté
-        if(isset($_SESSION["login"])){
+        if(isset($_SESSION["User"])){
             //est admin
-            if($_SESSION["login"]->isAdmin()){
+            if($_SESSION["User"]->isAdmin()){
                 $this->get('index', '/');
                 $this->get('order', '/order/:id');
                 $this->post('confirmPayement', '/order/payement/:id');
@@ -30,7 +30,7 @@ class AdminController extends Controller
 
     public function index($data)
     {
-        $orders = Order::getALlOrderNotFinished();
+        $orders = Order::getAllOrderNotDelivered();
         $this->sendView("viewAdmin",["orders"=>$orders]);
     }
 
@@ -41,7 +41,7 @@ class AdminController extends Controller
     }
 
     public function redirection(){
-        $this->redirect("/user/login");
+        $this->redirect("/user/User");
     }
 
     public function confirmPayement($data){

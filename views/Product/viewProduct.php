@@ -22,6 +22,26 @@
         </div>
     </form>
     <?php
+    foreach($product->getReviews() as $review){
+        ?>
+            <div>
+                <?php
+                    $note = $review->getStars();
+                    for($etoile = 0; $etoile < 5; $etoile++){
+                        if($note >= 1){
+                            echo '<i class="fa-solid fa-star"></i>';
+                        }
+                        else{
+                            echo '<i class="fa-regular fa-star"></i>';
+                        }
+                        $note--;
+                    }
+                ?>
+                <h1><?=$review->getTitle()?></h1>
+                <p><?=$review->getDescription()?></p>
+            </div>
+        <?php
+    }
     if (isset($quantityBought)) {
     ?>
     <div class=" flex-fill alert alert-success" role=" ">

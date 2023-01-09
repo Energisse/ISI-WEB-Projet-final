@@ -2,65 +2,89 @@
 require_once 'Models/Model.php';
 require_once 'Models/Product.php';
 
-class OrderStatus extends Modele
-{
-    private int $statusCode;
-    private int $orderId;
+class OrderStatus extends Modele{
+    /**
+     * Status  unique couple with order_id
+     * @var int
+     */
+    private int $status;
+
+    /**
+     * order_id unique couple with status
+     * @var int
+     */
+    private int $order_id;
+
+    /**
+     * date
+     * @var string
+     */
     private string $date;
 
-    function __construct($data)
+    /**
+     * Constructor
+     * @param mixed $data
+     */
+    protected function __construct($data)
     {
-        $this->statusCode = $data['status'];
-        $this->date = $data['date'];
-        $this->orderId = $data['order_id'];
+        $this->status = $data["status"];
+        $this->order_id = $data["order_id"];
+        $this->date = $data["date"];
     }
 
-    public static function createNewStatus($order_id){
+    /**
+     * Create a NewStatus and store it in database
+     * @param int $order_id
+     * @return void
+     */
+    public static function createNewStatus(int $order_id){
         $sql = "insert into orderstatus (order_id) values (:order_id);";
-        OrderStatus::executerRequete($sql, [":order_id" => $order_id]);
+        OrderStatus::executeRequest($sql, [":order_id" => $order_id]);
     }
 
-    public static function changeStatus($order_id,$status_code){
+    /**
+     * Change status and store it in database
+     * @param int $order_id
+     * @param int $status_code
+     * @return void
+     */
+    public static function changeStatus(int $order_id,int $status_code){
         $sql = "insert into orderstatus (order_id,status) values (:order_id,:status_code);";
-        OrderStatus::executerRequete($sql, [":order_id" => $order_id,":status_code"=>$status_code]);
-    
+        OrderStatus::executeRequest($sql, [":order_id" => $order_id,":status_code"=>$status_code]);
     }
 
 
+    /**
+     * return all status by orderId
+     * @param int $order_id
+     * @return array
+     */
     public static function getAllStatusByOrderId(int $order_id){
         $sql = "SELECT * FROM `orderstatus` WHERE order_id = :order_id";
-        $result = OrderStatus::executerRequete($sql, [":order_id" => $order_id]);
-        $listeOrdersStatus = [];
-        foreach ($result->fetchAll() as $order) {
-            array_push($listeOrdersStatus,new OrderStatus($order));
-        }
-        return $listeOrdersStatus;
+        return OrderStatus::fetchAll($sql, [":order_id" => $order_id]);
     }
 
-    public static function getAllStatusByOrdersId(array $orders_id){
-        $placeholders = str_repeat ('?, ',  count ($orders_id) - 1) . '?';
-        $sql = "SELECT * FROM `orderstatus` where order_id in ($placeholders) ORDER BY order_id DESC ,DATE ASC";
-        $result = OrderStatus::executerRequete($sql, $orders_id);
-        $listeOrdersStatus = [];
-        foreach ($result->fetchAll() as $order) {
-            array_push($listeOrdersStatus,new OrderStatus($order));
-        }
-        return $listeOrdersStatus;
-    }
-    
 	/**
 	 * @return int
 	 */
 	public function getStatusCode(): int {
-		return $this->statusCode;
+		return $this->status;
 	}
 
     /**
 	 * @return int
 	 */
 	public function getOrderId(): int {
-		return $this->orderId;
+		return $this->order_id;
 	}
+    
+    /**
+     * Return order linked
+     * @return Order|null
+     */
+    public function getOrder(){
+        return Order::getOrderById($this->getOrderId());
+    }
 
 	/**
 	 * @return string
@@ -68,4 +92,8 @@ class OrderStatus extends Modele
 	public function getDate(): string {
 		return $this->date;
 	}
+
+    public function getId(){
+        return $this->getOrderId() . "-". $this->getStatusCode();
+    }
 }

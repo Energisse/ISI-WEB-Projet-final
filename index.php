@@ -1,6 +1,6 @@
 <?php
 require_once 'utils/Basket.php';
-require_once 'Models/Login.php';
+require_once 'Models/User.php';
 require_once 'Models/Order.php';
 session_start();
 require_once 'Controllers/Routeur.php';
@@ -12,4 +12,5 @@ if (!isset($_SESSION["basket"])) {
 
 $routeur = new Routeur();
 $routeur->routerRequete(new Request($_GET['controller'], $_GET['action'], $_SERVER['REQUEST_METHOD']));
+// Modele::showRequests();
 ?>

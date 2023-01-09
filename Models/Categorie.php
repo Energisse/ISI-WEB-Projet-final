@@ -4,68 +4,95 @@ require_once 'Models/Product.php';
 
 class Categorie extends Modele
 {
-    private $name;
-    private $id;
+    /**
+     * Unique Id
+     * @var int
+     */
+    private int $id;
 
-    function __construct($data)
+    /**
+     * name
+     * @var string
+     */
+    private string $name;
+
+    /**
+     * every Products linked  
+     * @var Product[]|null
+     */
+    private array|null $products = null;
+
+    /**
+     * Constructor
+     * @param mixed $data
+     */
+    protected function __construct($data)
     {
         $this->name = $data['name'];
         $this->id = $data['id'];
     }
 
-    public static function getAllCategories()
+    /**
+     * Return all Categorie
+     * @return Categorie[]
+     */
+    public static function getAllCategories():array
     {
         $sql = 'select * from categories';
-        $categories = Categorie::executerRequete($sql);
-        $listeCategorie = [];
-        foreach ($categories->fetchAll() as $categorie) {
-            array_push($listeCategorie, new Categorie($categorie));
-        }
-        return $listeCategorie;
+        return Categorie::fetchAll($sql);
     }
 
-    public static function getCategorieByName($name)
+    /**
+     * Return a categorie by his name
+     * @param string $name
+     * @return Categorie|null
+     */
+    public static function getCategorieByName(string $name):?Categorie
     {
         $sql = 'select * from categories where name=:name';
-        $result = Categorie::executerRequete($sql, [':name' => $name])->fetch();
-        if ($result != null) {
-            $result = new Categorie($result);
+        return Categorie::fetch($sql);
+    }
+
+    /**
+     * Return a categorie by his id
+     * @param int $id
+     * @return Categorie|null
+     */
+    public static function getCategorieById(int $id):?Categorie
+    {
+        if(self::getInstanceByID($id)){
+            return self::getInstanceByID($id);
         }
-        return $result;
-    }
-
-    public static function getCategorieById($id)
-    {
         $sql = 'select * from categories where id=:id';
-        $result = Categorie::executerRequete($sql, [':id' => $id])->fetch();
-        if ($result == null)
-            return null;
-        return new Categorie($result);
-    }
-
-    public function getAllProducts()
-    {
-        return Product::getAllProductsByCategorieId($this->id);
-    }
-
-    public function __toString()
-    {
-        return 'Categorie : ' . $this->name . '#' . $this->id;
+        return Categorie::fetch($sql, [':id' => $id]);
     }
 
     /**
-     * Get the value of name
+     * Return all product from this array
+     * @return Product[]
      */
-    public function getName()
+    public function getAllProducts():array
     {
-        return $this->name;
+        if($this->products == null){
+            $this->products = Product::getAllProductsByCategorieId($this->id);
+        }
+        return $this->products;
     }
 
-    /**
-     * Get the value of id
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * Unique Id
+	 * @return int
+	 */
+	public function getId(): int {
+		return $this->id;
+	}
+
+	/**
+	 * name
+	 * @return string
+	 */
+	public function getName(): string {
+		return $this->name;
+	}
+
 }

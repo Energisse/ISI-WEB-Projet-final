@@ -23,8 +23,8 @@ class BasketController extends Controller
 
     public function buy($data)
     {
-        if(!isset($_SESSION["login"])){
-            $this->redirect("/user/login?goTo=/basket/buy");
+        if(!isset($_SESSION["User"])){
+            $this->redirect("/user/User?goTo=/basket/buy");
             return;
         }
 
@@ -34,12 +34,12 @@ class BasketController extends Controller
             return;
         }
         
-        $this->sendView('viewBasketBuy', ["deliveryAddresses"=>DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["login"]->getId())]);
+        $this->sendView('viewBasketBuy', ["deliveryAddresses"=>DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["User"]->getId())]);
     }
 
     public function bought($data){
-        if(!isset($_SESSION["login"])){
-            $this->redirect("/user/login?goTo=/basket/buy");
+        if(!isset($_SESSION["User"])){
+            $this->redirect("/user/User?goTo=/basket/buy");
             return;
         }
 
@@ -69,7 +69,7 @@ class BasketController extends Controller
         }
 
         /*//Addresse inexistante
-        $deliveryAddress = DeliveryAddress::getDeliveryAddressByIdAndUserId($_POST["address"], $_SESSION["login"]->getId());
+        $deliveryAddress = DeliveryAddress::getDeliveryAddressByIdAndUserId($_POST["address"], $_SESSION["User"]->getId());
         if($deliveryAddress == null){
             $this->redirect("/basket/buy");
             return;
@@ -77,7 +77,7 @@ class BasketController extends Controller
 
         echo $_POST["payement"];
 
-        Order::createNewOrder($_SESSION["login"]->getId(),$deliveryAddress->getId() , $_SESSION["basket"]->getProducts(),$_POST["payement"]);
+        Order::createNewOrder($_SESSION["User"]->getId(),$deliveryAddress->getId() , $_SESSION["basket"]->getProducts(),$_POST["payement"]);
         $_SESSION["basket"]->clear();*/
     }
 

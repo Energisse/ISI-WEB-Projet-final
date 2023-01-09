@@ -4,7 +4,6 @@ require_once("Views/Components/OrderProductSummary.php");
 ?>
 <ul class="list-group">
     <?php
-
     foreach ($orders as $order) {
     ?>
         <li class="list-group-item">

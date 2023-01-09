@@ -1,18 +1,62 @@
 <?php
 require_once 'Models/Model.php';
-class Product extends Modele implements JsonSerializable
+require_once 'Models/Review.php';
+class Product extends Modele
 {
+    /**
+     * Unique id
+     * @var int
+     */
     private int $id;
+
+    /**
+     * catId
+     * @var int
+     */
     private int $catId;
+    
+    /**
+     * name
+     * @var string
+     */
     private string $name;
+    
+    /**
+     * description
+     * @var string
+     */
     private string $description;
+    
+    /**
+     * image
+     * @var string
+     */
     private string $image;
+   
+    /**
+     * price
+     * @var float
+     */
     private float $price;
+   
+    /**
+     * quantityRemaining
+     * @var int
+     */
     private int $quantityRemaining;
 
-    function __construct($data = null)
+    /**
+     * all review linked
+     * @var Review[]|null
+     */
+    private array |null $reviews = null;
+
+    /**
+     * Constructor
+     * @param mixed $data
+     */
+    protected function __construct($data)
     {
-        if ($data == null) return;
         $this->id = $data['id'];
         $this->catId = $data['cat_id'];
         $this->name = $data['name'];
@@ -21,70 +65,67 @@ class Product extends Modele implements JsonSerializable
         $this->price = $data['price'];
         $this->quantityRemaining = $data['quantity_remaining'];
     }
-
+  
+    /**
+     * Return all Products
+     * @return Product[]
+     */
     public static function getAllProducts(): array
     {
         $sql = 'select * from products';
-        $products = Product::executerRequete($sql);
-        $listeProduct = [];
-        foreach ($products->fetchAll() as $product) {
-            $listeProduct[] = new Product($product);
-        }
-        return $listeProduct;
+        return Product::fetchAll($sql);
     }
 
-    public static function getProductsById($ids)
+    /**
+     * Return products by id list
+     * @param int[] $ids
+     * @return array
+     */
+    public static function getProductsByIds(array $ids)
     {
         $placeholders = str_repeat('?, ',  count($ids) - 1) . '?';
         $sql = "select * from products wehre id in ($placeholders);";
-        return Product::queryProducts($sql, $ids);
+        return Product::fetchAll($sql, $ids);
     }
 
-    public static function getProductById($id): ?Product
+    /**
+     * Return product by id
+     * @param int $id
+     * @return Product|null
+     */
+    public static function getProductById(int $id): ?Product
     {
+        if(self::getInstanceById($id)){
+            return self::getInstanceById($id);
+        }
         $sql = 'select * from products where id=:id';
-        return Product::queryProduct($sql, [":id" => $id]);
+        return Product::fetch($sql, [":id" => $id]);
     }
 
-    public function getCategorie()
-    {
-        return Categorie::GetCategorieById($this->catId);
-    }
-
+   
     public static function getAllProductsByCategorieId($id)
     {
         $sql = 'select * from products where cat_id=:cat_id';
-        return Product::queryProducts($sql, [":cat_id" => $id]);
+        return Product::fetchAll($sql, [":cat_id" => $id]);
     }
 
     public static function getProductsByNameLike($name)
     {
         //FIXME: Bug de limit dans la requete preparé, impossible de passer en parametre sans erreur
         $sql = 'select * FROM products where name LIKE :name LIMIT 5';
-        return Product::queryProducts($sql, [":name" => "%" . $name . "%"]);
+        return Product::fetchAll($sql, [":name" => "%" . $name . "%"]);
     }
 
-    private static function queryProducts($sql, $params = null)
-    {
-        $products = Product::executerRequete($sql, $params);
-        return $products->fetchAll(PDO::FETCH_CLASS, 'Product');
+    public function getReviews():array{
+        if($this->reviews == null){
+            $this->reviews = Review::getReviewByProductId($this->getId());
+        }
+        return $this->reviews;
     }
 
-    private static function queryProduct($sql, $params = null)
+    public function getCategorie()
     {
-        $product = Product::executerRequete($sql, $params);
-        $product->setFetchMode(PDO::FETCH_CLASS, 'Product');
-        return $product->fetch();
-    }
-
-    public function __toString()
-    {
-        return 'Produit : ' . $this->name . '#' . $this->id;
-    }
-
-    public function jsonSerialize()
-    {
-        return get_object_vars($this);
+        return Categorie::GetCategorieById($this->catId);
     }
 
     /**

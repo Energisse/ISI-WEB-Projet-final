@@ -43,7 +43,6 @@ require_once 'Models/DeliveryAddress.php';
                                     <p><strong>Téléphone :</strong> <?= $deliveryAddress->getPhone() ?></p>
                                     <p><strong>Code postal :</strong> <?= $deliveryAddress->getPostCode() ?></p>
                                     <a class="btn btn-primary" href="/user/address/<?= $deliveryAddress->getId() ?>?goTo=/basket/buy">Modifier</a>
-
                                 </div>
                             </div>
                         </div>
