@@ -32,6 +32,12 @@ class User extends Modele
     private bool $admin;
 
     /**
+     * profil image
+     * @var string
+     */
+    private string $image;
+
+    /**
      * All deliveryAddresses link to this user
      * @var DeliveryAddress[]|null
      */
@@ -51,6 +57,7 @@ class User extends Modele
         $this->id = $data['id'];
         $this->password = $data['password'];
         $this->admin = $data['admin'];
+        $this->image = $data['image'];
     }
 
     /**
@@ -59,7 +66,7 @@ class User extends Modele
      * @param string $password
      * @return User|null
      */
-    public static function getUserByUsernameAndPassword(string $username,string $password): ?User
+    public static function getUserByUsernameAndPassword(string $username, string $password): ?User
     {
         $User = User::getUserByUserName($username);
         if ($User == null)
@@ -69,7 +76,7 @@ class User extends Modele
         }
         return null;
     }
- 
+
     /**
      * Return a User by username
      * @param string $username
@@ -81,14 +88,14 @@ class User extends Modele
         return User::fetch($sql, [":username" => $username]);
     }
 
-     /**
+    /**
      * Return a User by id
      * @param int $id
      * @return User|null
      */
     public static function getUserById(string $id): ?User
     {
-        if(self::getInstanceByID($id)){
+        if (self::getInstanceByID($id)) {
             return self::getInstanceByID($id);
         }
         $sql = 'select * from Users where id=:id';
@@ -99,9 +106,9 @@ class User extends Modele
      * Return all delivery address link to this user
      * @return DeliveryAddress[]
      */
-    function getAllDeliveryAddress():array
+    function getAllDeliveryAddress(): array
     {
-        if($this->deliveryAddresses == null){
+        if ($this->deliveryAddresses == null) {
             $this->deliveryAddresses = DeliveryAddress::getAllDeliveryAddressByUserId($this->id);
         }
         return $this->deliveryAddresses;
@@ -111,35 +118,47 @@ class User extends Modele
      * Return all order link to this user
      * @return Order[]
      */
-    function getAllOrder():array
+    function getAllOrder(): array
     {
-        if($this->orders == null){
+        if ($this->orders == null) {
             $this->orders = Order::getOrdersByUserId($this->id);
         }
         return $this->orders;
     }
 
-	/**
-	 * Unique id
-	 * @return int
-	 */
-	public function getId(): int {
-		return $this->id;
-	}
+    /**
+     * Unique id
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
-	/**
-	 * Username
-	 * @return string
-	 */
-	public function getUsername(): string {
-		return $this->username;
-	}
+    /**
+     * Username
+     * @return string
+     */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
 
-	/**
-	 * if user is admin
-	 * @return bool
-	 */
-    public function isAdmin(): bool {
+    /**
+     * if user is admin
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
         return $this->admin;
+    }
+
+    /**
+     * profil image
+     * @return string
+     */
+    public function getImage(): string
+    {
+        return $this->image;
     }
 }

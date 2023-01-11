@@ -1,0 +1,68 @@
+.user-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.review-date {
+  font-size: 0.75em;
+}
+
+.review > * {
+  margin: 0;
+}
+
+.review {
+  padding: 15px 0px;
+}
+
+.rating {
+  display: flex;
+  position: relative;
+  transform: rotateY(180deg);
+  justify-content: end;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  display: block;
+  cursor: pointer;
+  width: 30px;
+}
+
+.rating label::before {
+  content: "\f005";
+  font-family: "Font Awesome 5 Free" !important;
+  font-weight: 900;
+  position: relative;
+  display: block;
+  font-size: 25px;
+  color: #101010;
+}
+
+.fa-star.active,
+.rating label::after {
+  color: #1f9cff;
+}
+
+.rating label::after {
+  content: "\f005";
+  font-family: "Font Awesome 5 Free" !important;
+  font-weight: 900;
+  position: absolute;
+  display: block;
+  font-size: 25px;
+  top: 0;
+  opacity: 0;
+  transition: 0.5s;
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.rating label:hover:after,
+.rating input:hover ~ label:after,
+.rating input:checked ~ label:after {
+  opacity: 1;
+}

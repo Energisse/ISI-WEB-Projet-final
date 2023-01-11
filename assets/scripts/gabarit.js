@@ -36,4 +36,3 @@ $("#search").on("focusin", function () {
     if (!$("#list-search").html().trim()) return;
     $("#list-search").css("visibility", "visible");
 })
-

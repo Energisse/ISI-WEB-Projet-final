@@ -13,7 +13,6 @@ class Basket
 
     function __construct()
     {
-
     }
 
     public function clear()

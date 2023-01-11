@@ -9,34 +9,65 @@ class ProductController extends Controller
     {
         parent::__construct('product');
         $this->get('getProductById', '/:id');
-        $this->post('buyProduct', '/');
+        $this->post('buyProduct', '/:id');
+        $this->post('review', '/review/:id');
         $this->post('search', '/search');
     }
 
     public function getProductById($data)
     {
+        $product = Product::getProductById($data['params']['id']);
+        $reviews = $product->getReviews();
+        $userReview = null;
+        //Split connected user reviews and other user reviews
+        if (isset($_SESSION["User"])) {
+            for ($i = 0; $i < count($reviews); $i++) {
+                if ($reviews[$i]->getUserId() == $_SESSION["User"]->getId()) {
+                    $userReview = $reviews[$i];
+                    array_splice($reviews, $i, 1);
+                    break; //Only one review by user so when foud it's finish   
+                }
+            }
+        }
         $this->sendView('viewProduct', [
-            'product' => Product::getProductById($data['params']['id']),
+            'product' => $product,
+            'userReview' => $userReview,
+            'reviews' => $reviews,
+            'quantityBought' => isset($data["data"]["quantityBought"]) ? $data["data"]["quantityBought"] : 0,
+            'error' => isset($data["error"]) ? $data["error"] : null,
         ]);
     }
 
     public function buyProduct($data)
     {
-        if (!isset($_POST['id'])) {
-            $this->redirect("accueil"); //A tester
+        if (!isset($data['params']['id'])) {
+            return $this->redirect("accueil"); //A tester
         }
-        $product = Product::getProductById($_POST['id']);
-        if (!isset($_POST['quantity'])) {
-            $this->sendView('viewProduct', [
-                'product' => $product,
-            ]);
-            return;
+        $product = Product::getProductById($data['params']['id']);
+
+        if (!$product) {
+            return $this->redirect("accueil");
         }
-        $_SESSION["basket"]->addProduct($product, $_POST['quantity']);
-        $this->sendView('viewProduct', [
-            'product' => $product,
-            'quantityBought' => $_POST['quantity']
-        ]);
+
+        if (isset($_POST['quantity'])) {
+
+            $_SESSION["basket"]->addProduct($product, $_POST['quantity']);
+        }
+
+        $data["data"]["quantityBought"] = $_POST['quantity'];
+        //send product view
+        $this->getProductById($data);
+    }
+
+    public function review($data)
+    {
+        try {
+            Review::createOrEditReviewByProductIdANdUserId($data["params"]["id"], $_SESSION["User"]->getId(), $_POST);
+        } catch (AttributException $error) {
+            $data["error"] = $error;
+        }
+
+        return $this->getProductById($data);
     }
 
     public function search($data)
