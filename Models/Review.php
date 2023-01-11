@@ -100,51 +100,39 @@ class Review extends Modele
 
     /**
      * Check if stars is between 1 and 5
-     * @param string $description
-     * @throws AttributException
+     * @param mixed $stars
+     * @throws FormException
      * @return string
      */
-    public static function checkStars(int $stars): int
+    public static function checkStars(mixed $stars): int
     {
-        if ($stars < 1) {
-            throw new AttributException("La note doit être supérieur ou égale à 1", "stars");
-        } else if ($stars > 5) {
-            throw new AttributException("La note doit être inferieur ou égale à 5", "stars");
-        }
+        self::checkValueBetween($stars, 10, 255, "stars");
         return $stars;
     }
 
     /**
-     * Check if description length is between 10 and 255
-     * @param string $description
-     * @throws AttributException
+     * Check if description length is between 10 and 255 and chop it
+     * @param mixed $description
+     * @throws FormException
      * @return string
      */
-    public static function checkDescription(string $description): string
+    public static function checkDescription(mixed $description): string
     {
-        $length = mb_strlen($description, "utf-8");
-        if ($length < 10) {
-            throw new AttributException("La description doit au moins faire 10 caractères", "description");
-        } else if ($length > 256) {
-            throw new AttributException("La description ne doit pas faire plus de 255 caractères", "description");
-        }
+        $description = chop($description);
+        self::checkLengthBetween($description, 10, 255, "description");
         return $description;
     }
 
     /**
-     * Check if title length is between 10 and 50
-     * @param string $title
-     * @throws AttributException
+     * Check if title length is between 10 and 50 and chop it
+     * @param mixed $title
+     * @throws FormException
      * @return string
      */
-    public static function checkTitle(string $title): string
+    public static function checkTitle(mixed $title): string
     {
-        $length = mb_strlen($title, "utf-8");
-        if ($length < 5) {
-            throw new AttributException("Le titre doit au moins faire 10 caractères", "title");
-        } else if ($length  > 50) {
-            throw new AttributException("Le titre ne doit pas faire plus de 50 caractères", "title");
-        }
+        $title = chop($title);
+        self::checkLengthBetween($title, 5, 50, "title");
         return $title;
     }
     /**

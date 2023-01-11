@@ -16,10 +16,10 @@ class UserController extends Controller
         $this->get('orders', '/orders');
         $this->get('order', '/order/:id');
         $this->get('addresses', '/addresses');
-        $this->get('address', '/address/:id');
-        $this->get('newAddress', '/address');
-        $this->post('updateAddress', '/address/:id');
-        $this->post('createAddress', '/address');
+        $this->get('createOrUpadteAddress', '/address/:id');
+        $this->get('createOrUpadteAddress', '/address');
+        $this->post('onCreateOrUpadteAddress', '/address/:id');
+        $this->post('onCreateOrUpadteAddress', '/address');
     }
 
     public function UserForm($data)
@@ -63,37 +63,38 @@ class UserController extends Controller
         $this->sendView("viewAddresses", ["deliveryAddresses" => $deliveryAddresses]);
     }
 
-    public function address($data)
+    public function createOrUpadteAddress($data)
     {
-        $address = DeliveryAddress::getDeliveryAddressByIdAndUserId($data["params"]["id"], $_SESSION["User"]->getId());
-        $this->sendView("viewEditAddress", ["address" => $address]);
-    }
-
-    public function updateAddress($data)
-    {
-        $address = DeliveryAddress::getDeliveryAddressByIdAndUserId($data["params"]["id"], $_SESSION["User"]->getId());
-        if ($address == null) {
-            return;
+        $deliveryAddresses = null;
+        if (isset($data["params"]["id"])) {
+            $deliveryAddresses = DeliveryAddress::getDeliveryAddressByIdAndUserId($data["params"]["id"], $_SESSION["User"]->getId());
         }
-        DeliveryAddress::updateDeliveryAddressByIdAndUserId($_POST, $data["params"]["id"], $_SESSION["User"]->getId());
-        $address = DeliveryAddress::getDeliveryAddressByIdAndUserId($data["params"]["id"], $_SESSION["User"]->getId());
-        print $_GET["goTo"];
-        if (isset($_GET["goTo"]))  $this->redirect($_GET["goTo"]);
-        else $this->sendView("viewEditAddress", ["address" => $address]);
+        $this->sendView("viewAddress", ["deliveryAddresses" => $deliveryAddresses, "error" => isset($data["error"]) ? $data["error"] : null]);
     }
 
-    public function newAddress($data)
+    public function onCreateOrUpadteAddress($data)
     {
-        $this->sendView("viewCreateAddress");
+        try {
+            if (isset($data["params"]["id"])) {
+                $address = DeliveryAddress::getDeliveryAddressByIdAndUserId($data["params"]["id"], $_SESSION["User"]->getId());
+                if ($address == null) {
+                    $this->redirect('/accueil');
+                    return;
+                }
+                DeliveryAddress::updateDeliveryAddressByIdAndUserId($_POST, $data["params"]["id"], $_SESSION["User"]->getId());
+                if (isset($_GET["goTo"]))  $this->redirect($_GET["goTo"]);
+                else {
+                }
+                $this->redirect("/user/addresses");
+            } else {
+                DeliveryAddress::createDeliveryAddress($_POST, $_SESSION["User"]->getId());
+            }
+            $this->redirect("/user/addresses");
+        } catch (FormException $error) {
+            $data["error"] = $error;
+            $this->createOrUpadteAddress($data);
+        }
     }
-
-    public function createAddress($data)
-    {
-        DeliveryAddress::createDeliveryAddress($_POST, $_SESSION["User"]->getId());
-        $this->redirect("/user/addresses");
-    }
-
-
 
     public function orders($data)
     {

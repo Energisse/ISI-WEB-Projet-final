@@ -1,9 +1,9 @@
 <?php
 
 /**
- * AttributException
+ * FormException
  */
-class AttributException extends Exception
+class FormException extends Exception
 {
     /**
      * attributName

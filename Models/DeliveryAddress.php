@@ -15,7 +15,7 @@
          * @var string
          */
         private string $forename;
-       
+
         /**
          * surname
          * @var string
@@ -59,10 +59,16 @@
         private string $email;
 
         /**
-         * user_id
+         * userId
          * @var int
          */
-        private int $user_id;
+        private int $userId;
+
+        /**
+         * previousId of edited delivery
+         * @var int|null
+         */
+        private int|null $previousId;
 
         /**
          * Constructor
@@ -80,93 +86,222 @@
             $this->postcode = $data['postcode'];
             $this->phone = $data['phone'];
             $this->email = $data['email'];
-            $this->user_id = $data['user_id'];
+            $this->userId = $data['user_id'];
+            $this->previousId = $data['previous_id'];
         }
 
         /**
          * Return all delivery addresses from one user by his id
-         * @param int $user_id
+         * @param int $userId
          * @return DeliveryAddress[]
          */
-        static function getAllDeliveryAddressByUserId(int $user_id):array
+        static function getAllDeliveryAddressByUserId(int $userId): array
         {
-            $sql = 'select * from delivery_addresses where user_id = :user_id';
-            return DeliveryAddress::fetchAll($sql, [":user_id" => $user_id]);
+            $sql = 'select * from delivery_addresses where user_id = :user_id and active=1';
+            return DeliveryAddress::fetchAll($sql, [":user_id" => $userId]);
         }
 
         /**
          *  Return a delivery addresses by id if link to user
          * @param int $id
-         * @param int $user_id
+         * @param int $userId
          * @return DeliveryAddress|null
          */
-        static function getDeliveryAddressByIdAndUserId(int $id,int  $user_id): ?DeliveryAddress
+        static function getDeliveryAddressByIdAndUserId(int $id, int  $userId): ?DeliveryAddress
         {
-            $sql = 'select * from delivery_addresses where  user_id = :user_id and id=:id';
-            return DeliveryAddress::fetch($sql, [":id" => $id, ":user_id" => $user_id])->fetch();
+            $sql = 'select * from delivery_addresses where  user_id=:user_id and id=:id and active=1';
+            return DeliveryAddress::fetch($sql, [":id" => $id, ":user_id" => $userId]);
         }
 
         /**
          * Update a delivery
-         * @param object $data
+         * Create a new one if address is used in at least one order and disabled the last one
+         * @param array $data
          * @param int $id
-         * @param int $user_id
+         * @param int $userId
+         * @throws FormException
          * @return void
          */
-        static function updateDeliveryAddressByIdAndUserId(object $data,int $id,int $user_id)
+        static function updateDeliveryAddressByIdAndUserId(array $data, int $id, int $userId)
         {
-            $sql = 'UPDATE delivery_addresses SET forename=:forename, surname=:surname, add1=:add1, add2=:add2, city=:city, postCode=:postCode, phone=:phone, email=:email WHERE id=:id and user_id=:user_id';
+            $sql = '';
             $params = [];
-            $params[":forename"] = $data["forename"];
-            $params[":surname"] = $data["surname"];
-            $params[":add1"] = $data["add1"];
-            $params[":add2"] = $data["add2"];
-            $params[":city"] = $data["city"];
-            $params[":postCode"] = $data["postCode"];
-            $params[":phone"] = $data["phone"];
-            $params[":email"] = $data["email"];
+            $params[":forename"] = self::checkForeName($data["forename"]);
+            $params[":surname"] = self::checkSureName($data["surname"]);
+            $params[":add1"] = self::checkAdd1($data["add1"]);
+            $params[":add2"] = self::checkAdd2($data["add2"]);
+            $params[":city"] = self::checkCity($data["city"]);
+            $params[":postCode"] = self::checPostCode($data["postcode"]);
+            $params[":phone"] = self::checkPhone($data["phone"]);
+            $params[":email"] = self::checkEmail($data["email"]);
             $params[":id"] = $id;
-            $params[":user_id"] = $user_id;
+            $params[":user_id"] = $userId;
+            //If deliveryAddress is already used wee need to create a new one and disable the last one
+            if (Order::getAllCountOfOrderUsedByDeliveryAddressId($id)) {
+                $params[":previous_id"] = $id;
+                $params[":user_id2"] = $userId;
+                $sql = 'UPDATE delivery_addresses SET active=0 WHERE id=:id and user_id=:user_id2; INSERT INTO delivery_addresses (forename, surname,add1,add2,city,postCode,phone,email,user_id,previous_id) VALUES (:forename, :surname, :add1, :add2, :city, :postCode, :phone, :email ,:user_id,:previous_id)';
+            } else {
+                $sql = 'UPDATE delivery_addresses SET forename=:forename, surname=:surname, add1=:add1, add2=:add2, city=:city, postCode=:postCode, phone=:phone, email=:email WHERE id=:id and user_id=:user_id';
+            }
             DeliveryAddress::executeRequest($sql, $params);
         }
 
         /**
          * Create a new delivery
-         * @param object $data
-         * @param int $user_id
+         * @param array $data
+         * @param int $userId
+         * @throws FormException
          * @return void
          */
-        static function createDeliveryAddress(object $data,int $user_id)
+        static function createDeliveryAddress(array $data, int $userId)
         {
             $sql = 'INSERT INTO delivery_addresses (forename, surname,add1,add2,city,postCode,phone,email,user_id) VALUES (:forename, :surname, :add1, :add2, :city, :postCode, :phone, :email ,:user_id)';
             $params = [];
-            $params[":forename"] = $data["forename"];
-            $params[":surname"] = $data["surname"];
-            $params[":add1"] = $data["add1"];
-            $params[":add2"] = $data["add2"];
-            $params[":city"] = $data["city"];
-            $params[":postCode"] = $data["postCode"];
-            $params[":phone"] = $data["phone"];
-            $params[":email"] = $data["email"];
-            $params[":user_id"] = $user_id;
+            $params[":forename"] = self::checkForeName($data["forename"]);
+            $params[":surname"] = self::checkSureName($data["surname"]);
+            $params[":add1"] = self::checkAdd1($data["add1"]);
+            $params[":add2"] = self::checkAdd2($data["add2"]);
+            $params[":city"] = self::checkCity($data["city"]);
+            $params[":postCode"] = self::checPostCode($data["postcode"]);
+            $params[":phone"] = self::checkPhone($data["phone"]);
+            $params[":email"] = self::checkEmail($data["email"]);
+            $params[":user_id"] = $userId;
             DeliveryAddress::executeRequest($sql, $params);
         }
-        
-        static function getAllDeliveryAddressById(int $id){
-            if(self::getInstanceByID($id)){
+
+        /**
+         * Return a delivery address by Id
+         * @param int $id
+         * @return DeliveryAddress
+         */
+        static function getDeliveryAddressById(int $id): DeliveryAddress|null
+        {
+            if (self::getInstanceByID($id)) {
                 return self::getInstanceByID($id);
             }
             $sql = 'select * from delivery_addresses where id=:id';
             return DeliveryAddress::fetch($sql, [":id" => $id])->fetch();
         }
 
-
         /**
          * Return user link to this address
          * @return User|null
          */
-        public function getUser(){
+        public function getUser()
+        {
             return User::getUserById($this->getUserId());
+        }
+
+        /**
+         * check forename length between 3 and 50 and chop it
+         * @param mixed $forename
+         * @throws FormException
+         * @return string
+         */
+        public static function checkForeName(mixed $forename): string
+        {
+            $forename = chop($forename);
+            self::checkLengthBetween($forename, 3, 50, "forename");
+            return $forename;
+        }
+
+        /**
+         * check surname length between 3 and 50 and chop it
+         * @param mixed $surname
+         * @throws FormException
+         * @return string
+         */
+        public static function checkSureName(mixed $surname): string
+        {
+            $surname = chop($surname);
+            self::checkLengthBetween($surname, 3, 50, "surname");
+            return $surname;
+        }
+
+        /**
+         * check add1 length between 3 and 50 and chop it
+         * @param mixed $add1
+         * @throws FormException
+         * @return string
+         */
+        public static function checkAdd1(mixed $add1): string
+        {
+            $add1 = chop($add1);
+            self::checkLengthBetween($add1, 3, 50, "add1");
+            return $add1;
+        }
+
+        /**
+         *  check add2 length between 3 and 50 and chop it
+         * @param mixed $add2
+         * @throws FormException
+         * @return string
+         */
+        public static function checkAdd2(mixed $add2): string
+        {
+            $add2 = chop($add2);
+            self::checkLengthBetween($add2, 0, 50, "add2");
+            return $add2;
+        }
+
+        /**
+         *  check city length between 1 and 50 and chop it
+         * @param mixed $city
+         * @throws FormException
+         * @return string
+         */
+        public static function checkCity(mixed $city): string
+        {
+            $city = chop($city);
+            self::checkLengthBetween($city, 1, 50, "city");
+            return $city;
+        }
+
+        /**
+         *  check postcode is between 0 and 99999
+         * @param mixed $postCode
+         * @throws FormException
+         * @return string
+         */
+        public static function checPostCode(mixed $postCode): string
+        {
+            $postCode = chop($postCode);
+            self::checkValueBetween($postCode, 0, 99999, "postcode");
+            return $postCode;
+        }
+
+        /**
+         *  check phone number and format it
+         * @param mixed $phone
+         * @throws FormException
+         * @return string
+         */
+        public static function checkPhone(mixed $phone)
+        {
+            $phone = chop($phone);
+            if (!preg_match("/0?[1-9]\s?\d{2}\s?\d{2}\s?\d{2}\s?\d{2}/", $phone)) {
+                throw new FormException("Email invalide", "email");
+            }
+            //add a 0 if no writen like ->(+33) 6 xx xx xx xx to 06 xx xx xx xx
+            $phone = str_replace(" ", "", $phone);
+            $phone = (strlen($phone) == 9 ? "0" : "") . $phone;
+            return $phone;
+        }
+
+        /**
+         * check email
+         * @param mixed $email
+         * @throws FormException
+         * @return string
+         */
+        public static function checkEmail(mixed $email): string
+        {
+            $email = chop($email);
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                throw new FormException("Email invalide", "email");
+            }
+            return $email;
         }
 
         /**
@@ -259,12 +394,12 @@
         }
 
         /**
-         * Get the value of user_id
+         * Get the value of userId
          *
          * @return int
          */
         public function getUserId(): int
         {
-            return $this->user_id;
+            return $this->userId;
         }
     }

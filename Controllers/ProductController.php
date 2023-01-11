@@ -63,7 +63,7 @@ class ProductController extends Controller
     {
         try {
             Review::createOrEditReviewByProductIdANdUserId($data["params"]["id"], $_SESSION["User"]->getId(), $_POST);
-        } catch (AttributException $error) {
+        } catch (FormException $error) {
             $data["error"] = $error;
         }
 

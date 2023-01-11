@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 /**
  * Base modele class
  */
@@ -20,17 +21,17 @@ abstract class Modele
      * @var PDO|null
      */
     private static PDO|null $bdd = null;
-    
+
     /**
      * Execute sql request
      * @param string $sql sql request
      * @param array|null $params sql bind values
      * @return PDOStatement|bool
      */
-    public static function executeRequest(string $sql,array $params = null)
+    public static function executeRequest(string $sql, array $params = null)
     {
         if ($params == null) {
-            $resultat = Modele::getBdd()->query($sql); 
+            $resultat = Modele::getBdd()->query($sql);
         } else {
             $resultat = Modele::getBdd()->prepare($sql);
             $resultat->execute($params);
@@ -42,7 +43,7 @@ abstract class Modele
      * Return PDO instance
      * @return PDO
      */
-    private static function getBdd():PDO
+    private static function getBdd(): PDO
     {
         if (Modele::$bdd != null) return Modele::$bdd;
         Modele::$bdd = new PDO('mysql:host=localhost;dbname=web4shop;charset=utf8', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
@@ -53,7 +54,7 @@ abstract class Modele
      * Return last id inserted 
      * @return int
      */
-    protected static function lastInsertId():int
+    protected static function lastInsertId(): int
     {
         return Modele::getBdd()->lastInsertId();
     }
@@ -63,7 +64,8 @@ abstract class Modele
      * @param string|int $id
      * @return ?static
      */
-    public static function getInstanceByID(string|int $id): ?static{
+    public static function getInstanceByID(string|int $id): ?static
+    {
         if (array_key_exists(static::class, self::$instances)) {
             if (array_key_exists(strval($id), self::$instances[static::class])) {
                 return self::$instances[static::class][strval($id)];
@@ -77,9 +79,10 @@ abstract class Modele
      * @param array $data
      * @return object
      */
-    public static function &create(array $data): static{
+    public static function &create(array $data): static
+    {
         $instance = (object) new static($data);
-        if(!array_key_exists(static::class, self::$instances)){
+        if (!array_key_exists(static::class, self::$instances)) {
             self::$instances[static::class] = [];
         }
         self::$instances[static::class][strval($instance->getId())] = $instance;
@@ -93,12 +96,12 @@ abstract class Modele
      * @param array|null $params sql bind values
      * @return array
      */
-    protected static function fetchAll(string $sql,array $params = null):array
-    {   
+    protected static function fetchAll(string $sql, array $params = null): array
+    {
         self::$requestlist[] = [$sql, $params];
         $response = Modele::executeRequest($sql, $params);
         $array = [];
-        foreach( $response->fetchAll() as $element){
+        foreach ($response->fetchAll() as $element) {
             $array[] = static::create($element);
         }
         return $array;
@@ -110,7 +113,7 @@ abstract class Modele
      * @param array|null $params sql bind values
      * @return object|null
      */
-    protected static function fetch(string $sql,array $params = null):?object
+    protected static function fetch(string $sql, array $params = null): ?object
     {
         self::$requestlist[] = [$sql, $params];
         $response = Modele::executeRequest($sql, $params);
@@ -120,9 +123,54 @@ abstract class Modele
         return static::create($result);
     }
 
-    public static function showRequests(){
+    public static function showRequests()
+    {
         echo "<pre>";
         print_r(self::$requestlist);
         echo "</pre>";
+    }
+
+    /**
+     * check if $value is between $min and max
+     * @param mixed $value
+     * @param int $min
+     * @param int $max
+     * @param string $attributName
+     * @throws FormException
+     * @return void
+     */
+    protected static function checkValueBetween(mixed $value, int $min, int $max, string $attributName, bool $float = false)
+    {
+        if (!is_numeric($value)) throw  new FormException("Le champ doit etre un nombre", $attributName);
+        if ($float) {
+            $value = floatval($value);
+        } else {
+            $value = intval($value);
+        }
+        if ($value < $min) {
+            throw new FormException("La valeurs doit être supérieur à $min !", $attributName);
+        } else if ($value > $max) {
+            throw new FormException("La valeurs doit être inferieur à $max !", $attributName);
+        }
+    }
+
+    /**
+     * check if length of $value is between $min and max
+     * @param mixed $value
+     * @param int $min
+     * @param int $max
+     * @param string $attributName
+     * @throws FormException
+     * @return void
+     */
+    protected static function checkLengthBetween(mixed $value, int $min, int $max, string $attributName)
+    {
+        $value = strval($value);
+        $length = mb_strlen($value, "utf-8");
+        if ($length < $min) {
+            throw new FormException("Le champ doit au moins faire $min caractères !", $attributName);
+        } else if ($length > $max) {
+            throw new FormException("Le champ ne doit pas faire plus de $max caractères !", $attributName);
+        }
     }
 }

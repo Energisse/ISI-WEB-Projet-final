@@ -5,7 +5,7 @@ require_once 'Models/OrderItems.php';
 require_once 'Models/OrderStatus.php';
 
 
-class Order extends Modele  
+class Order extends Modele
 {
     /**
      * Unique id
@@ -42,7 +42,7 @@ class Order extends Modele
      * @var OrderItem[]|null
      */
     private array|null $orderItems;
-    
+
     protected function __construct($data)
     {
         $this->id = $data["id"];
@@ -51,18 +51,18 @@ class Order extends Modele
         $this->payment_type = $data["payment_type"];
         $this->statusHistory = [];
         $this->orderItems = [];
-        if(array_key_exists("status",$data)){
-            foreach(json_decode($data["status"],true) as $address){
+        if (array_key_exists("status", $data)) {
+            foreach (json_decode($data["status"], true) as $address) {
                 $this->statusHistory[] = &OrderStatus::create($address);
             }
         }
-        if(array_key_exists("orderitems",$data)){
-            foreach(json_decode($data["orderitems"],true) as $address){
+        if (array_key_exists("orderitems", $data)) {
+            foreach (json_decode($data["orderitems"], true) as $address) {
                 $this->orderItems[] = &OrderItem::create($address);
             }
         }
     }
-    
+
     /**
      * Return a, order by his id and his user_id
      * @param int $order_id
@@ -119,7 +119,7 @@ class Order extends Modele
      */
     public static function getOrderById(int $order_id): ?Order
     {
-        if(self::getInstanceByID($order_id)){
+        if (self::getInstanceByID($order_id)) {
             return self::getInstanceByID($order_id);
         }
 
@@ -267,7 +267,7 @@ class Order extends Modele
      * @param string $paymentType
      * @return void
      */
-    public static function createNewOrder(int$userId,int $deliveryAddressID,array $ordersItems,string $paymentType)
+    public static function createNewOrder(int $userId, int $deliveryAddressID, array $ordersItems, string $paymentType)
     {
         $sql = 'insert into orders(user_id,delivery_add_id,payment_type) values(:user_id,:delivery_add_id,:payment_type);';
         Order::executeRequest($sql, [":user_id" => $userId, ":delivery_add_id" => $deliveryAddressID, ":payment_type" => $paymentType]);
@@ -277,15 +277,32 @@ class Order extends Modele
     }
 
     /**
-     * Return user link to this order
-     * @return User|null
+     * Return the count of order using a deliveryAddress
+     * @param int $deliveryAddressId
+     * @return int
      */
-    public function getUser(){
+    public static function getAllCountOfOrderUsedByDeliveryAddressId(int $deliveryAddressId): int
+    {
+        $sql = 'select count(*) from orders where delivery_add_id= :delivery_add_id;';
+        return self::executeRequest($sql, [":delivery_add_id" => $deliveryAddressId])->fetch()[0];
+    }
+
+    /**
+     * Return user link to this order
+     * @return User
+     */
+    public function getUser(): User
+    {
         return User::getUserById($this->user_id);
     }
 
-    public function getDeliveryAddress(){
-        return DeliveryAddress::getAllDeliveryAddressById($this->getDeliveryAddId());
+    /**
+     * Return a deliveryAddress
+     * @return DeliveryAddress
+     */
+    public function getDeliveryAddress(): DeliveryAddress
+    {
+        return DeliveryAddress::getDeliveryAddressById($this->getDeliveryAddId());
     }
 
     /**
@@ -317,7 +334,7 @@ class Order extends Modele
      */
     public function getStatus(): OrderStatus
     {
-        return $this->statusHistory[count($this->statusHistory)-1];
+        return $this->statusHistory[count($this->statusHistory) - 1];
     }
 
     /**
