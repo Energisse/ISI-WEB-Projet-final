@@ -11,5 +11,5 @@ if (!isset($_SESSION["basket"])) {
 }
 
 $routeur = new Routeur();
-$routeur->routerRequete(new Request($_GET['controller'], $_GET['action'], $_SERVER['REQUEST_METHOD']));
+$routeur->routerRequete(new Request($_GET['controller'], $_GET['action'], $_SERVER['REQUEST_METHOD'], $_POST));
 // Modele::showRequests();

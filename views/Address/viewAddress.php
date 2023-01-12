@@ -7,7 +7,8 @@
         </div>
         <div class="row justify-content-md-center">
             <div class="col-md-8">
-                <form class="row g-3 needs-validation" method="POST" action="/user/address<?= $deliveryAddresses ? "/" . $deliveryAddresses->getId() : "" ?><?= isset($_GET["goTo"]) ? "?goTo=" . $_GET["goTo"] : "" ?>">
+                <form class="row g-3 needs-validation" method="POST" action="/address<?= $deliveryAddresses ? "/" . $deliveryAddresses->getId() : "" ?><?= isset($_GET["goTo"]) ? "?goTo=" . $_GET["goTo"] : "" ?>">
+                    <?= $deliveryAddresses ? '<input type="hidden" name="_method" value="put" />' : '' ?>
                     <div class="col-md-6">
                         <label for="input-forename" class="form-label">Forename</label>
                         <input type="text" class="form-control <?= $error && $error->getAttributName() ==  "forename" ? "is-invalid" : ""  ?>" id="input-forename" placeholder="forename" name="forename" value="<?= isset($_POST["forename"]) ? $_POST["forename"] : ($deliveryAddresses ?  $deliveryAddresses->getForeName() : "") ?>" required>

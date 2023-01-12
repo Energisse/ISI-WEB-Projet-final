@@ -171,6 +171,26 @@
         }
 
         /**
+         * Delete delivery address if note used in at least one order else disabled it
+         * @param int $id
+         * @param int $userId
+         * @return void
+         */
+        static function deleteDeliveryAddressByIdAndUserId(int $id, int $userId)
+        {
+            $params = [];
+            $sql = "";
+            $params[":id"] = $id;
+            $params[":user_id"] = $userId;
+            if (Order::getAllCountOfOrderUsedByDeliveryAddressId($id)) {
+                $sql = 'UPDATE delivery_addresses SET active=0 WHERE id=:id and user_id=:user_id;';
+            } else {
+                $sql = 'DELETE from delivery_addresses WHERE id=:id and user_id=:user_id;';
+            }
+            DeliveryAddress::executeRequest($sql, $params);
+        }
+
+        /**
          * Return a delivery address by Id
          * @param int $id
          * @return DeliveryAddress

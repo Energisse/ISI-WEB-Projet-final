@@ -10,9 +10,9 @@ class AdminController extends Controller
     {
         parent::__construct('admin');
         //est connecté
-        if(isset($_SESSION["User"])){
+        if (isset($_SESSION["User"])) {
             //est admin
-            if($_SESSION["User"]->isAdmin()){
+            if ($_SESSION["User"]->isAdmin()) {
                 $this->get('index', '/');
                 $this->get('order', '/order/:id');
                 $this->post('confirmPayement', '/order/payement/:id');
@@ -22,52 +22,55 @@ class AdminController extends Controller
             //rien car non admin
         }
         //demande de connection
-        else{
+        else {
             $this->get('redirection', '/(.*)');
-
         }
     }
 
     public function index($data)
     {
         $orders = Order::getAllOrderNotDelivered();
-        $this->sendView("viewAdmin",["orders"=>$orders]);
+        $this->sendView("viewAdmin", ["orders" => $orders]);
     }
 
     public function order($data)
     {
         $order = Order::getOrderById($data["params"]["id"]);
-        $this->sendView("viewOrder",["order"=>$order]);
+        $this->sendView("viewOrder", ["order" => $order]);
     }
 
-    public function redirection(){
+    public function redirection()
+    {
         $this->redirect("/user/User");
     }
 
-    public function confirmPayement($data){
+    public function confirmPayement($data)
+    {
         $this->confirm($data["params"]["id"], 1);
     }
-    public function confirmShipment($data){
+    public function confirmShipment($data)
+    {
         $this->confirm($data["params"]["id"], 2);
     }
-    public function confirmReception($data){
+    public function confirmReception($data)
+    {
         $this->confirm($data["params"]["id"], 3);
     }
 
-    private function confirm($id,$status){
+    private function confirm($id, $status)
+    {
         $order = Order::getOrderById($id);
-        if($order == null){
+        if ($order == null) {
             $this->redirect("/admin");
             return;
         }
 
-        if($order->getStatus()->getStatusCode() != $status-1){
+        if ($order->getStatus()->getStatusCode() != $status - 1) {
             $this->redirect("/admin");
             return;
         }
 
         $order->setStatus($status);
-        $this->sendView("viewOrder",["order"=>$order]);
+        $this->sendView("viewOrder", ["order" => $order]);
     }
-
 }

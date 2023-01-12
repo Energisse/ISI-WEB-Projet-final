@@ -3,7 +3,7 @@ require_once 'utils/path-to-regexp-php/src/PathToRegexp.php';
 
 abstract class Controller
 {
-    private $routes = ['GET' => [], 'POST' => []];
+    private $routes = ['GET' => [], 'POST' => [], 'PUT' => [], 'DELETE' => []];
     //definie par la class fille
     private $name;
 
@@ -24,11 +24,21 @@ abstract class Controller
 
     protected function redirect(string $path)
     {
-        header('Location: ' . $path);
+        header('Location: ' . $path, true, 303);
     }
     protected function get($action, $path)
     {
         $this->addRoute('GET', $action, $path);
+    }
+
+    protected function delete($action, $path)
+    {
+        $this->addRoute('DELETE', $action, $path);
+    }
+
+    protected function put($action, $path)
+    {
+        $this->addRoute('PUT', $action, $path);
     }
 
     protected function post($action, $path)
@@ -50,7 +60,7 @@ abstract class Controller
     {
         //On verifie toutes les routes du controller
         foreach ($this->routes[$request->getMethod()] as $route) {
-            $matches = PathToRegexp::match ($route['path'], $request->getAction());
+            $matches = PathToRegexp::match($route['path'], $request->getAction());
             //Si aucun match alors on passe a la suite
             if ($matches == null) {
                 continue;

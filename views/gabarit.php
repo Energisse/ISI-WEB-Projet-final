@@ -86,7 +86,7 @@
                                 ?>
 
                                     <li>
-                                        <a class="dropdown-item" href="/user/User">Connexion</a>
+                                        <a class="dropdown-item" href="/user/login">Connexion</a>
                                     </li>
                                 <?php
                                 }
