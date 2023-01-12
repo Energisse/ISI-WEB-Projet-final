@@ -32,6 +32,12 @@ class Order extends Modele
     private string $payment_type;
 
     /**
+     * Total price
+     * @var float
+     */
+    private float $price;
+
+    /**
      * statusHistory
      * @var OrderStatus[]|null
      */
@@ -49,6 +55,7 @@ class Order extends Modele
         $this->user_id = $data["user_id"];
         $this->delivery_add_id = $data["delivery_add_id"];
         $this->payment_type = $data["payment_type"];
+        $this->price = $data["price"];
         $this->statusHistory = [];
         $this->orderItems = [];
         if (array_key_exists("status", $data)) {
@@ -74,6 +81,12 @@ class Order extends Modele
         $sql = "
         SELECT 
         o.*,
+        ( SELECT 
+            sum(price*quantity)
+            FROM products p join orderitems oi
+            on p.id = oi.product_id
+            where oi.order_id = o.id
+        ) as price, 
         (
             SELECT 
                 JSON_ARRAYAGG(
@@ -126,6 +139,12 @@ class Order extends Modele
         $sql = "
         SELECT 
         o.*,
+        ( SELECT 
+            sum(price*quantity)
+            FROM products p join orderitems oi
+            on p.id = oi.product_id
+            where oi.order_id = o.id
+        ) as price, 
         (
             SELECT 
                 JSON_ARRAYAGG(
@@ -173,6 +192,12 @@ class Order extends Modele
         $sql = "
         SELECT 
         o.*,
+        ( SELECT 
+            sum(price*quantity)
+            FROM products p join orderitems oi
+            on p.id = oi.product_id
+            where oi.order_id = o.id
+        ) as price, 
         (
             SELECT 
                 JSON_ARRAYAGG(
@@ -221,6 +246,12 @@ class Order extends Modele
         $sql = "
             SELECT 
             o.*,
+            ( SELECT 
+            sum(price*quantity)
+            FROM products p join orderitems oi
+            on p.id = oi.product_id
+            where oi.order_id = o.id
+        ) as price, 
             (
                 SELECT 
                     JSON_ARRAYAGG(
@@ -366,5 +397,14 @@ class Order extends Modele
         $newOrder = Order::getOrderById($this->getId());
         $this->statusHistory = $newOrder->statusHistory;
         return $this;
+    }
+
+    /**
+     * Total price
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        return $this->price;
     }
 }

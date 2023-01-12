@@ -37,9 +37,9 @@ class Review extends Modele
 
     /**
      * Date
-     * @var string
+     * @var DateTime
      */
-    private string $date;
+    private DateTime $date;
 
 
     /**
@@ -53,7 +53,7 @@ class Review extends Modele
         $this->stars = $data['stars'];
         $this->description = $data['description'];
         $this->title = $data['title'];
-        $this->date = $data['date'];
+        $this->date = date_create($data['date']);
     }
 
     /**
@@ -106,7 +106,7 @@ class Review extends Modele
      */
     public static function checkStars(mixed $stars): int
     {
-        self::checkValueBetween($stars, 10, 255, "stars");
+        self::checkValueBetween($stars, 1, 5, "stars");
         return $stars;
     }
 
@@ -205,9 +205,9 @@ class Review extends Modele
 
     /**
      * Date
-     * @return string
+     * @return DateTime
      */
-    public function getDate(): string
+    public function getDate(): DateTime
     {
         return $this->date;
     }

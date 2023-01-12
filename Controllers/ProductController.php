@@ -33,7 +33,8 @@ class ProductController extends Controller
             'product' => $product,
             'userReview' => $userReview,
             'reviews' => $reviews,
-            'quantityBought' => isset($data["data"]["quantityBought"]) ? $data["data"]["quantityBought"] : 0,
+            'quantityBought' => isset($data["prevRequestData"]["quantityBought"]) ? $data["prevRequestData"]["quantityBought"] : 0,
+            'reviewEdited' => isset($data["prevRequestData"]["reviewEdited"]) ? $data["prevRequestData"]["reviewEdited"] : false,
             'error' => isset($data["error"]) ? $data["error"] : null,
         ]);
     }
@@ -56,18 +57,21 @@ class ProductController extends Controller
 
         $data["data"]["quantityBought"] = $_POST['quantity'];
         //send product view
-        $this->getProductById($data);
+
+        $this->redirect("/product" . "/" . $data['params']['id'], ["quantityBought" => $_POST['quantity']]);
     }
 
     public function review($data)
     {
+        $params = [];
         try {
             Review::createOrEditReviewByProductIdANdUserId($data["params"]["id"], $_SESSION["User"]->getId(), $_POST);
+            $params = ["reviewEdited" => true];
         } catch (FormException $error) {
-            $data["error"] = $error;
+            $params = ["error" => $error];
         }
 
-        return $this->getProductById($data);
+        $this->redirect("/product" . "/" . $data['params']['id'], $params);
     }
 
     public function search($data)

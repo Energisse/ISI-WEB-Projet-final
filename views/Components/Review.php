@@ -20,7 +20,7 @@ function Review(Review $review)
             ?>
         </h1>
         <p><?= $review->getDescription() ?></p>
-        <p class="review-date">Le <?= $review->getDate() ?></p>
+        <p class="review-date">Le <?= date_format($review->getDate(), 'Y-m-d H:i:s') ?></p>
     </div>
 <?php
 }

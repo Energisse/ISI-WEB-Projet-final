@@ -19,7 +19,7 @@ require_once("Views/Components/Review.php");
             </div>
             <div class="p-2 flex-fill ">
                 <button type="submit" class="btn btn-primary">Acheter <?= $product->getPrice() ?>€</button>
-                <input type="number" min="0" name="quantity" value="1" />
+                <input type="number" min="1" max="<?= $product->getQuantityRemaining() ?>" name="quantity" value="1" />
             </div>
         </div>
     </form>
@@ -43,10 +43,17 @@ require_once("Views/Components/Review.php");
                 <button class="btn btn-primary toggleEditReview">Modifier</button>
 
             </div>
-        <?php
+            <?php
+            if ($reviewEdited) {
+            ?>
+                <div class=" flex-fill alert alert-success" role=" ">
+                    Commentaire modifé !
+                </div>
+            <?php
+            }
         }
         if (isset($_SESSION["User"])) {
-        ?>
+            ?>
 
             <div id="form-review" style='<?= $userReview && !$error ? "display:none;" : "" ?>'>
                 <form action='/product/review/<?= $product->getId() ?>' method="post">

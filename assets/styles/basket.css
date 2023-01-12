@@ -1,12 +1,12 @@
-.container-address.active{
-    background-color: rgba(173, 216, 230,0.5);
-    border: 1px solid lightblue;
-    border-radius: 5px;
+.container-address.active {
+  background-color: rgba(173, 216, 230, 0.5);
+  border: 1px solid lightblue;
+  border-radius: 5px;
 }
 
-.radio-payement{
-    visibility: hidden;
+.radio-payement {
+  visibility: hidden;
 }
-.radio-payement:checked + svg{
-    color: lightblue;
+.radio-payement:checked + i {
+  color: lightblue;
 }

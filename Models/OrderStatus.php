@@ -2,7 +2,8 @@
 require_once 'Models/Model.php';
 require_once 'Models/Product.php';
 
-class OrderStatus extends Modele{
+class OrderStatus extends Modele
+{
     /**
      * Status  unique couple with order_id
      * @var int
@@ -17,9 +18,9 @@ class OrderStatus extends Modele{
 
     /**
      * date
-     * @var string
+     * @var DateTime
      */
-    private string $date;
+    private DateTime $date;
 
     /**
      * Constructor
@@ -29,7 +30,7 @@ class OrderStatus extends Modele{
     {
         $this->status = $data["status"];
         $this->order_id = $data["order_id"];
-        $this->date = $data["date"];
+        $this->date = date_create($data["date"]);
     }
 
     /**
@@ -37,7 +38,8 @@ class OrderStatus extends Modele{
      * @param int $order_id
      * @return void
      */
-    public static function createNewStatus(int $order_id){
+    public static function createNewStatus(int $order_id)
+    {
         $sql = "insert into orderstatus (order_id) values (:order_id);";
         OrderStatus::executeRequest($sql, [":order_id" => $order_id]);
     }
@@ -48,9 +50,10 @@ class OrderStatus extends Modele{
      * @param int $status_code
      * @return void
      */
-    public static function changeStatus(int $order_id,int $status_code){
+    public static function changeStatus(int $order_id, int $status_code)
+    {
         $sql = "insert into orderstatus (order_id,status) values (:order_id,:status_code);";
-        OrderStatus::executeRequest($sql, [":order_id" => $order_id,":status_code"=>$status_code]);
+        OrderStatus::executeRequest($sql, [":order_id" => $order_id, ":status_code" => $status_code]);
     }
 
 
@@ -59,41 +62,47 @@ class OrderStatus extends Modele{
      * @param int $order_id
      * @return array
      */
-    public static function getAllStatusByOrderId(int $order_id){
+    public static function getAllStatusByOrderId(int $order_id)
+    {
         $sql = "SELECT * FROM `orderstatus` WHERE order_id = :order_id";
         return OrderStatus::fetchAll($sql, [":order_id" => $order_id]);
     }
 
-	/**
-	 * @return int
-	 */
-	public function getStatusCode(): int {
-		return $this->status;
-	}
+    /**
+     * @return int
+     */
+    public function getStatusCode(): int
+    {
+        return $this->status;
+    }
 
     /**
-	 * @return int
-	 */
-	public function getOrderId(): int {
-		return $this->order_id;
-	}
-    
+     * @return int
+     */
+    public function getOrderId(): int
+    {
+        return $this->order_id;
+    }
+
     /**
      * Return order linked
      * @return Order|null
      */
-    public function getOrder(){
+    public function getOrder()
+    {
         return Order::getOrderById($this->getOrderId());
     }
 
-	/**
-	 * @return string
-	 */
-	public function getDate(): string {
-		return $this->date;
-	}
+    /**
+     * @return DateTime
+     */
+    public function getDate(): DateTime
+    {
+        return $this->date;
+    }
 
-    public function getId(){
-        return $this->getOrderId() . "-". $this->getStatusCode();
+    public function getId()
+    {
+        return $this->getOrderId() . "-" . $this->getStatusCode();
     }
 }

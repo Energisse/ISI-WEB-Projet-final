@@ -22,8 +22,15 @@ abstract class Controller
         (new view($this->name . "/" . $view))->generer($donnees);
     }
 
-    protected function redirect(string $path)
+    protected function redirect(string $path, mixed $data = null)
     {
+        if ($data != null) {
+            $id = date_timestamp_get(date_create());
+            //store data for 10s
+            $_SESSION["cached"]->set($id, $data, 10);
+            setcookie("requestID", $id, 0, $path);
+        }
+
         header('Location: ' . $path, true, 303);
     }
     protected function get($action, $path)
@@ -75,6 +82,7 @@ abstract class Controller
                 ];
             }
 
+            $data["prevRequestData"] = isset($_COOKIE["requestID"]) ? $_SESSION["cached"]->getOnce($_COOKIE["requestID"]) : null;
             //On appel l'action avec les données
             $result = $this->{$route['action']}($data);
             if (!$result)

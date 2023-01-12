@@ -1,35 +1,37 @@
 <?php
 require_once("Views/Components/OrderProductSummary.php");
-
+$status = ["Validation du payement", "En cours de preparation", "En cours de livraison", "Livré"]
 ?>
-<ul class="list-group">
-    <?php
-    foreach ($orders as $order) {
-    ?>
-        <li class="list-group-item">
-            <?= $order->getStatusHistory()[0]->getDate() ?>
-            <?php
-
-            switch ($order->getStatus()->getStatusCode()) {
-                case 0:
-                    echo "Validation du payement";
-                    break;
-                case 1:
-                    echo "En cours de preparation";
-                    break;
-                case 2:
-                    echo "En cours de livraison";
-                    break;
-                case 3:
-                    echo "Livré";
-                    break;
-            }
-            OrderProductSummary($order);
-            ?>
-            <a class="btn btn-primary" href="/user/order/<?= $order->getId()?>">Plus d'info</a>
-            <a class="btn btn-link">facture</a>
-        </li>
-    <?php
-    }
-    ?>
-</ul>
+<div class="table-responsive-xxl">
+    <div class="container-fluid">
+        <h1>Liste de vos commandes</h1>
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th scope="col">Date d'achat</th>
+                    <th scope="col">Etat</th>
+                    <th scope="col">Produits</th>
+                    <th scope="col">Prix</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($orders as $order) {
+                ?>
+                    <tr>
+                        <td> <?= date_format($order->getStatusHistory()[0]->getDate(), 'Y-m-d H:i:s') ?></td>
+                        <td> <?= $status[$order->getStatus()->getStatusCode()] ?></td>
+                        <td><?= OrderProductSummary($order) ?></td>
+                        <td> <?= $order->getPrice() ?> €</td>
+                        <td><a class="btn btn-primary" href="/user/order/<?= $order->getId() ?>">Plus d'info</a>
+                            <a class="btn btn-link">facture</a>
+                        </td>
+                    </tr>
+                <?php
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</div>
