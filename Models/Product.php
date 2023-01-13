@@ -84,7 +84,7 @@ class Product extends Modele implements JsonSerializable
     public static function getProductsByIds(array $ids)
     {
         $placeholders = str_repeat('?, ',  count($ids) - 1) . '?';
-        $sql = "select * from products wehre id in ($placeholders);";
+        $sql = "select * from products where id in ($placeholders);";
         return Product::fetchAll($sql, $ids);
     }
 

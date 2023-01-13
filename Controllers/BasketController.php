@@ -13,7 +13,11 @@ class BasketController extends Controller
         $this->get('buy', '/buy');
         $this->post('bought', '/buy');
         $this->get('clear', '/clear');
-        $this->post('pay','/CB');
+        $this->post('pay1','/CB');
+        $this->post('pay2','/Paypal/pay');
+        $this->post('annuler','/CBPaypal/annuler');
+        $this->get('pay3','/MoneyCheck');
+
     }
 
     public function index($data)
@@ -38,6 +42,8 @@ class BasketController extends Controller
     }
 
     public function bought($data){
+        
+    
         if(!isset($_SESSION["User"])){
             $this->redirect("/user/User?goTo=/basket/buy");
             return;
@@ -48,13 +54,13 @@ class BasketController extends Controller
             $this->redirect("/basket");
             return;
         }
-
+        
         if(!isset($_POST["address"]) || !isset($_POST["payement"])){
             $this->redirect("/basket/buy");
             return; 
         }
 
-        switch("payement"){                   //selon le mode de payement on renvoie vers une pagge dédiée si c'est par CB,Paypal ou chèque
+        switch($_POST["payement"]){                   //selon le mode de payement on renvoie vers une page dédiée si c'est par CB,Paypal ou chèque
             case "creditCard" :
                 $this->redirect("/basket/CB");
                 break;
@@ -62,13 +68,13 @@ class BasketController extends Controller
                 $this->redirect("/basket/Paypal");
                 break;
             case "moneyCheck":
-                $this->redirect("/basket/MoneyCheck");
+                $this->redirect("/basket/MoneyCheck");                
                 break;
             default:
                 $this->redirect("/basket/buy");
         }
 
-        /*//Addresse inexistante
+        //Addresse inexistante
         $deliveryAddress = DeliveryAddress::getDeliveryAddressByIdAndUserId($_POST["address"], $_SESSION["User"]->getId());
         if($deliveryAddress == null){
             $this->redirect("/basket/buy");
@@ -77,8 +83,8 @@ class BasketController extends Controller
 
         echo $_POST["payement"];
 
-        Order::createNewOrder($_SESSION["User"]->getId(),$deliveryAddress->getId() , $_SESSION["basket"]->getProducts(),$_POST["payement"]);
-        $_SESSION["basket"]->clear();*/
+        //Order::getOrderById(Order::createNewOrder($_SESSION["User"]->getId(),$deliveryAddress->getId() , $_SESSION["basket"]->getProducts(),$_POST["payement"]));
+        $_SESSION["basket"]->clear();
     }
 
     public function clear($data)
@@ -87,8 +93,25 @@ class BasketController extends Controller
         $this->sendView('viewBasket', ["basket" => $_SESSION["basket"]]);
     }
 
-    public function payCB($data)
+    public function pay1($data)
     {
-        $this->sendView('viewaccept');
+        $this->sendView('CB');
     }
+
+    public function pay2($data)
+    {
+        $this->sendView('Paypal');
+    }
+
+    public function pay3($data)
+    {
+        $this->sendView('MoneyCheck');
+    }
+
+    public function annuler($data)
+    {
+        $this->sendView('viewBasketBuy');
+    }
+
+   
 }

@@ -88,7 +88,14 @@ class User extends Modele
         return User::fetch($sql, [":username" => $username]);
     }
 
-    /**
+    
+    public static function signin(string $username, string $password){
+        $sql='insert into users(username,password) values(:username,:password)';
+        return User::executeRequest($sql, [":username" => $username,":password" => password_hash( $password, PASSWORD_BCRYPT ) ]);
+    
+    }
+
+     /** 
      * Return a User by id
      * @param int $id
      * @return User|null

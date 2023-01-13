@@ -55,25 +55,30 @@ require_once 'Models/DeliveryAddress.php';
     </div>
 
     <h1>Facturation</h1>
+    
     <label class="form-check-label">
         <input class="form-check-input radio-payement" type="radio" name="payement" value="moneyCheck">
         <i class="fa-solid fa-money-check fa-2xl"></i>
         Cheque
     </label>
+    
+    
     <label class="form-check-label">
         <input class="form-check-input radio-payement" type="radio" name="payement" value="paypal">
         <i class="fa-brands fa-paypal fa-2xl"></i>
         Paypal
-
     </label>
+
     <label class="form-check-label">
         <input class="form-check-input radio-payement" type="radio" name="payement" value="creditCard">
         <i class="fa-solid fa-credit-card fa-2xl"></i>
         Carte bancaire
     </label>
-    </br>
+    </br></br>
     <input type="submit" class="btn btn-primary" value="Payer" />
 </form>
-
+<a href="/CBPaypal/annuler"></a>
 <script src="/assets/scripts/basket.js"></script>
 <link rel="stylesheet" href="/assets/styles/basket.css">
+
+

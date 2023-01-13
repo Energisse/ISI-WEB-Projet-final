@@ -1,6 +1,6 @@
 
 <label for="text">Vos références:</for>
-    <form action="/Basket" method="post">
+    <form action="/basket" method="post">
         <ul> 
             <li>
                 <label for="text">N° de carte:</for>
@@ -15,7 +15,9 @@
                 <input type="text" name="code"/>
             </li>
             </br>  
-                <input type="submit" value="Valider"/>
-                <input type="submit" value="Annuler"/>
+                <a href="/viewaccept"></a>  class="btn">Valider</a>
+                <input type="button" value="Annuler"/>
         </ul>
     </form>
+    <a href="/CB/pay"></a>
+    

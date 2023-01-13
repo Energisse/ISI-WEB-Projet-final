@@ -201,7 +201,7 @@
                 return self::getInstanceByID($id);
             }
             $sql = 'select * from delivery_addresses where id=:id';
-            return DeliveryAddress::fetch($sql, [":id" => $id])->fetch();
+            return DeliveryAddress::fetch($sql, [":id" => $id]);
         }
 
         /**

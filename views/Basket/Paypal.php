@@ -1,5 +1,5 @@
 <label for="text">Vos références:</for>
-    <form action="/basket/Paypal" method="post">
+    <form action="/basket" method="post">
         <ul> 
             <li>
                 <label for="text">Mail:</for>
@@ -10,7 +10,8 @@
                 <input type="text" name="nomadresse"/>
             </li>
             </br>  
-                <input type="submit" value="Valider"/>
-                <input type="submit" value="Annuler"/>
+                <a href="/CBPaypal/valid" class="btn">Valider</a>
+                <input type="button" value="Annuler"/>
         </ul>
     </form>
+<a href="/Paypal/pay"></a>

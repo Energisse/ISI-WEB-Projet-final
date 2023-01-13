@@ -296,7 +296,7 @@ class Order extends Modele
      * @param int $deliveryAddressID
      * @param array $ordersItems
      * @param string $paymentType
-     * @return void
+     * @return int
      */
     public static function createNewOrder(int $userId, int $deliveryAddressID, array $ordersItems, string $paymentType)
     {
@@ -305,6 +305,7 @@ class Order extends Modele
         $id = Order::lastInsertId();
         OrderStatus::createNewStatus($id);
         OrderItem::createOrderItems($id, $ordersItems);
+        return $id;
     }
 
     /**
@@ -369,7 +370,7 @@ class Order extends Modele
     }
 
     /**
-     * @return array|null
+     * @return OrderItem[]|null
      */
     public function getOrderItems(): array|null
     {
