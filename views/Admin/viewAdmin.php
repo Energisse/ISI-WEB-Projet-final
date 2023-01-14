@@ -8,10 +8,10 @@ require_once("Views/Components/OrderProductSummary.php");
     foreach ($orders as $order) {
     ?>
         <li class="list-group-item">
-            <?= $order->getStatusHistory()[0]->getDate() ?>
+            <?= date_format($order->getStatusHistory(OrderStatusCode::$WaintingPayment)->getDate(), 'Y-m-d H:i:s') ?>
             <?php
 
-            switch ($order->getStatus()->getStatusCode()) {
+            switch ($order->getStatus()->getStatusCode() - OrderStatusCode::$WaintingPayment) {
                 case 0:
                     echo "En attente de payement";
                     break;
@@ -24,7 +24,7 @@ require_once("Views/Components/OrderProductSummary.php");
             }
             OrderProductSummary($order);
             ?>
-            <a class="btn btn-primary" href="/admin/order/<?= $order->getId()?>">Plus d'info</a>
+            <a class="btn btn-primary" href="/admin/order/<?= $order->getId() ?>">Plus d'info</a>
             <a class="btn btn-link">facture</a>
         </li>
     <?php

@@ -77,8 +77,3 @@ $header = array('Description', 'Quantité', 'Montant');
 $pdf->PurchaseTable($header,$data);
 $pdf->Output();
 die();
-?>
-
-
-
-

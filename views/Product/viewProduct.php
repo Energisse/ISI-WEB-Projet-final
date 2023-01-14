@@ -18,8 +18,9 @@ require_once("Views/Components/Review.php");
                 <?= $product->getDescription() ?>
             </div>
             <div class="p-2 flex-fill ">
-                <button type="submit" class="btn btn-primary">Acheter <?= $product->getPrice() ?>€</button>
+                <button type="submit" class="btn btn-primary" <?= $product->getQuantityRemaining() == 0 ? "disabled" : "" ?>><?= $product->getQuantityRemaining() == 0 ? "Rupture" : "Acheter" ?> <?= $product->getPrice() ?>€</button>
                 <input type="number" min="1" max="<?= $product->getQuantityRemaining() ?>" name="quantity" value="1" />
+                <?= $product->getQuantityRemaining() ?>
             </div>
         </div>
     </form>

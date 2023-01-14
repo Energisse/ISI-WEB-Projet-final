@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mar. 10 jan. 2023 à 22:55
--- Version du serveur : 5.7.40
+-- Généré le : sam. 14 jan. 2023 à 17:32
+-- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `categories`;
 CREATE TABLE IF NOT EXISTS `categories` (
-  `id` tinyint(4) NOT NULL AUTO_INCREMENT,
+  `id` tinyint NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `categories`
@@ -51,7 +51,7 @@ INSERT INTO `categories` (`id`, `name`) VALUES
 
 DROP TABLE IF EXISTS `customers`;
 CREATE TABLE IF NOT EXISTS `customers` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `forname` varchar(50) NOT NULL,
   `surname` varchar(50) NOT NULL,
   `add1` varchar(50) NOT NULL,
@@ -60,9 +60,9 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `postcode` varchar(10) NOT NULL,
   `phone` varchar(20) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `registered` tinyint(4) NOT NULL,
+  `registered` tinyint NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `customers`
@@ -80,7 +80,7 @@ INSERT INTO `customers` (`id`, `forname`, `surname`, `add1`, `add2`, `add3`, `po
 
 DROP TABLE IF EXISTS `delivery_addresses`;
 CREATE TABLE IF NOT EXISTS `delivery_addresses` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `forename` varchar(50) NOT NULL,
   `surname` varchar(50) NOT NULL,
   `add1` varchar(50) NOT NULL,
@@ -89,21 +89,28 @@ CREATE TABLE IF NOT EXISTS `delivery_addresses` (
   `postcode` varchar(10) NOT NULL,
   `phone` varchar(20) NOT NULL,
   `email` varchar(150) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` int NOT NULL,
+  `previous_id` int DEFAULT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `delivery_addresses`
 --
 
-INSERT INTO `delivery_addresses` (`id`, `forename`, `surname`, `add1`, `add2`, `city`, `postcode`, `phone`, `email`, `user_id`) VALUES
-(46, 'Christian', 'Hamida', '15 Rue de la paix', '', 'Saint Etienne', '42000', '0477213145', 'chr.hamida@gmail.com', 1),
-(47, 'Sarahe', 'Hamidaa', 'ligne add1', 'ligne add2', 'Meximieux', '01800', '0612345678', 'sarah.hamida@gmail.com', 1),
-(48, 'Jean-Benoît', 'Delaroche', 'ligne add1', 'ligne add2', 'Lyon', '69009', '0796321458', 'jb.delaroche@gmx.fr', 1),
-(49, 'Louise', 'Delaroche', '12 avenue condorcet', 'étage 2', 'Saint Priest', '45097', '0526117898', 'louise.delaroche@yahoo.fr', 1),
-(50, 'thomas', 'thomas', 'zdalpal;dzqdzqdqz', '', 'dax', '40100', '0613256393', 'thomas.halvick@gmail', 1),
-(51, 'thomas', 'halvick', 'DAs', 'das', 'dax', '10100', '0613256393', 'dzdqz@dzdqz', 2);
+INSERT INTO `delivery_addresses` (`id`, `forename`, `surname`, `add1`, `add2`, `city`, `postcode`, `phone`, `email`, `user_id`, `previous_id`, `active`) VALUES
+(46, 'Christian', 'Hamid', '15 Rue de la paix', '', 'Saint Etienne', '42000', '0477213145', 'chr.hamida@gmail.com', 1, NULL, 0),
+(47, 'Sarahe', 'Hamidaa', 'ligne add1', 'ligne add2', 'Meximieux', '01800', '0612345678', 'sarah.hamida@gmail.com', 1, NULL, 0),
+(48, 'Jean-Benoît', 'Delaroche', 'ligne add1', 'ligne add2', 'Lyon', '69009', '0796321458', 'jb.delaroche@gmx.fr', 1, NULL, 1),
+(49, 'Louise', 'Delaroche', '12 avenue condorcet', 'étage 2', 'Saint Priest', '45097', '0526117898', 'louise.delaroche@yahoo.fr', 1, NULL, 1),
+(50, 'thomas', 'thomas', 'grand piton', '', 'dax', '40100', '0613256393', 'thomas.halvick@gmail.com', 1, NULL, 0),
+(56, 'Christian', 'Hamid', '15 Rue de la paix', '', 'Saint Etienne', '42000', '0477213144', 'chr.hamida@gmail.com', 1, 46, 1),
+(57, 'Sarahe', 'Hamidaa', 'ligne add1', 'ligne add2', 'Meximieux', '01800', '0612345678', 'sarah.hamida@gmail.com', 1, 47, 1),
+(64, 'test2', 'test2', 'add2.3', '', 'dax', '40100', '0613256393', 'thomas.halvick@etu.univ-lyon1.fr', 1, NULL, 0),
+(65, 'test2', 'test2', 'add2.3.1', '', 'dax', '40100', '0613256393', 'thomas.halvick@etu.univ-lyon1.fr', 1, 64, 0),
+(66, 'test', 'test', '1741', '145541857', 'DAX', '40100', '0612345678', 'thomas.halvick@gmail.com', 1, NULL, 1),
+(67, 'dzqdzq', 'dzqdqz', 'dzqdqzd', 'zqdqzdqzdqz', 'dzqzdqz', '40100', '0612345679', 'dzdqz@dzdqz.dzqdzqdq', 1, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -113,25 +120,21 @@ INSERT INTO `delivery_addresses` (`id`, `forename`, `surname`, `add1`, `add2`, `
 
 DROP TABLE IF EXISTS `orderitems`;
 CREATE TABLE IF NOT EXISTS `orderitems` (
-  `order_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `order_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `quantity` int NOT NULL,
+  PRIMARY KEY (`order_id`,`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `orderitems`
 --
 
 INSERT INTO `orderitems` (`order_id`, `product_id`, `quantity`) VALUES
-(31, 14, 1),
-(32, 14, 1),
-(33, 14, 1),
-(34, 13, 2),
-(34, 26, 3),
-(34, 28, 4),
-(35, 4, 1),
-(36, 14, 1),
-(36, 11, 4);
+(45, 13, 1),
+(46, 13, 1),
+(47, 14, 1),
+(48, 13, 3);
 
 -- --------------------------------------------------------
 
@@ -141,23 +144,25 @@ INSERT INTO `orderitems` (`order_id`, `product_id`, `quantity`) VALUES
 
 DROP TABLE IF EXISTS `orders`;
 CREATE TABLE IF NOT EXISTS `orders` (
-  `id` int(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `delivery_add_id` int(11) DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user_id` int DEFAULT NULL,
+  `delivery_add_id` int DEFAULT NULL,
   `payment_type` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `orders`
 --
 
 INSERT INTO `orders` (`id`, `user_id`, `delivery_add_id`, `payment_type`) VALUES
-(32, 1, 50, 'test'),
-(33, 1, 50, 'test'),
-(34, 1, 47, 'cb'),
-(35, 2, 51, 'tes'),
-(36, 1, 46, 'cheque');
+(45, NULL, NULL, NULL),
+(46, NULL, 49, NULL),
+(47, NULL, 67, NULL),
+(48, 1, 66, NULL),
+(49, NULL, NULL, NULL),
+(50, NULL, NULL, NULL),
+(51, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -167,35 +172,59 @@ INSERT INTO `orders` (`id`, `user_id`, `delivery_add_id`, `payment_type`) VALUES
 
 DROP TABLE IF EXISTS `orderstatus`;
 CREATE TABLE IF NOT EXISTS `orderstatus` (
-  `order_id` int(11) NOT NULL,
+  `order_id` int NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  `status` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`order_id`,`status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Déchargement des données de la table `orderstatus`
 --
 
 INSERT INTO `orderstatus` (`order_id`, `date`, `status`) VALUES
-(32, '2022-12-29 02:04:07', 0),
-(32, '2022-12-29 02:05:44', 1),
-(32, '2022-12-29 02:18:58', 2),
-(33, '2022-12-29 16:43:43', 0),
-(34, '2022-12-29 18:03:50', 0),
-(34, '2022-12-29 19:54:19', 1),
-(34, '2022-12-29 19:57:30', 2),
-(33, '2022-12-29 19:57:57', 1),
-(33, '2022-12-29 20:02:37', 2),
-(33, '2022-12-29 20:02:38', 3),
-(35, '2022-12-29 20:05:10', 0),
-(35, '2022-12-29 20:05:47', 1),
-(35, '2022-12-29 20:05:48', 2),
-(35, '2022-12-29 20:05:49', 3),
-(36, '2022-12-29 20:07:15', 0),
-(36, '2022-12-29 20:22:54', 1),
-(36, '2022-12-29 20:22:57', 2),
-(36, '2022-12-29 20:22:59', 3),
-(34, '2023-01-08 17:26:19', 3);
+(45, '2023-01-14 16:52:46', 0),
+(45, '2023-01-14 16:58:05', 1),
+(46, '2023-01-14 16:53:07', 0),
+(46, '2023-01-14 16:53:12', 1),
+(46, '2023-01-14 16:53:15', 2),
+(46, '2023-01-14 17:31:37', 3),
+(46, '2023-01-14 17:31:38', 4),
+(46, '2023-01-14 17:31:39', 5),
+(47, '2023-01-14 16:56:27', 0),
+(47, '2023-01-14 16:58:07', 1),
+(47, '2023-01-14 16:58:12', 2),
+(47, '2023-01-14 17:29:41', 3),
+(47, '2023-01-14 17:29:41', 4),
+(47, '2023-01-14 17:29:42', 5),
+(48, '2023-01-14 16:58:39', 0),
+(48, '2023-01-14 16:58:41', 1),
+(48, '2023-01-14 16:58:44', 2),
+(48, '2023-01-14 17:22:58', 3),
+(48, '2023-01-14 17:24:19', 4),
+(48, '2023-01-14 17:24:23', 5),
+(49, '2023-01-14 16:58:44', 0),
+(50, '2023-01-14 17:12:38', 0),
+(51, '2023-01-14 17:20:22', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `orderwithdata`
+-- (Voir ci-dessous la vue réelle)
+--
+DROP VIEW IF EXISTS `orderwithdata`;
+CREATE TABLE IF NOT EXISTS `orderwithdata` (
+`id` int
+,`user_id` int
+,`delivery_add_id` int
+,`payment_type` varchar(10)
+,`price` decimal(37,2)
+,`orderitems` json
+,`statusHistory` json
+,`status` bigint
+,`quantity` decimal(32,0)
+);
 
 -- --------------------------------------------------------
 
@@ -205,21 +234,21 @@ INSERT INTO `orderstatus` (`order_id`, `date`, `status`) VALUES
 
 DROP TABLE IF EXISTS `products`;
 CREATE TABLE IF NOT EXISTS `products` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `cat_id` tinyint(4) NOT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `cat_id` tinyint NOT NULL,
   `name` varchar(150) NOT NULL,
   `description` text NOT NULL,
   `image` varchar(30) NOT NULL,
   `price` decimal(5,2) NOT NULL,
-  `quantity_remaining` int(3) NOT NULL,
+  `quantity` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `products`
 --
 
-INSERT INTO `products` (`id`, `cat_id`, `name`, `description`, `image`, `price`, `quantity_remaining`) VALUES
+INSERT INTO `products` (`id`, `cat_id`, `name`, `description`, `image`, `price`, `quantity`) VALUES
 (4, 2, 'Assortiment de biscuits secs', 'Boîte de 20 biscuits composée de galettes, cookies, crêpes dentelles et sablés', 'assortimentBiscuitsSecs.jpg', '12.90', 0),
 (5, 2, 'Biscuits de Noël', 'De doux biscuits de Noël à la cannelle, au chocolat, et sablés pour assurer de belles et uniques fêtes de Noël', 'biscuitNoel.png', '10.50', 3),
 (6, 2, 'Biscuits aux raisins ', 'De délicieux biscuits aux raisins secs pour éveiller les sens de toute la famille, des plus petits aux plus grands !', 'biscuitRaisin.jpeg', '6.90', 2),
@@ -254,22 +283,22 @@ INSERT INTO `products` (`id`, `cat_id`, `name`, `description`, `image`, `price`,
 
 DROP TABLE IF EXISTS `reviews`;
 CREATE TABLE IF NOT EXISTS `reviews` (
-  `product_id` int(2) NOT NULL,
-  `stars` int(1) NOT NULL,
+  `product_id` int NOT NULL,
+  `stars` int NOT NULL,
   `title` varchar(50) NOT NULL,
-  `description` varchar(150) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `user_id` int NOT NULL,
   `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`product_id`,`user_id`),
   KEY `review/product` (`product_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `reviews`
 --
 
 INSERT INTO `reviews` (`product_id`, `stars`, `title`, `description`, `user_id`, `date`) VALUES
-(4, 5, 'J\'adore', 'Ces biscuits secs sont très bons. ils sont variés et très parfumés; je recommande ce produit.', 1, '2023-01-10 20:03:05'),
+(4, 3, 'J\'adore', 'très bon produit; sans additif donc très naturel; à essayer sans hésiter! pas ouf quand memetrès bon produit; sans additif donc très naturel; à essayer sans hésiter! pas ouf quand memetrès bon produit; sans additif donc très naturel; à essayer sans hasiaz', 1, '2023-01-12 16:32:31'),
 (4, 5, 'Excellent !', 'Ils sont trop bons, je recommande vraiment ces biscuits secs, je ne peux plus m\'en passer ! ', 2, '2023-01-10 20:03:05'),
 (5, 4, 'Original', 'Ces biscuits sont excellents; testés récemment! un délice!', 1, '2023-01-10 20:03:05'),
 (6, 4, 'une tuerie!', 'les biscuits sont vraiment très bons; très garnis; à tester sans modération!', 1, '2023-01-10 20:03:05'),
@@ -283,10 +312,10 @@ INSERT INTO `reviews` (`product_id`, `stars`, `title`, `description`, `user_id`,
 (11, 4, 'Trop bon et livraison rapide', 'Ces fruits secs sont vraiment à croquer, et ils sont très vite virés à la maison ', 2, '2023-01-10 20:03:05'),
 (12, 3, 'très bon produit', 'je recommande ces amandes grillées; elles sont grillées à point et complètent agréablement une recette; à essayer!', 1, '2023-01-10 20:03:05'),
 (12, 3, 'Trop bon ! ', 'Les amandes sont vraiment bonnes, le paquet ne fait pas longtemps à la maison ! je recommande ', 2, '2023-01-10 20:03:05'),
-(13, 5, 'excellent', 'produit de qualité aussi bien en cuisine que pour désaltérer; je vous invite à l\'essayer! de ouf', 1, '2023-01-10 22:53:28'),
+(13, 1, 'Excelent', 'produit de qualité aussi bien en cuisine que pour désaltérer; je vous invite à l\'essayer! de ouf', 1, '2023-01-11 00:51:54'),
 (13, 1, 'super nullll', 'cool', 2, '2023-01-10 22:51:13'),
 (13, 5, 'insert 1', 'descr 1', 3, '2023-01-10 20:56:58'),
-(14, 5, 'excellent!', 'Un très bon produit; ce jus a un délicieux gout acidulé; parfait pour un gouter ou pour bien démarrer la journée!', 1, '2023-01-10 20:03:05'),
+(14, 1, '.....', 'je ne m\'attendais à rien et je suis quand même déçu', 1, '2023-01-14 16:49:54'),
 (15, 2, 'désaltérant', 'très bon produit; sans additif donc très naturel; à essayer sans hésiter! pas ouf quand meme\r\n', 1, '2023-01-10 21:03:37'),
 (15, 5, 'Tellement bon !!', 'Je recommande vivement, j\'achète toujours ce bon jus et il fait l\'unanimité à la maison', 2, '2023-01-10 20:03:05'),
 (16, 5, 'Mais c\'est de la merde', 'A ne pas consommer', 1, '2023-01-10 22:43:03'),
@@ -312,18 +341,42 @@ INSERT INTO `reviews` (`product_id`, `stars`, `title`, `description`, `user_id`,
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `session`
+--
+
+DROP TABLE IF EXISTS `session`;
+CREATE TABLE IF NOT EXISTS `session` (
+  `Session_Id` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `Session_Expires` datetime NOT NULL,
+  `Session_Data` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  `basket_order_id` int NOT NULL,
+  PRIMARY KEY (`Session_Id`),
+  KEY `basket_order_id` (`basket_order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+--
+-- Déchargement des données de la table `session`
+--
+
+INSERT INTO `session` (`Session_Id`, `Session_Expires`, `Session_Data`, `basket_order_id`) VALUES
+('7eg7m11pfuq6pmusicavtaueq3', '2023-01-14 17:36:39', 'cached|O:6:\"Cached\":1:{s:4:\"list\";a:0:{}}basketOrderId|i:50;User|O:4:\"User\":7:{s:8:\"\0User\0id\";i:2;s:14:\"\0User\0username\";s:5:\"admin\";s:14:\"\0User\0password\";s:60:\"$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6\";s:11:\"\0User\0admin\";b:1;s:11:\"\0User\0image\";s:9:\"homme.jpg\";s:23:\"\0User\0deliveryAddresses\";N;s:12:\"\0User\0orders\";N;}', 50),
+('99cacsk8c7db9apfcs4nog68li', '2023-01-14 17:29:26', 'cached|O:6:\"Cached\":1:{s:4:\"list\";a:0:{}}basketOrderId|i:51;User|O:4:\"User\":7:{s:8:\"\0User\0id\";i:1;s:14:\"\0User\0username\";s:6:\"thomas\";s:14:\"\0User\0password\";s:60:\"$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6\";s:11:\"\0User\0admin\";b:0;s:11:\"\0User\0image\";s:9:\"shrek.jpg\";s:23:\"\0User\0deliveryAddresses\";N;s:12:\"\0User\0orders\";N;}', 51);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `users`
 --
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(100) NOT NULL,
   `password` varchar(64) NOT NULL,
   `admin` tinyint(1) NOT NULL DEFAULT '0',
   `image` varchar(32) NOT NULL DEFAULT 'homme.jpg',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `users`
@@ -334,15 +387,65 @@ INSERT INTO `users` (`id`, `username`, `password`, `admin`, `image`) VALUES
 (2, 'admin', '$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6', 1, 'homme.jpg'),
 (3, 'Jean claude', 'rgfsdgnjgjdjdfhfkhfkhfkh', 0, 'homme.jpg');
 
+-- --------------------------------------------------------
+
+--
+-- Doublure de structure pour la vue `viewproduct`
+-- (Voir ci-dessous la vue réelle)
+--
+DROP VIEW IF EXISTS `viewproduct`;
+CREATE TABLE IF NOT EXISTS `viewproduct` (
+`id` int
+,`cat_id` tinyint
+,`name` varchar(150)
+,`description` text
+,`image` varchar(30)
+,`price` decimal(5,2)
+,`quantity` int
+,`quantity_remaining` decimal(33,0)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `orderwithdata`
+--
+DROP TABLE IF EXISTS `orderwithdata`;
+
+DROP VIEW IF EXISTS `orderwithdata`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `orderwithdata`  AS SELECT `o`.`id` AS `id`, `o`.`user_id` AS `user_id`, `o`.`delivery_add_id` AS `delivery_add_id`, `o`.`payment_type` AS `payment_type`, (select sum((`p`.`price` * `oi`.`quantity`)) from (`products` `p` join `orderitems` `oi` on((`p`.`id` = `oi`.`product_id`))) where (`oi`.`order_id` = `o`.`id`)) AS `price`, (select json_arrayagg(json_object('order_id',`oi`.`order_id`,'product_id',`oi`.`product_id`,'quantity',`oi`.`quantity`,'product',json_object('id',`p`.`id`,'cat_id',`p`.`cat_id`,'name',`p`.`name`,'description',`p`.`description`,'image',`p`.`image`,'price',`p`.`price`,'quantity_remaining',`p`.`quantity_remaining`))) from (`orderitems` `oi` join `viewproduct` `p` on((`p`.`id` = `oi`.`product_id`))) where (`o`.`id` = `oi`.`order_id`)) AS `orderitems`, (select json_arrayagg(json_object('status',`os`.`status`,'order_id',`os`.`order_id`,'date',`os`.`date`)) from `orderstatus` `os` where (`o`.`id` = `os`.`order_id`)) AS `statusHistory`, (select `os`.`status` from `orderstatus` `os` where ((`o`.`id` = `os`.`order_id`) and (`os`.`date` = (select max(`os`.`date`) from `orderstatus` `os` where (`o`.`id` = `os`.`order_id`)))) order by `os`.`status` desc limit 1) AS `status`, ifnull((select sum(`oi`.`quantity`) from `orderitems` `oi` where (`oi`.`order_id` = `o`.`id`)),0) AS `quantity` FROM `orders` AS `o``o`  ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la vue `viewproduct`
+--
+DROP TABLE IF EXISTS `viewproduct`;
+
+DROP VIEW IF EXISTS `viewproduct`;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `viewproduct`  AS   with `orderedproduct` as (select `oi`.`product_id` AS `product_id`,sum(`oi`.`quantity`) AS `quantity` from (`orders` `o` join `orderitems` `oi` on((`o`.`id` = `oi`.`order_id`))) where `o`.`id` in (select `orderstatus`.`order_id` from `orderstatus` where (`orderstatus`.`status` > 0)) is false group by `oi`.`product_id`) select `products`.`id` AS `id`,`products`.`cat_id` AS `cat_id`,`products`.`name` AS `name`,`products`.`description` AS `description`,`products`.`image` AS `image`,`products`.`price` AS `price`,`products`.`quantity` AS `quantity`,(`products`.`quantity` - (select ifnull(max(`orderedproduct`.`quantity`),0) from `orderedproduct` where (`orderedproduct`.`product_id` = `products`.`id`))) AS `quantity_remaining` from `products`  ;
+
 --
 -- Contraintes pour les tables déchargées
 --
 
 --
--- Contraintes pour la table `reviews`
+-- Contraintes pour la table `orderitems`
 --
-ALTER TABLE `reviews`
-  ADD CONSTRAINT `review/product` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `orderitems`
+  ADD CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+--
+-- Contraintes pour la table `orderstatus`
+--
+ALTER TABLE `orderstatus`
+  ADD CONSTRAINT `orderstatus_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+--
+-- Contraintes pour la table `session`
+--
+ALTER TABLE `session`
+  ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`basket_order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

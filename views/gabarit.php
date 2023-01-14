@@ -56,7 +56,7 @@
                                 <div class="basket-container">
                                     <div class="basket-quantity">
                                         <?=
-                                        $_SESSION["basket"]->getQuantity() > 99 ? "99+" : $_SESSION["basket"]->getQuantity()
+                                        $basketQuantity > 99 ? "99+" : $basketQuantity
                                         ?>
                                     </div>
                                     <i class=" fa-solid fa-basket-shopping "></i>

@@ -2,6 +2,18 @@
 require_once 'Models/Model.php';
 require_once 'Models/Product.php';
 
+//No enum in php 8 (only php 8.1 :( )
+class OrderStatusCode
+{
+    static $InPurchase = 0;
+    static $InPayment = 1;
+    static $WaintingPayment = 2;
+    static $Paid = 3;
+    static $InDelivery = 4;
+    static $Delivered = 5;
+};
+
+
 class OrderStatus extends Modele
 {
     /**
@@ -52,7 +64,7 @@ class OrderStatus extends Modele
      */
     public static function changeStatus(int $order_id, int $status_code)
     {
-        $sql = "insert into orderstatus (order_id,status) values (:order_id,:status_code);";
+        $sql = "delete from orderstatus where order_id=:order_id and  status >= :status_code; insert into orderstatus (order_id,status) values (:order_id,:status_code);";
         OrderStatus::executeRequest($sql, [":order_id" => $order_id, ":status_code" => $status_code]);
     }
 
@@ -66,6 +78,12 @@ class OrderStatus extends Modele
     {
         $sql = "SELECT * FROM `orderstatus` WHERE order_id = :order_id";
         return OrderStatus::fetchAll($sql, [":order_id" => $order_id]);
+    }
+
+    public static function getOrderStatusByOrderId(int $order_id)
+    {
+        $sql = 'SELECT * from orderstatus where date = ( SELECT Max(date) FROM orderStatus where order_id= :order_id) and order_id=:order_id';
+        return OrderStatus::fetch($sql, [":order_id" => $order_id]);
     }
 
     /**

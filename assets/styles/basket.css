@@ -1,7 +1,12 @@
-.container-address.active {
+tr.active {
   background-color: rgba(173, 216, 230, 0.5);
   border: 1px solid lightblue;
   border-radius: 5px;
+}
+
+tr,
+.form-check-label {
+  cursor: pointer;
 }
 
 .radio-payement {
@@ -9,4 +14,14 @@
 }
 .radio-payement:checked + i {
   color: lightblue;
+}
+
+@media (max-width: 992px) {
+  #basket-buy {
+    flex-direction: column !important;
+  }
+}
+
+.radio-address {
+  display: none;
 }

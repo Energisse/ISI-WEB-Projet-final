@@ -10,108 +10,116 @@ class BasketController extends Controller
     {
         parent::__construct('basket');
         $this->get('index', '/');
-        $this->get('buy', '/buy');
-        $this->post('bought', '/buy');
+        $this->post('buy', '/');
         $this->get('clear', '/clear');
-        $this->post('pay1','/CB');
-        $this->post('pay2','/Paypal/pay');
-        $this->post('annuler','/CBPaypal/annuler');
-        $this->get('pay3','/MoneyCheck');
-
+        $this->post('creditCard', '/creditCard');
+        $this->post('paypal', '/paypal');
+        $this->post('moneyCheck', '/moneyCheck');
     }
 
     public function index($data)
     {
-        $this->sendView('viewBasket', ["basket" => $_SESSION["basket"]]);
+        if (!isset($_SESSION["User"])) {
+            $this->redirect("/user/login?goTo=/basket/");
+            return;
+        }
+
+        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+
+        $order = $order->setStatus(OrderStatusCode::$InPayment);
+        $this->sendView('viewBasketBuy', [
+            "deliveryAddresses" => DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["User"]->getId()),
+            "order" => $order,
+            "productAdded" => isset($data["prevRequestData"]["productAdded"]) ? $data["prevRequestData"]["productAdded"] : false,
+        ]);
     }
 
     public function buy($data)
     {
-        if(!isset($_SESSION["User"])){
-            $this->redirect("/user/User?goTo=/basket/buy");
+
+        if (!isset($_SESSION["User"])) {
+            $this->redirect("/user/login?goTo=/basket/");
             return;
         }
 
-        //Si le panier est vide, on empeche le payement a moins de vouloir se faire livrer de l'air
-        if( count($_SESSION["basket"]->getProducts()) == 0){
+        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+
+        // //Si le panier est vide, on empeche le payement a moins de vouloir se faire livrer de l'air
+        if ($order->getQuantity() == 0) {
             $this->redirect("/basket");
             return;
         }
-        
-        $this->sendView('viewBasketBuy', ["deliveryAddresses"=>DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["User"]->getId())]);
-    }
 
-    public function bought($data){
-        
-    
-        if(!isset($_SESSION["User"])){
-            $this->redirect("/user/User?goTo=/basket/buy");
+        if ($order->getStatus()->getStatusCode() != OrderStatusCode::$InPayment) {
+            $this->redirect("/basket", ["productAdded" => true]);
             return;
         }
 
-        //Si le panier est vide, on empeche le payement a moins de vouloir se faire livrer de l'air
-        if( count($_SESSION["basket"]->getProducts()) == 0){
+        if (!isset($_POST["address"]) || !isset($_POST["payement"])) {
             $this->redirect("/basket");
             return;
-        }
-        
-        if(!isset($_POST["address"]) || !isset($_POST["payement"])){
-            $this->redirect("/basket/buy");
-            return; 
-        }
-
-        switch($_POST["payement"]){                   //selon le mode de payement on renvoie vers une page dédiée si c'est par CB,Paypal ou chèque
-            case "creditCard" :
-                $this->redirect("/basket/CB");
-                break;
-            case "paypal":
-                $this->redirect("/basket/Paypal");
-                break;
-            case "moneyCheck":
-                $this->redirect("/basket/MoneyCheck");                
-                break;
-            default:
-                $this->redirect("/basket/buy");
         }
 
         //Addresse inexistante
         $deliveryAddress = DeliveryAddress::getDeliveryAddressByIdAndUserId($_POST["address"], $_SESSION["User"]->getId());
-        if($deliveryAddress == null){
-            $this->redirect("/basket/buy");
+        if ($deliveryAddress == null) {
+            $this->redirect("/basket");
             return;
         }
 
-        echo $_POST["payement"];
+        $order = $order->setAddressId($deliveryAddress->getID());
 
-        //Order::getOrderById(Order::createNewOrder($_SESSION["User"]->getId(),$deliveryAddress->getId() , $_SESSION["basket"]->getProducts(),$_POST["payement"]));
-        $_SESSION["basket"]->clear();
+        switch ($_POST["payement"]) {                   //selon le mode de payement on renvoie vers une pagge dédiée si c'est par CB,Paypal ou chèque
+            case "creditCard":
+                $this->sendView("viewCrediCardBuy", ["order" => $order]);
+                break;
+            case "paypal":
+                $this->sendView("viewPaypal", ["order" => $order]);
+                break;
+            case "moneyCheck":
+                $this->sendView("viewMoneyCheck", ["order" => $order]);
+                break;
+            default:
+                $this->redirect("/basket/buy");
+        }
     }
 
     public function clear($data)
     {
-        $_SESSION["basket"]->clear();
-        $this->sendView('viewBasket', ["basket" => $_SESSION["basket"]]);
+        Order::getOrderById($_SESSION["basketOrderId"])->clear();
+        $this->redirect('/basket');
     }
 
-    public function pay1($data)
+    public function creditCard($data)
     {
-        $this->sendView('CB');
+        //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
+        //TODO: decompter le stock
+        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+        $order->setUserId($_SESSION["User"]->getId());
+        $_SESSION["basketOrderId"] = Order::createNewOrder()->getId();
+        $order->setStatus(OrderStatusCode::$Paid);
+        $this->sendView("viewSucces");
     }
 
-    public function pay2($data)
+    public function paypal($data)
     {
-        $this->sendView('Paypal');
+        //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
+        //TODO: decompter le stock
+        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+        $order->setUserId($_SESSION["User"]->getId());
+        $_SESSION["basketOrderId"] = Order::createNewOrder()->getId();
+        $order->setStatus(OrderStatusCode::$Paid);
+        $this->sendView("viewSucces");
     }
 
-    public function pay3($data)
+    public function moneyCheck($data)
     {
-        $this->sendView('MoneyCheck');
+        //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
+        //TODO: decompter le stock
+        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+        $order->setUserId($_SESSION["User"]->getId());
+        $_SESSION["basketOrderId"] = Order::createNewOrder()->getId();
+        $order->setStatus(OrderStatusCode::$WaintingPayment);
+        $this->sendView("viewSucces");
     }
-
-    public function annuler($data)
-    {
-        $this->sendView('viewBasketBuy');
-    }
-
-   
 }

@@ -30,6 +30,7 @@ abstract class Modele
      */
     public static function executeRequest(string $sql, array $params = null)
     {
+        self::$requestlist[] = [$sql, $params];
         if ($params == null) {
             $resultat = Modele::getBdd()->query($sql);
         } else {
@@ -98,7 +99,6 @@ abstract class Modele
      */
     protected static function fetchAll(string $sql, array $params = null): array
     {
-        self::$requestlist[] = [$sql, $params];
         $response = Modele::executeRequest($sql, $params);
         $array = [];
         foreach ($response->fetchAll() as $element) {
@@ -115,7 +115,6 @@ abstract class Modele
      */
     protected static function fetch(string $sql, array $params = null): ?object
     {
-        self::$requestlist[] = [$sql, $params];
         $response = Modele::executeRequest($sql, $params);
         $result = $response->fetch();
         if (!$result)

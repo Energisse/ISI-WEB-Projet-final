@@ -15,27 +15,27 @@ class Order extends Modele
 
     /**
      * user_id
-     * @var int
+     * @var int|null 
      */
-    private int $user_id;
+    private int|null  $user_id;
 
     /**
      * delivery_add_id
-     * @var int
+     * @var int|null 
      */
-    private int $delivery_add_id;
+    private int|null $delivery_add_id;
 
     /**
      * payment_type
-     * @var string
+     * @var string|null 
      */
-    private string $payment_type;
+    private string|null $payment_type;
 
     /**
      * Total price
-     * @var float
+     * @var float|null 
      */
-    private float $price;
+    private float|null  $price;
 
     /**
      * statusHistory
@@ -49,6 +49,13 @@ class Order extends Modele
      */
     private array|null $orderItems;
 
+    /**
+     * quantity of item
+     * @var int
+     */
+    private int|null $quantity;
+
+
     protected function __construct($data)
     {
         $this->id = $data["id"];
@@ -56,14 +63,15 @@ class Order extends Modele
         $this->delivery_add_id = $data["delivery_add_id"];
         $this->payment_type = $data["payment_type"];
         $this->price = $data["price"];
+        $this->quantity = $data["quantity"];
         $this->statusHistory = [];
         $this->orderItems = [];
-        if (array_key_exists("status", $data)) {
-            foreach (json_decode($data["status"], true) as $address) {
-                $this->statusHistory[] = &OrderStatus::create($address);
+        if (array_key_exists("statusHistory", $data)) {
+            foreach (json_decode($data["statusHistory"], true) as $status) {
+                $this->statusHistory[$status["status"]] = &OrderStatus::create($status);
             }
         }
-        if (array_key_exists("orderitems", $data)) {
+        if (array_key_exists("orderitems", $data) && $data["orderitems"]) {
             foreach (json_decode($data["orderitems"], true) as $address) {
                 $this->orderItems[] = &OrderItem::create($address);
             }
@@ -78,50 +86,7 @@ class Order extends Modele
      */
     public static function getOrderByOrderIdAndUserId(int $order_id, int $user_id): ?Order
     {
-        $sql = "
-        SELECT 
-        o.*,
-        ( SELECT 
-            sum(price*quantity)
-            FROM products p join orderitems oi
-            on p.id = oi.product_id
-            where oi.order_id = o.id
-        ) as price, 
-        (
-            SELECT 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'order_id',oi.order_id,
-                        'product_id',oi.product_id,
-                        'quantity',oi.quantity,
-                        'product', JSON_OBJECT(
-                                'id',p.id,
-                                'cat_id',p.cat_id,
-                                'name',p.name,
-                                'description',p.description,
-                                'image',p.image,
-                                'price',p.price,
-                                'quantity_remaining',p.quantity_remaining
-                            ) 
-                    ) 
-                ) 
-            FROM  orderitems oi 
-            join products p on  p.id = oi.product_id 
-            where o.id = oi.order_id
-        ) as orderitems,
-        (
-            SELECT 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'status',os.status,
-                        'order_id',os.order_id,
-                        'date',os.date
-                    )
-                ) 
-            FROM orderStatus os 
-            where o.id = os.order_id  
-        ) as status
-        FROM orders o where o.id = :order_id AND o.user_id = :user_id;";
+        $sql = "SELECT * FROM orderWithData o where o.id = :order_id AND o.user_id = :user_id and status != 0;";
         return Order::fetch($sql, [":order_id" => $order_id, ":user_id" => $user_id]);
     }
 
@@ -130,58 +95,17 @@ class Order extends Modele
      * @param int $order_id
      * @return Order|null
      */
-    public static function getOrderById(int $order_id): ?Order
+    public static function getOrderById(int $order_id, bool $force = false): ?Order
     {
-        if (self::getInstanceByID($order_id)) {
+        if (!$force && self::getInstanceByID($order_id)) {
             return self::getInstanceByID($order_id);
         }
 
-        $sql = "
-        SELECT 
-        o.*,
-        ( SELECT 
-            sum(price*quantity)
-            FROM products p join orderitems oi
-            on p.id = oi.product_id
-            where oi.order_id = o.id
-        ) as price, 
-        (
-            SELECT 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'order_id',oi.order_id,
-                        'product_id',oi.product_id,
-                        'quantity',oi.quantity,
-                        'product', JSON_OBJECT(
-                                'id',p.id,
-                                'cat_id',p.cat_id,
-                                'name',p.name,
-                                'description',p.description,
-                                'image',p.image,
-                                'price',p.price,
-                                'quantity_remaining',p.quantity_remaining
-                            ) 
-                    ) 
-                ) 
-            FROM  orderitems oi 
-            join products p on  p.id = oi.product_id 
-            where o.id = oi.order_id
-        ) as orderitems,
-        (
-            SELECT 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'status',os.status,
-                        'order_id',os.order_id,
-                        'date',os.date
-                    )
-                ) 
-            FROM orderStatus os 
-            where o.id = os.order_id  
-        ) as status
-        FROM orders o where o.id = :order_id;";
+        $sql = "SELECT * FROM orderWithData o where o.id = :order_id";
         return Order::fetch($sql, [":order_id" => $order_id]);
     }
+
+
 
     /**
      * Return all order not delivered
@@ -189,51 +113,8 @@ class Order extends Modele
      */
     public static function getAllOrderNotDelivered(): array
     {
-        $sql = "
-        SELECT 
-        o.*,
-        ( SELECT 
-            sum(price*quantity)
-            FROM products p join orderitems oi
-            on p.id = oi.product_id
-            where oi.order_id = o.id
-        ) as price, 
-        (
-            SELECT 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'order_id',oi.order_id,
-                        'product_id',oi.product_id,
-                        'quantity',oi.quantity,
-                        'product', JSON_OBJECT(
-                                'id',p.id,
-                                'cat_id',p.cat_id,
-                                'name',p.name,
-                                'description',p.description,
-                                'image',p.image,
-                                'price',p.price,
-                                'quantity_remaining',p.quantity_remaining
-                            ) 
-                    ) 
-                ) 
-            FROM  orderitems oi 
-            join products p on  p.id = oi.product_id 
-            where o.id = oi.order_id
-        ) as orderitems,
-        (
-            SELECT 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'status',os.status,
-                        'order_id',os.order_id,
-                        'date',os.date
-                    )
-                ) 
-            FROM orderStatus os 
-            where o.id = os.order_id  
-        ) as status
-        FROM orders o where id not in (SELECT order_id from orderstatus where status = 3)  order by id desc;";
-        return Order::fetchAll($sql);
+        $sql = "SELECT * FROM orderWithData o where status between :min_status_id and :max_status_id  order by id desc;";
+        return Order::fetchAll($sql, [':min_status_id' => OrderStatusCode::$WaintingPayment, ':max_status_id' => OrderStatusCode::$Paid]);
     }
 
     /**
@@ -243,52 +124,11 @@ class Order extends Modele
      */
     public static function getOrdersByUserId(int $user_id): array
     {
-        $sql = "
-            SELECT 
-            o.*,
-            ( SELECT 
-            sum(price*quantity)
-            FROM products p join orderitems oi
-            on p.id = oi.product_id
-            where oi.order_id = o.id
-        ) as price, 
-            (
-                SELECT 
-                    JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'order_id',oi.order_id,
-                            'product_id',oi.product_id,
-                            'quantity',oi.quantity,
-                            'product', JSON_OBJECT(
-                                    'id',p.id,
-                                    'cat_id',p.cat_id,
-                                    'name',p.name,
-                                    'description',p.description,
-                                    'image',p.image,
-                                    'price',p.price,
-                                    'quantity_remaining',p.quantity_remaining
-                                ) 
-                        ) 
-                    ) 
-                FROM  orderitems oi 
-                join products p on  p.id = oi.product_id 
-                where o.id = oi.order_id
-            ) as orderitems,
-            (
-                SELECT 
-                    JSON_ARRAYAGG(
-                        JSON_OBJECT(
-                            'status',os.status,
-                            'order_id',os.order_id,
-                            'date',os.date
-                        )
-                    ) 
-                FROM orderStatus os 
-                where o.id = os.order_id  
-            ) as status
-            FROM orders o where o.user_id = :user_id;";
+        $sql = "SELECT * FROM orderWithData o where o.user_id = :user_id and status != 0;";
         return Order::fetchAll($sql, [":user_id" => $user_id]);
     }
+
+
 
     /**
      * create a new Order
@@ -296,16 +136,32 @@ class Order extends Modele
      * @param int $deliveryAddressID
      * @param array $ordersItems
      * @param string $paymentType
-     * @return int
+     * @return Order
      */
-    public static function createNewOrder(int $userId, int $deliveryAddressID, array $ordersItems, string $paymentType)
+    // public static function createNewOrder(int $userId, int $deliveryAddressID, array $ordersItems, string $paymentType)
+    public static function createNewOrder(): Order
     {
-        $sql = 'insert into orders(user_id,delivery_add_id,payment_type) values(:user_id,:delivery_add_id,:payment_type);';
-        Order::executeRequest($sql, [":user_id" => $userId, ":delivery_add_id" => $deliveryAddressID, ":payment_type" => $paymentType]);
+        $sql = 'INSERT INTO orders(id) VALUES(null)';
+        Order::executeRequest($sql)->fetch();
         $id = Order::lastInsertId();
         OrderStatus::createNewStatus($id);
-        OrderItem::createOrderItems($id, $ordersItems);
-        return $id;
+        return Order::getOrderById($id);
+    }
+
+    public static function getProductQuantityByOrderId(int $id): ?int
+    {
+        $sql = 'SELECT SUM(quantity) FROM orderitems oi where oi.order_id=:id';
+        $quantity = Order::executeRequest($sql, [":id" => $id])->fetch();
+        return $quantity ? $quantity[0] : null;
+    }
+
+
+    public function setAddressId(int $delivery_add_id): Order
+    {
+        $sql = 'UPDATE orders set delivery_add_id=:delivery_add_id where id=:id';
+        self::executeRequest($sql, [":delivery_add_id" => $delivery_add_id, ":id" => $this->getId()]);
+
+        return self::getOrderById($this->getId(), true);
     }
 
     /**
@@ -319,6 +175,19 @@ class Order extends Modele
         return self::executeRequest($sql, [":delivery_add_id" => $deliveryAddressId])->fetch()[0];
     }
 
+    public function addItem(Product $product, int $quantity)
+    {
+        OrderItem::createOrAddOrderItem($this->id, $product, $quantity);
+    }
+
+    public function clear()
+    {
+        if ($this->getStatus()->getStatusCode() <= OrderStatusCode::$InPayment) {
+            $sql = "DELETE FROM orderitems where order_id = :id";
+            self::executeRequest($sql, ["id" => $this->id]);
+        }
+    }
+
     /**
      * Return user link to this order
      * @return User
@@ -326,6 +195,13 @@ class Order extends Modele
     public function getUser(): User
     {
         return User::getUserById($this->user_id);
+    }
+
+    public function setUserId($user_id)
+    {
+        $sql = 'UPDATE orders set user_id=:user_id where id=:id';
+        self::executeRequest($sql, [":user_id" => $user_id, ":id" => $this->getId()]);
+        return self::getOrderById($this->getId(), true);
     }
 
     /**
@@ -378,26 +254,24 @@ class Order extends Modele
     }
 
     /**
-     * @return array|null
+     * @return OrderStatus|null
      */
-    public function getStatusHistory(): array|null
+    public function getStatusHistory(int $status): ?OrderStatus
     {
         if ($this->statusHistory == null) {
             $this->statusHistory = OrderStatus::getAllStatusByOrderId($this->id);
         }
-        return $this->statusHistory;
+        return isset($this->statusHistory[$status]) ? $this->statusHistory[$status] : null;
     }
 
     /**
      * @param int $status 
-     * @return self
+     * @return Order
      */
     public function setStatus(int $status): self
     {
         OrderStatus::changeStatus($this->getId(), $status);
-        $newOrder = Order::getOrderById($this->getId());
-        $this->statusHistory = $newOrder->statusHistory;
-        return $this;
+        return Order::getOrderById($this->getId(), true);
     }
 
     /**
@@ -407,5 +281,14 @@ class Order extends Modele
     public function getPrice(): float
     {
         return $this->price;
+    }
+
+    /**
+     * quantity of item
+     * @return int|null
+     */
+    public function getQuantity(): int|null
+    {
+        return $this->quantity;
     }
 }

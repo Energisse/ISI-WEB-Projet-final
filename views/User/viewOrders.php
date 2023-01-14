@@ -20,8 +20,8 @@ $status = ["Validation du payement", "En cours de preparation", "En cours de liv
                 foreach ($orders as $order) {
                 ?>
                     <tr>
-                        <td> <?= date_format($order->getStatusHistory()[0]->getDate(), 'Y-m-d H:i:s') ?></td>
-                        <td> <?= $status[$order->getStatus()->getStatusCode()] ?></td>
+                        <td> <?= date_format($order->getStatusHistory(OrderStatusCode::$WaintingPayment)->getDate(), 'Y-m-d H:i:s') ?></td>
+                        <td> <?= $status[$order->getStatus()->getStatusCode() - OrderStatusCode::$WaintingPayment] ?></td>
                         <td><?= OrderProductSummary($order) ?></td>
                         <td> <?= $order->getPrice() ?> €</td>
                         <td><a class="btn btn-primary" href="/user/order/<?= $order->getId() ?>">Plus d'info</a>

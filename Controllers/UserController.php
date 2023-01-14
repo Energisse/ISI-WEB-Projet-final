@@ -16,14 +16,8 @@ class UserController extends Controller
         $this->get('orders', '/orders');
         $this->get('order', '/order/:id');
         $this->get('addresses', '/addresses');
-        $this->get('address', '/address/:id');
-        $this->get('newAddress', '/address');
-        $this->post('updateAddress', '/address/:id');
-        $this->post('createAddress', '/address');
-        $this->post('createaccount','/CreateAccount');
-        $this->get('signin','/CreateAccount');
-
-
+        $this->post('createaccount', '/CreateAccount');
+        $this->get('signin', '/CreateAccount');
     }
 
     public function UserForm($data)
@@ -38,7 +32,7 @@ class UserController extends Controller
     public function logout($data)
     {
         session_destroy();
-        $this->redirect("/user/User");
+        $this->redirect("/user/login");
     }
 
     public function User($data)
@@ -71,7 +65,7 @@ class UserController extends Controller
     {
         //SI non connecté 
         if (!isset($_SESSION["User"])) {
-            $this->redirect("/user/User");
+            $this->redirect("/user/login");
             return;
         }
 
@@ -84,7 +78,7 @@ class UserController extends Controller
     {
         //SI non connecté 
         if (!isset($_SESSION["User"])) {
-            $this->redirect("/user/User");
+            $this->redirect("/user/login");
             return;
         }
 
@@ -93,13 +87,12 @@ class UserController extends Controller
         $this->sendView("viewOrder", ["order" => $order]);
     }
 
-    public function signin(){
+    public function signin()
+    {
         $this->sendView("viewCreateAccount");
     }
-    public function createaccount(){
-        User::signin($_POST["username"],$_POST["password"]);
-
-        
+    public function createaccount()
+    {
+        User::signin($_POST["username"], $_POST["password"]);
     }
-    
 }

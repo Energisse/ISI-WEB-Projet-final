@@ -44,20 +44,27 @@ class ProductController extends Controller
         if (!isset($data['params']['id'])) {
             return $this->redirect("accueil"); //A tester
         }
+        if (!isset($_POST['quantity'])) {
+            $this->redirect("/product" . "/" . $data['params']['id']);
+        }
+
         $product = Product::getProductById($data['params']['id']);
 
         if (!$product) {
             return $this->redirect("accueil");
         }
 
-        if (isset($_POST['quantity'])) {
-
-            $_SESSION["basket"]->addProduct($product, $_POST['quantity']);
+        if ($product->getQuantityRemaining() <  $_POST['quantity']) {
+            echo "non";
+            die();
         }
 
-        $data["data"]["quantityBought"] = $_POST['quantity'];
-        //send product view
+        $order =  Order::getOrderById($_SESSION["basketOrderId"]);
+        $order->setStatus(OrderStatusCode::$InPurchase)->addItem($product, $_POST['quantity']);
 
+
+
+        //send product view
         $this->redirect("/product" . "/" . $data['params']['id'], ["quantityBought" => $_POST['quantity']]);
     }
 

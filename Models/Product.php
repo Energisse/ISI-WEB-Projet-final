@@ -14,31 +14,31 @@ class Product extends Modele implements JsonSerializable
      * @var int
      */
     private int $catId;
-    
+
     /**
      * name
      * @var string
      */
     private string $name;
-    
+
     /**
      * description
      * @var string
      */
     private string $description;
-    
+
     /**
      * image
      * @var string
      */
     private string $image;
-   
+
     /**
      * price
      * @var float
      */
     private float $price;
-   
+
     /**
      * quantityRemaining
      * @var int
@@ -65,14 +65,14 @@ class Product extends Modele implements JsonSerializable
         $this->price = $data['price'];
         $this->quantityRemaining = $data['quantity_remaining'];
     }
-  
+
     /**
      * Return all Products
      * @return Product[]
      */
     public static function getAllProducts(): array
     {
-        $sql = 'select * from products';
+        $sql = 'select * from viewProduct';
         return Product::fetchAll($sql);
     }
 
@@ -84,7 +84,7 @@ class Product extends Modele implements JsonSerializable
     public static function getProductsByIds(array $ids)
     {
         $placeholders = str_repeat('?, ',  count($ids) - 1) . '?';
-        $sql = "select * from products where id in ($placeholders);";
+        $sql = "select * from viewProduct wehre id in ($placeholders);";
         return Product::fetchAll($sql, $ids);
     }
 
@@ -95,29 +95,44 @@ class Product extends Modele implements JsonSerializable
      */
     public static function getProductById(int $id): ?Product
     {
-        if(self::getInstanceById($id)){
+        if (self::getInstanceById($id)) {
             return self::getInstanceById($id);
         }
-        $sql = 'select * from products where id=:id';
+        $sql = 'select * from viewProduct where id=:id';
         return Product::fetch($sql, [":id" => $id]);
     }
 
-   
+
     public static function getAllProductsByCategorieId($id)
     {
-        $sql = 'select * from products where cat_id=:cat_id';
+        $sql = 'select * from viewProduct where cat_id=:cat_id';
         return Product::fetchAll($sql, [":cat_id" => $id]);
     }
 
     public static function getProductsByNameLike($name)
     {
         //FIXME: Bug de limit dans la requete preparé, impossible de passer en parametre sans erreur
-        $sql = 'select * FROM products where name LIKE :name LIMIT 5';
+        $sql = 'select * FROM viewProduct where name LIKE :name LIMIT 5';
         return Product::fetchAll($sql, [":name" => "%" . $name . "%"]);
     }
 
-    public function getReviews():array{
-        if($this->reviews == null){
+    public function save(): self
+    {
+        $sql = "UPDATE products SET cat_id=:cat_id,name=:name,description=:description,image=:image,price:=price,quantity:=quantity WHERE id=:id;";
+        self::executeRequest($sql, [
+            "cat_id" => $this->getCatId(),
+            "name" => $this->getName(),
+            "description" => $this->getDescription(),
+            "image" => $this->getImage(),
+            "price" => $this->getPrice(),
+            "quantity" => $this->getQuantityRemaining()
+        ]);
+        return $this;
+    }
+
+    public function getReviews(): array
+    {
+        if ($this->reviews == null) {
             $this->reviews = Review::getReviewByProductId($this->getId());
         }
         return $this->reviews;
@@ -188,5 +203,16 @@ class Product extends Modele implements JsonSerializable
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * quantityRemaining
+     * @param int $quantityRemaining quantityRemaining
+     * @return self
+     */
+    public function setQuantityRemaining(int $quantityRemaining): self
+    {
+        $this->quantityRemaining = $quantityRemaining;
+        return $this;
     }
 }

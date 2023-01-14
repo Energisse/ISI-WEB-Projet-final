@@ -41,20 +41,20 @@ class AdminController extends Controller
 
     public function redirection()
     {
-        $this->redirect("/user/User");
+        $this->redirect("/user/login");
     }
 
     public function confirmPayement($data)
     {
-        $this->confirm($data["params"]["id"], 1);
+        $this->confirm($data["params"]["id"], OrderStatusCode::$Paid);
     }
     public function confirmShipment($data)
     {
-        $this->confirm($data["params"]["id"], 2);
+        $this->confirm($data["params"]["id"],  OrderStatusCode::$InDelivery);
     }
     public function confirmReception($data)
     {
-        $this->confirm($data["params"]["id"], 3);
+        $this->confirm($data["params"]["id"], OrderStatusCode::$Delivered);
     }
 
     private function confirm($id, $status)
@@ -64,13 +64,11 @@ class AdminController extends Controller
             $this->redirect("/admin");
             return;
         }
-
         if ($order->getStatus()->getStatusCode() != $status - 1) {
             $this->redirect("/admin");
             return;
         }
-
-        $order->setStatus($status);
-        $this->sendView("viewOrder", ["order" => $order]);
+        $order = $order->setStatus($status);
+        $this->redirect("/admin/order" . "/" . $id);
     }
 }

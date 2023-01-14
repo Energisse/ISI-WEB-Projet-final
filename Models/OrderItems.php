@@ -32,11 +32,11 @@ class OrderItem extends Modele
         $this->orderID = $data['order_id'];
         $this->productId = $data['product_id'];
         $this->quantity = $data['quantity'];
-        if(array_key_exists("product",$data)){
+        if (array_key_exists("product", $data)) {
             Product::create($data["product"]);
         }
     }
-  
+
     /**
      * Create a new orderItems in database
      * @param mixed $orderID
@@ -60,7 +60,18 @@ class OrderItem extends Modele
         }
     }
 
-     /**
+    public static function createOrAddOrderItem($orderID, Product $product, int $quantity)
+    {
+        $sql = 'INSERT INTO orderitems VALUES (:order_id, :product_id, :quantity)  ON DUPLICATE KEY UPDATE quantity=quantity +:quantity ';
+        $insertData = [
+            ":order_id" => $orderID,
+            ":product_id" => $product->getId(),
+            ":quantity" => $quantity
+        ];
+        OrderItem::executeRequest($sql, $insertData);
+    }
+
+    /**
      * Return Product linked
      * @return ?Product
      */
@@ -69,7 +80,7 @@ class OrderItem extends Modele
         return Product::getProductById($this->getProductId());
     }
 
-     /**
+    /**
      * Return Product linked
      * @return ?Order
      */
@@ -103,8 +114,8 @@ class OrderItem extends Modele
     }
 
 
-    public function getId(){
+    public function getId()
+    {
         return $this->getOrderId() . "-" . $this->getProductId();
-    } 
-
+    }
 }

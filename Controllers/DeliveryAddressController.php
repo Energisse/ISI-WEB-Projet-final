@@ -50,12 +50,12 @@ class DeliveryAddressController extends Controller
                     return;
                 }
                 DeliveryAddress::updateDeliveryAddressByIdAndUserId($_POST, $data["params"]["id"], $_SESSION["User"]->getId());
-                if (isset($_GET["goTo"])) {
-                    $this->redirect($_GET["goTo"]);
-                    return;
-                }
             } else {
                 DeliveryAddress::createDeliveryAddress($_POST, $_SESSION["User"]->getId());
+            }
+            if (isset($_GET["goTo"])) {
+                $this->redirect($_GET["goTo"]);
+                return;
             }
             $this->redirect("/user/addresses");
         } catch (FormException $error) {
