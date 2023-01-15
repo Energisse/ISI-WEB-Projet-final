@@ -131,21 +131,33 @@ class UserController extends Controller
 
     /**
      * Show all addresses from user
-     * path (get) /
+     * path (get) /user/addresses
      * @param mixed $data
      * @return void
      */
     public function addresses($data)
     {
+        //check connected
+        if (!isset($_SESSION["User"])) {
+            $this->redirect("/user/login?goTo=/user/addresses");
+            return;
+        }
+
         $deliveryAddresses = DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["User"]->getId());
         $this->sendView("viewAddresses", ["deliveryAddresses" => $deliveryAddresses]);
     }
 
+    /**
+     * show all orders
+     * path (get) /user/orders
+     * @param mixed $data
+     * @return void
+     */
     public function orders($data)
     {
-        //SI non connecté 
+        //check connected
         if (!isset($_SESSION["User"])) {
-            $this->redirect("/user/login");
+            $this->redirect("/user/login?goTo=/user/orders");
             return;
         }
 

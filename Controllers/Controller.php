@@ -1,6 +1,8 @@
 <?php
 require_once 'utils/path-to-regexp-php/src/PathToRegexp.php';
 
+
+
 abstract class Controller
 {
     private $routes = ['GET' => [], 'POST' => [], 'PUT' => [], 'DELETE' => []];
@@ -33,6 +35,13 @@ abstract class Controller
 
         header('Location: ' . $path, true, 303);
     }
+
+    /**
+     * Summary of get
+     * @param mixed $action
+     * @param mixed $path
+     * @return void
+     */
     protected function get($action, $path)
     {
         $this->addRoute('GET', $action, $path);
@@ -58,6 +67,7 @@ abstract class Controller
         $key = [];
         array_push($this->routes[$method], [
             'path' => PathToRegexp::convert($path, $key),
+            'middleware' => [],
             'action' => $action,
             'key' => $key,
         ]);
@@ -83,6 +93,10 @@ abstract class Controller
             }
 
             $data["prevRequestData"] = isset($_COOKIE["requestID"]) ? $_SESSION["cached"]->getOnce($_COOKIE["requestID"]) : null;
+            foreach ($route['middleware'] as $midleware) {
+                var_dump("middleware");
+                die();
+            }
             //On appel l'action avec les données
             $result = $this->{$route['action']}($data);
             if (!$result)
