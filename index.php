@@ -24,11 +24,5 @@ if (($order = Order::getOrderBySessionId(session_id())) == null) {
     $order = Order::createNewOrder(session_id());
 }
 
-
-
 $routeur = new Routeur();
 $routeur->routerRequete(new Request($_GET['controller'], $_GET['action'], $_SERVER['REQUEST_METHOD'], $_POST));
-// Modele::showRequests();
-
-
-// session_destroy();
