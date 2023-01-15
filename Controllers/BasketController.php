@@ -24,7 +24,7 @@ class BasketController extends Controller
             return;
         }
 
-        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+        $order = Order::getOrderBySessionId(session_id());
 
         $order = $order->setStatus(OrderStatusCode::$InPayment);
         $this->sendView('viewBasketBuy', [
@@ -42,7 +42,7 @@ class BasketController extends Controller
             return;
         }
 
-        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+        $order = Order::getOrderBySessionId(session_id());
 
         // //Si le panier est vide, on empeche le payement a moins de vouloir se faire livrer de l'air
         if ($order->getQuantity() == 0) {
@@ -86,7 +86,7 @@ class BasketController extends Controller
 
     public function clear($data)
     {
-        Order::getOrderById($_SESSION["basketOrderId"])->clear();
+        Order::getOrderBySessionId(session_id())->clear();
         $this->redirect('/basket');
     }
 
@@ -94,9 +94,11 @@ class BasketController extends Controller
     {
         //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
         //TODO: decompter le stock
-        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+        $order = Order::getOrderBySessionId(session_id());
         $order->setUserId($_SESSION["User"]->getId());
-        $_SESSION["basketOrderId"] = Order::createNewOrder()->getId();
+        Order::createNewOrder(session_id());
+        $order->removeSessionId();
+        $order->setStatus(OrderStatusCode::$WaintingPayment);
         $order->setStatus(OrderStatusCode::$Paid);
         $this->sendView("viewSucces");
     }
@@ -105,9 +107,11 @@ class BasketController extends Controller
     {
         //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
         //TODO: decompter le stock
-        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+        $order = Order::getOrderBySessionId(session_id());
         $order->setUserId($_SESSION["User"]->getId());
-        $_SESSION["basketOrderId"] = Order::createNewOrder()->getId();
+        Order::createNewOrder(session_id());
+        $order->removeSessionId();
+        $order->setStatus(OrderStatusCode::$WaintingPayment);
         $order->setStatus(OrderStatusCode::$Paid);
         $this->sendView("viewSucces");
     }
@@ -116,9 +120,10 @@ class BasketController extends Controller
     {
         //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
         //TODO: decompter le stock
-        $order = Order::getOrderById($_SESSION["basketOrderId"]);
+        $order = Order::getOrderBySessionId(session_id());
         $order->setUserId($_SESSION["User"]->getId());
-        $_SESSION["basketOrderId"] = Order::createNewOrder()->getId();
+        Order::createNewOrder(session_id());
+        $order->removeSessionId();
         $order->setStatus(OrderStatusCode::$WaintingPayment);
         $this->sendView("viewSucces");
     }

@@ -105,8 +105,6 @@ class Order extends Modele
         return Order::fetch($sql, [":order_id" => $order_id]);
     }
 
-
-
     /**
      * Return all order not delivered
      * @return Order[]
@@ -124,11 +122,20 @@ class Order extends Modele
      */
     public static function getOrdersByUserId(int $user_id): array
     {
-        $sql = "SELECT * FROM orderWithData o where o.user_id = :user_id and status != 0;";
+        $sql = "SELECT * FROM orderWithData o where o.user_id = :user_id and status > 1;";
         return Order::fetchAll($sql, [":user_id" => $user_id]);
     }
 
-
+    /**
+     * Return order by session_id
+     * @param string $session_id
+     * @return Order|null
+     */
+    public static function getOrderBySessionId(string $session_id): ?Order
+    {
+        $sql = "SELECT * FROM orderWithData o where o.session_id = :session_id";
+        return Order::fetch($sql, [":session_id" => $session_id]);
+    }
 
     /**
      * create a new Order
@@ -139,23 +146,20 @@ class Order extends Modele
      * @return Order
      */
     // public static function createNewOrder(int $userId, int $deliveryAddressID, array $ordersItems, string $paymentType)
-    public static function createNewOrder(): Order
+    public static function createNewOrder(string $sessionId): Order
     {
-        $sql = 'INSERT INTO orders(id) VALUES(null)';
-        Order::executeRequest($sql)->fetch();
+        $sql = 'INSERT INTO orders( session_id) VALUES (:session_id)';
+        Order::executeRequest($sql, [":session_id" => $sessionId]);
         $id = Order::lastInsertId();
         OrderStatus::createNewStatus($id);
         return Order::getOrderById($id);
     }
 
-    public static function getProductQuantityByOrderId(int $id): ?int
-    {
-        $sql = 'SELECT SUM(quantity) FROM orderitems oi where oi.order_id=:id';
-        $quantity = Order::executeRequest($sql, [":id" => $id])->fetch();
-        return $quantity ? $quantity[0] : null;
-    }
-
-
+    /**
+     * set AddressId
+     * @param int $delivery_add_id
+     * @return Order
+     */
     public function setAddressId(int $delivery_add_id): Order
     {
         $sql = 'UPDATE orders set delivery_add_id=:delivery_add_id where id=:id';
@@ -175,17 +179,37 @@ class Order extends Modele
         return self::executeRequest($sql, [":delivery_add_id" => $deliveryAddressId])->fetch()[0];
     }
 
+    /**
+     * Add an item to an order
+     * @param Product $product
+     * @param int $quantity
+     * @return void
+     */
     public function addItem(Product $product, int $quantity)
     {
         OrderItem::createOrAddOrderItem($this->id, $product, $quantity);
     }
 
+    /**
+     * Remove all items only if status is lower than OrderStatusCode::$Paid
+     * @return void
+     */
     public function clear()
     {
         if ($this->getStatus()->getStatusCode() <= OrderStatusCode::$InPayment) {
             $sql = "DELETE FROM orderitems where order_id = :id";
             self::executeRequest($sql, ["id" => $this->id]);
         }
+    }
+
+    /**
+     * Remove session id from an order
+     * @return void
+     */
+    public function removeSessionId()
+    {
+        $sql = "UPDATE orders SET session_id=null where id = :id ";
+        self::executeRequest($sql, [":id" => $this->id]);
     }
 
     /**
@@ -197,6 +221,11 @@ class Order extends Modele
         return User::getUserById($this->user_id);
     }
 
+    /**
+     * setUserId
+     * @param mixed $user_id
+     * @return Order|null
+     */
     public function setUserId($user_id)
     {
         $sql = 'UPDATE orders set user_id=:user_id where id=:id';

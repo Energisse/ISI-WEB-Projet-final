@@ -22,7 +22,7 @@ class View
             'titre' => $this->titre,
             'contenu' => $contenu,
             'categories' => Categorie::getAllCategories(),
-            'basketQuantity' => Order::getOrderById($_SESSION["basketOrderId"])->getQuantity()
+            'basketQuantity' => Order::getOrderBySessionId(session_id())->getQuantity()
         ]);
         // Renvoi de la vue au navigateur
         echo $vue;

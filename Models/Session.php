@@ -13,22 +13,25 @@ class SysSession extends Modele implements SessionHandlerInterface
     }
     public function read($id): bool|string
     {
-        $sql = "SELECT Session_Data FROM Session WHERE Session_Id = :id AND Session_Expires > :date";
+        $sql = "SELECT data FROM Session WHERE  id = :id AND expires > :date";
         $res = self::executeRequest($sql, [":id" => $id, ":date" => date('Y-m-d H:i:s')])->fetch();
+        if (!$res) {
+            $this->write(session_id(), "");
+        }
         return $res ? $res[0] : "";
     }
     public function write($id, $data): bool
     {
         $DateTime = date('Y-m-d H:i:s');
         $NewDateTime = date('Y-m-d H:i:s', strtotime($DateTime . ' + 5 minutes'));
-        $sql = "REPLACE INTO Session SET Session_Id = :id, Session_Expires = :date, Session_Data = :data,basket_order_id =:basket_order_id ";
-        self::executeRequest($sql, [":id" => $id, ":date" => $NewDateTime, ":data" => $data, ':basket_order_id' => $_SESSION["basketOrderId"]]);
+        $sql = "INSERT INTO Session Values(:id,:date,:data) ON DUPLICATE KEY UPDATE  expires = :date,  data = :data ";
+        self::executeRequest($sql, [":id" => $id, ":date" => $NewDateTime, ":data" => $data]);
         return true;
     }
     public function destroy($id): bool
     {
         //delete session and order , order items and order status by cascade
-        $sql = "DELETE FROM Session where Session_Id = ?";
+        $sql = "DELETE FROM Session where  id = ?";
         self::executeRequest($sql, [$id])->fetch();
         return true;
     }
@@ -36,27 +39,8 @@ class SysSession extends Modele implements SessionHandlerInterface
     public function gc($maxlifetime): bool
     {
         //delete session and order , order items and order status by cascade
-        $sql = "DELETE FROM Session WHERE Session_Data <:date";
+        $sql = "DELETE FROM Session WHERE data <:date";
         self::executeRequest($sql, [":date" => date('Y-m-d H:i:s')])->fetch();
         return false;
-    }
-
-    private function unserialize_php($session_data)
-    {
-        $return_data = array();
-        $offset = 0;
-        while ($offset < strlen($session_data)) {
-            if (!strstr(substr($session_data, $offset), "|")) {
-                throw new Exception("invalid data, remaining: " . substr($session_data, $offset));
-            }
-            $pos = strpos($session_data, "|", $offset);
-            $num = $pos - $offset;
-            $varname = substr($session_data, $offset, $num);
-            $offset += $num + 1;
-            $data = unserialize(substr($session_data, $offset));
-            $return_data[$varname] = $data;
-            $offset += strlen(serialize($data));
-        }
-        return $return_data;
     }
 }

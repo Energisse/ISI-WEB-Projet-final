@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : sam. 14 jan. 2023 à 17:32
+-- Généré le : dim. 15 jan. 2023 à 01:04
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `delivery_addresses` (
   `previous_id` int DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `delivery_addresses`
@@ -110,7 +110,8 @@ INSERT INTO `delivery_addresses` (`id`, `forename`, `surname`, `add1`, `add2`, `
 (64, 'test2', 'test2', 'add2.3', '', 'dax', '40100', '0613256393', 'thomas.halvick@etu.univ-lyon1.fr', 1, NULL, 0),
 (65, 'test2', 'test2', 'add2.3.1', '', 'dax', '40100', '0613256393', 'thomas.halvick@etu.univ-lyon1.fr', 1, 64, 0),
 (66, 'test', 'test', '1741', '145541857', 'DAX', '40100', '0612345678', 'thomas.halvick@gmail.com', 1, NULL, 1),
-(67, 'dzqdzq', 'dzqdqz', 'dzqdqzd', 'zqdqzdqzdqz', 'dzqzdqz', '40100', '0612345679', 'dzdqz@dzdqz.dzqdzqdq', 1, NULL, 1);
+(67, 'dzqdzq', 'dzqdqz', 'dzqdqzd', 'zqdqzdqzdqz', 'dzqzdqz', '40100', '0612345679', 'dzdqz@dzdqz.dzqdzqdq', 1, NULL, 1),
+(68, 'azdaz', 'dzad', 'zadazdaz', 'dadad', 'adad', '40100', '0477213144', 'thomas.halvick@gmail.com', 2, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -131,10 +132,8 @@ CREATE TABLE IF NOT EXISTS `orderitems` (
 --
 
 INSERT INTO `orderitems` (`order_id`, `product_id`, `quantity`) VALUES
-(45, 13, 1),
-(46, 13, 1),
-(47, 14, 1),
-(48, 13, 3);
+(166, 14, 8),
+(167, 7, 2);
 
 -- --------------------------------------------------------
 
@@ -147,22 +146,25 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `id` int NOT NULL AUTO_INCREMENT,
   `user_id` int DEFAULT NULL,
   `delivery_add_id` int DEFAULT NULL,
-  `payment_type` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb3;
+  `payment_type` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `session_id` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `session_id` (`session_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=174 DEFAULT CHARSET=utf8mb3;
 
 --
 -- Déchargement des données de la table `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`, `delivery_add_id`, `payment_type`) VALUES
-(45, NULL, NULL, NULL),
-(46, NULL, 49, NULL),
-(47, NULL, 67, NULL),
-(48, 1, 66, NULL),
-(49, NULL, NULL, NULL),
-(50, NULL, NULL, NULL),
-(51, NULL, NULL, NULL);
+INSERT INTO `orders` (`id`, `user_id`, `delivery_add_id`, `payment_type`, `session_id`) VALUES
+(166, 1, 67, NULL, NULL),
+(167, 1, 67, NULL, NULL),
+(168, 1, NULL, NULL, NULL),
+(169, NULL, NULL, NULL, '634a6oo1qelnf95qgsjd39i8ia'),
+(170, NULL, NULL, NULL, '634a6oo1qelnf95qgsjd39i8ia'),
+(171, NULL, NULL, NULL, 'aiefo32oohaid6aqgt5c3kmvgp'),
+(172, NULL, NULL, NULL, '634a6oo1qelnf95qgsjd39i8ia'),
+(173, NULL, NULL, NULL, '634a6oo1qelnf95qgsjd39i8ia');
 
 -- --------------------------------------------------------
 
@@ -183,29 +185,25 @@ CREATE TABLE IF NOT EXISTS `orderstatus` (
 --
 
 INSERT INTO `orderstatus` (`order_id`, `date`, `status`) VALUES
-(45, '2023-01-14 16:52:46', 0),
-(45, '2023-01-14 16:58:05', 1),
-(46, '2023-01-14 16:53:07', 0),
-(46, '2023-01-14 16:53:12', 1),
-(46, '2023-01-14 16:53:15', 2),
-(46, '2023-01-14 17:31:37', 3),
-(46, '2023-01-14 17:31:38', 4),
-(46, '2023-01-14 17:31:39', 5),
-(47, '2023-01-14 16:56:27', 0),
-(47, '2023-01-14 16:58:07', 1),
-(47, '2023-01-14 16:58:12', 2),
-(47, '2023-01-14 17:29:41', 3),
-(47, '2023-01-14 17:29:41', 4),
-(47, '2023-01-14 17:29:42', 5),
-(48, '2023-01-14 16:58:39', 0),
-(48, '2023-01-14 16:58:41', 1),
-(48, '2023-01-14 16:58:44', 2),
-(48, '2023-01-14 17:22:58', 3),
-(48, '2023-01-14 17:24:19', 4),
-(48, '2023-01-14 17:24:23', 5),
-(49, '2023-01-14 16:58:44', 0),
-(50, '2023-01-14 17:12:38', 0),
-(51, '2023-01-14 17:20:22', 0);
+(166, '2023-01-15 01:01:01', 0),
+(166, '2023-01-15 01:01:06', 1),
+(166, '2023-01-15 01:02:04', 2),
+(166, '2023-01-15 01:02:04', 3),
+(166, '2023-01-15 01:02:38', 4),
+(166, '2023-01-15 01:02:40', 5),
+(167, '2023-01-15 01:03:33', 0),
+(167, '2023-01-15 01:03:34', 1),
+(167, '2023-01-15 01:03:37', 2),
+(167, '2023-01-15 01:03:37', 3),
+(168, '2023-01-15 01:01:43', 0),
+(168, '2023-01-15 01:03:56', 2),
+(168, '2023-01-15 01:03:56', 3),
+(169, '2023-01-15 01:01:58', 0),
+(170, '2023-01-15 01:02:04', 0),
+(171, '2023-01-15 01:02:27', 0),
+(171, '2023-01-15 01:02:34', 1),
+(172, '2023-01-15 01:03:37', 0),
+(173, '2023-01-15 01:03:56', 0);
 
 -- --------------------------------------------------------
 
@@ -219,6 +217,7 @@ CREATE TABLE IF NOT EXISTS `orderwithdata` (
 ,`user_id` int
 ,`delivery_add_id` int
 ,`payment_type` varchar(10)
+,`session_id` varchar(255)
 ,`price` decimal(37,2)
 ,`orderitems` json
 ,`statusHistory` json
@@ -346,21 +345,19 @@ INSERT INTO `reviews` (`product_id`, `stars`, `title`, `description`, `user_id`,
 
 DROP TABLE IF EXISTS `session`;
 CREATE TABLE IF NOT EXISTS `session` (
-  `Session_Id` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `Session_Expires` datetime NOT NULL,
-  `Session_Data` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
-  `basket_order_id` int NOT NULL,
-  PRIMARY KEY (`Session_Id`),
-  KEY `basket_order_id` (`basket_order_id`)
+  `id` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `expires` datetime NOT NULL,
+  `data` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Déchargement des données de la table `session`
 --
 
-INSERT INTO `session` (`Session_Id`, `Session_Expires`, `Session_Data`, `basket_order_id`) VALUES
-('7eg7m11pfuq6pmusicavtaueq3', '2023-01-14 17:36:39', 'cached|O:6:\"Cached\":1:{s:4:\"list\";a:0:{}}basketOrderId|i:50;User|O:4:\"User\":7:{s:8:\"\0User\0id\";i:2;s:14:\"\0User\0username\";s:5:\"admin\";s:14:\"\0User\0password\";s:60:\"$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6\";s:11:\"\0User\0admin\";b:1;s:11:\"\0User\0image\";s:9:\"homme.jpg\";s:23:\"\0User\0deliveryAddresses\";N;s:12:\"\0User\0orders\";N;}', 50),
-('99cacsk8c7db9apfcs4nog68li', '2023-01-14 17:29:26', 'cached|O:6:\"Cached\":1:{s:4:\"list\";a:0:{}}basketOrderId|i:51;User|O:4:\"User\":7:{s:8:\"\0User\0id\";i:1;s:14:\"\0User\0username\";s:6:\"thomas\";s:14:\"\0User\0password\";s:60:\"$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6\";s:11:\"\0User\0admin\";b:0;s:11:\"\0User\0image\";s:9:\"shrek.jpg\";s:23:\"\0User\0deliveryAddresses\";N;s:12:\"\0User\0orders\";N;}', 51);
+INSERT INTO `session` (`id`, `expires`, `data`) VALUES
+('634a6oo1qelnf95qgsjd39i8ia', '2023-01-15 01:08:56', 'cached|O:6:\"Cached\":1:{s:4:\"list\";a:0:{}}User|O:4:\"User\":7:{s:8:\"\0User\0id\";i:1;s:14:\"\0User\0username\";s:6:\"thomas\";s:14:\"\0User\0password\";s:60:\"$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6\";s:11:\"\0User\0admin\";b:0;s:11:\"\0User\0image\";s:9:\"shrek.jpg\";s:23:\"\0User\0deliveryAddresses\";N;s:12:\"\0User\0orders\";N;}'),
+('aiefo32oohaid6aqgt5c3kmvgp', '2023-01-15 01:08:03', 'cached|O:6:\"Cached\":1:{s:4:\"list\";a:0:{}}User|O:4:\"User\":7:{s:8:\"\0User\0id\";i:2;s:14:\"\0User\0username\";s:5:\"admin\";s:14:\"\0User\0password\";s:60:\"$2y$10$dsy4kS3wcWjJkt0rzn5TJOdHbKzadF9fsuSP8aHUARhfMzAj1/9O6\";s:11:\"\0User\0admin\";b:1;s:11:\"\0User\0image\";s:9:\"homme.jpg\";s:23:\"\0User\0deliveryAddresses\";N;s:12:\"\0User\0orders\";N;}');
 
 -- --------------------------------------------------------
 
@@ -413,7 +410,7 @@ CREATE TABLE IF NOT EXISTS `viewproduct` (
 DROP TABLE IF EXISTS `orderwithdata`;
 
 DROP VIEW IF EXISTS `orderwithdata`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `orderwithdata`  AS SELECT `o`.`id` AS `id`, `o`.`user_id` AS `user_id`, `o`.`delivery_add_id` AS `delivery_add_id`, `o`.`payment_type` AS `payment_type`, (select sum((`p`.`price` * `oi`.`quantity`)) from (`products` `p` join `orderitems` `oi` on((`p`.`id` = `oi`.`product_id`))) where (`oi`.`order_id` = `o`.`id`)) AS `price`, (select json_arrayagg(json_object('order_id',`oi`.`order_id`,'product_id',`oi`.`product_id`,'quantity',`oi`.`quantity`,'product',json_object('id',`p`.`id`,'cat_id',`p`.`cat_id`,'name',`p`.`name`,'description',`p`.`description`,'image',`p`.`image`,'price',`p`.`price`,'quantity_remaining',`p`.`quantity_remaining`))) from (`orderitems` `oi` join `viewproduct` `p` on((`p`.`id` = `oi`.`product_id`))) where (`o`.`id` = `oi`.`order_id`)) AS `orderitems`, (select json_arrayagg(json_object('status',`os`.`status`,'order_id',`os`.`order_id`,'date',`os`.`date`)) from `orderstatus` `os` where (`o`.`id` = `os`.`order_id`)) AS `statusHistory`, (select `os`.`status` from `orderstatus` `os` where ((`o`.`id` = `os`.`order_id`) and (`os`.`date` = (select max(`os`.`date`) from `orderstatus` `os` where (`o`.`id` = `os`.`order_id`)))) order by `os`.`status` desc limit 1) AS `status`, ifnull((select sum(`oi`.`quantity`) from `orderitems` `oi` where (`oi`.`order_id` = `o`.`id`)),0) AS `quantity` FROM `orders` AS `o``o`  ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `orderwithdata`  AS SELECT `o`.`id` AS `id`, `o`.`user_id` AS `user_id`, `o`.`delivery_add_id` AS `delivery_add_id`, `o`.`payment_type` AS `payment_type`, `o`.`session_id` AS `session_id`, (select sum((`p`.`price` * `oi`.`quantity`)) from (`products` `p` join `orderitems` `oi` on((`p`.`id` = `oi`.`product_id`))) where (`oi`.`order_id` = `o`.`id`)) AS `price`, (select json_arrayagg(json_object('order_id',`oi`.`order_id`,'product_id',`oi`.`product_id`,'quantity',`oi`.`quantity`,'product',json_object('id',`p`.`id`,'cat_id',`p`.`cat_id`,'name',`p`.`name`,'description',`p`.`description`,'image',`p`.`image`,'price',`p`.`price`,'quantity_remaining',`p`.`quantity_remaining`))) from (`orderitems` `oi` join `viewproduct` `p` on((`p`.`id` = `oi`.`product_id`))) where (`o`.`id` = `oi`.`order_id`)) AS `orderitems`, (select json_arrayagg(json_object('status',`os`.`status`,'order_id',`os`.`order_id`,'date',`os`.`date`)) from `orderstatus` `os` where (`o`.`id` = `os`.`order_id`)) AS `statusHistory`, (select `os`.`status` from `orderstatus` `os` where ((`o`.`id` = `os`.`order_id`) and (`os`.`date` = (select max(`os`.`date`) from `orderstatus` `os` where (`o`.`id` = `os`.`order_id`)))) order by `os`.`status` desc limit 1) AS `status`, ifnull((select sum(`oi`.`quantity`) from `orderitems` `oi` where (`oi`.`order_id` = `o`.`id`)),0) AS `quantity` FROM `orders` AS `o``o`  ;
 
 -- --------------------------------------------------------
 
@@ -436,16 +433,16 @@ ALTER TABLE `orderitems`
   ADD CONSTRAINT `orderitems_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 
 --
+-- Contraintes pour la table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`session_id`) REFERENCES `session` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
+
+--
 -- Contraintes pour la table `orderstatus`
 --
 ALTER TABLE `orderstatus`
   ADD CONSTRAINT `orderstatus_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
-
---
--- Contraintes pour la table `session`
---
-ALTER TABLE `session`
-  ADD CONSTRAINT `session_ibfk_1` FOREIGN KEY (`basket_order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

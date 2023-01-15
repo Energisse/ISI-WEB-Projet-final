@@ -18,9 +18,10 @@ if (!isset($_SESSION["cached"])) {
 } else {
     $_SESSION["cached"]->checkExpired();
 }
-if (!isset($_SESSION["basketOrderId"])) {
-    $order = Order::createNewOrder();
-    $_SESSION["basketOrderId"] = $order->getId();
+
+//création d'un panier
+if (($order = Order::getOrderBySessionId(session_id())) == null) {
+    $order = Order::createNewOrder(session_id());
 }
 
 

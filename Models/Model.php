@@ -31,6 +31,7 @@ abstract class Modele
     public static function executeRequest(string $sql, array $params = null)
     {
         self::$requestlist[] = [$sql, $params];
+
         if ($params == null) {
             $resultat = Modele::getBdd()->query($sql);
         } else {
@@ -48,6 +49,7 @@ abstract class Modele
     {
         if (Modele::$bdd != null) return Modele::$bdd;
         Modele::$bdd = new PDO('mysql:host=localhost;dbname=web4shop;charset=utf8', 'root', '', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+
         return Modele::$bdd;
     }
 

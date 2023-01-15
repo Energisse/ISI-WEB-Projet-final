@@ -59,7 +59,7 @@ class ProductController extends Controller
             die();
         }
 
-        $order =  Order::getOrderById($_SESSION["basketOrderId"]);
+        $order =  Order::getOrderBySessionId(session_id());
         $order->setStatus(OrderStatusCode::$InPurchase)->addItem($product, $_POST['quantity']);
 
 
