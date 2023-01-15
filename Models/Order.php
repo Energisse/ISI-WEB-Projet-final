@@ -112,7 +112,7 @@ class Order extends Modele
     public static function getAllOrderNotDelivered(): array
     {
         $sql = "SELECT * FROM orderWithData o where status between :min_status_id and :max_status_id  order by id desc;";
-        return Order::fetchAll($sql, [':min_status_id' => OrderStatusCode::$WaintingPayment, ':max_status_id' => OrderStatusCode::$Paid]);
+        return Order::fetchAll($sql, [':min_status_id' => OrderStatusCode::$WaintingPayment, ':max_status_id' => OrderStatusCode::$InDelivery]);
     }
 
     /**
