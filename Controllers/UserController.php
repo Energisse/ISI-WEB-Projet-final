@@ -10,51 +10,131 @@ class UserController extends Controller
     {
         parent::__construct('user');
 
-        $this->get('UserForm', '/login');
-        $this->post('User', '/login');
+        //Login
+        $this->get('loginForm', '/login');
+        $this->post('login', '/login');
+        //Signin
+        $this->get('signinForm', '/signin');
+        $this->post('signin', '/signin');
+        //logout
         $this->get('logout', '/logout');
+        //All order from user
         $this->get('orders', '/orders');
-        $this->get('order', '/order/:id');
+        //All addresses from user
         $this->get('addresses', '/addresses');
-        $this->post('createaccount', '/CreateAccount');
-        $this->get('signin', '/CreateAccount');
+        //TODO: to move in order
+        $this->get('order', '/order/:id');
     }
 
-    public function UserForm($data)
+    /**
+     * Login form 
+     * path = (get) /user/login
+     * @param mixed $data
+     * @return void
+     */
+    public function loginForm($data)
     {
+        //check if user is already connected
         if (isset($_SESSION["User"])) {
             $this->redirect("/categorie");
             return;
         }
-        $this->sendView("viewLogin", ["goTo" => isset($_GET["goTo"]) ? $_GET["goTo"] : null]);
+
+        //send view
+        $this->sendView("viewLogin", [
+            "goTo" => isset($_GET["goTo"]) ? $_GET["goTo"] : null,
+            "error" => isset($data["prevRequestData"]["error"]) ? $data["prevRequestData"]["error"] : null
+        ]);
     }
 
-    public function logout($data)
+    /**
+     * Process login data
+     * path = (post) /user/login
+     * @param mixed $data
+     * @return void
+     */
+    public function login($data)
     {
-        session_destroy();
-        $this->redirect("/user/login");
-    }
-
-    public function User($data)
-    {
+        //check if user is already connected
         if (isset($_SESSION["User"])) {
             $this->redirect("/categorie");
             return;
         }
 
         if (isset($_POST["username"]) && $_POST["password"]) {
+            //get user if exist
             $User = User::getUserByUsernameAndPassword($_POST["username"], $_POST["password"]);
             if ($User != null) {
                 $_SESSION["User"] = $User;
-                //Si la connexion a été demandé par une autre page on y repars 
+                //Go to page if aked 
                 if (isset($_GET["goTo"]))  $this->redirect($_GET["goTo"]);
                 else $this->redirect("/categorie");
                 return;
             }
         }
-        $this->sendView("viewLogin", ["error" => true, "username" => $_POST["username"], "goTo" => isset($_GET["goTo"]) ? $_GET["goTo"] : null]);
+
+        //reirect to form
+        $this->redirect("/user/login" . isset($_GET["goTo"]) ? "?goTo=" . $_GET["goTo"] : null, ["error" => true]);
     }
 
+    /**
+     * Signin form 
+     * path = (get) /user/signin
+     * @param mixed $data
+     * @return void
+     */
+    public function signinForm()
+    {
+        //check if user is already connected
+        if (isset($_SESSION["User"])) {
+            $this->redirect("/categorie");
+            return;
+        }
+        $this->sendView("viewSignin");
+    }
+
+    /**
+     * Process signin data 
+     * path = (post) /user/signin
+     * @param mixed $data
+     * @return void
+     */
+    public function signin()
+    {
+        //check if user is already connected
+        if (isset($_SESSION["User"])) {
+            $this->redirect("/categorie");
+            return;
+        }
+
+        if (isset($_POST["username"]) && $_POST["password"]) {
+            User::signin($_POST["username"], $_POST["password"]);
+            $this->redirect("/categorie");
+            return;
+        }
+
+        $this->redirect("/user/signin", ["error" => true]);
+    }
+
+
+    /**
+     * logout
+     * path (get) /user/logout
+     * @param mixed $data
+     * @return void
+     */
+    public function logout($data)
+    {
+        session_destroy();
+        $this->redirect("/user/login");
+    }
+
+    /**
+     * Show all addresses from user
+     * path (get) /
+     * @param mixed $data
+     * @return void
+     */
     public function addresses($data)
     {
         $deliveryAddresses = DeliveryAddress::getAllDeliveryAddressByUserId($_SESSION["User"]->getId());
@@ -85,14 +165,5 @@ class UserController extends Controller
         $order = Order::getOrderByOrderIdAndUserId($data["params"]["id"], $_SESSION["User"]->getId());
 
         $this->sendView("viewOrder", ["order" => $order]);
-    }
-
-    public function signin()
-    {
-        $this->sendView("viewCreateAccount");
-    }
-    public function createaccount()
-    {
-        User::signin($_POST["username"], $_POST["password"]);
     }
 }

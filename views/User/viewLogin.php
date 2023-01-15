@@ -1,9 +1,3 @@
-<?php
-if (!isset($error)) {
-    $error = false;
-}
-?>
-
 <div class="container-sm">
     <div class="row  justify-content-sm-center">
         <div class="col-sm-6">
@@ -11,7 +5,7 @@ if (!isset($error)) {
                 <h1>Connexion</h1>
                 <div class="form-group">
                     <label for="username">Nom utilisateur</label>
-                    <input name="username" type="text" class="form-control <?= $error ? "is-invalid" : "" ?>" id="username" placeholder="Nom utilisateur" value="<?= isset($username) ? $username : "" ?>">
+                    <input name="username" type="text" class="form-control <?= $error ? "is-invalid" : "" ?>" id="username" placeholder="Nom utilisateur" value="<?= isset($_POST["username"]) ? $_POST["username"] : "" ?>">
                 </div>
                 <div class="form-group">
                     <label for="password">Mot de passe</label>

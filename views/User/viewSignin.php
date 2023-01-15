@@ -6,7 +6,7 @@ if (!isset($error)) {
 <div class="container-sm">
     <div class="row  justify-content-sm-center">
         <div class="col-sm-6">
-            <form action="/user/CreateAccount<?= isset($goTo) ? "?goTo=" . $goTo : "" ?>" method="post" class="d-flex flex-column justify-content-sm-center flex-wrap gap-3 border rounded m-5 p-5">
+            <form action="/user/sigin<?= isset($goTo) ? "?goTo=" . $goTo : "" ?>" method="post" class="d-flex flex-column justify-content-sm-center flex-wrap gap-3 border rounded m-5 p-5">
                 <h1>Création d'un compte utilisateur</h1>
                 <div class="form-group">
                     <label for="username">Identifiant</label>

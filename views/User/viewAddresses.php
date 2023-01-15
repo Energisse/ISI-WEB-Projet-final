@@ -28,7 +28,7 @@
                         <td><?= $deliveryAddress->getAdd1() ?></td>
                         <td><?= $deliveryAddress->getAdd2() ?></td>
                         <td><?= $deliveryAddress->getCity() ?></td>
-                        <td><?= $deliveryAddress->getPhone() ?></td>
+                        <td><?= $deliveryAddress->getPostCode() ?></td>
                         <td>
                             <a class="btn btn-primary" href="/address/<?= $deliveryAddress->getId() ?>">Modifier</a>
                         </td>
