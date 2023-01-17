@@ -1,12 +1,12 @@
 <?php
 require_once("Views/Components/Review.php");
 ?>
-<script src="/assets/scripts/product.js" defer></script>
+<script src="/assets/public/scripts/product.js" defer></script>
 
 <div class="d-flex d-flex flex-column align-items-center">
     <form method="post" class="d-flex">
         <div class="p-5 flex-grow-1  text-end">
-            <img src="/assets/productimages/<?= $product->getImage() ?>" alt="<?= $product->getName() ?>" width="250" height="250">
+            <img src="/assets/public/productimages/<?= $product->getImage() ?>" alt="<?= $product->getName() ?>" width="250" height="250">
         </div>
         <div class="p-5 flex-grow-1  d-flex flex-column">
             <div class="p-2 flex-fill ">
@@ -101,4 +101,4 @@ require_once("Views/Components/Review.php");
     </div>
 </div>
 
-<link rel="stylesheet" href="/assets/styles/product.css">
+<link rel="stylesheet" href="/assets/public/styles/product.css">

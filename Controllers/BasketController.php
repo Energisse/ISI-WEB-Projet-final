@@ -12,9 +12,7 @@ class BasketController extends Controller
         $this->get('index', '/');
         $this->post('buy', '/');
         $this->get('clear', '/clear');
-        $this->post('creditCard', '/creditCard');
-        $this->post('paypal', '/paypal');
-        $this->post('moneyCheck', '/moneyCheck');
+        $this->post('pay', '/pay');
     }
 
     public function index($data)
@@ -67,8 +65,8 @@ class BasketController extends Controller
             return;
         }
 
-        $order = $order->setAddressId($deliveryAddress->getID());
-
+        $order->setAddressId($deliveryAddress->getID());
+        $order = $order->save();
         switch ($_POST["payement"]) {                   //selon le mode de payement on renvoie vers une pagge dédiée si c'est par CB,Paypal ou chèque
             case "creditCard":
                 $this->sendView("viewCrediCardBuy", ["order" => $order, "deliveryAddress" => $deliveryAddress]);
@@ -80,7 +78,7 @@ class BasketController extends Controller
                 $this->sendView("viewMoneyCheck", ["order" => $order, "deliveryAddress" => $deliveryAddress]);
                 break;
             default:
-                $this->redirect("/basket/buy");
+                $this->redirect("/basket");
         }
     }
 
@@ -90,47 +88,28 @@ class BasketController extends Controller
         $this->redirect('/basket');
     }
 
-    public function creditCard($data)
+    public function pay($data)
     {
-        //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
-        //TODO: decompter le stock
-
-        $order = Order::getOrderBySessionId(session_id());
-
-        if ($order->getStatus()->getStatusCode() != OrderStatusCode::$InPayment) {
-            $this->redirect("/basket", ["productAdded" => true]);
+        if (!isset($_POST["payment_type"])) {
+            $this->redirect("/basket");
             return;
         }
 
-        $order->setUserId($_SESSION["User"]->getId());
-        Order::createNewOrder(session_id());
-        $order->removeSessionId();
-        $order->setStatus(OrderStatusCode::$WaintingPayment);
-        $order->setStatus(OrderStatusCode::$Paid);
-        $this->sendView("viewSucces");
-    }
-
-    public function paypal($data)
-    {
-        //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
-        //TODO: decompter le stock
-        $order = Order::getOrderBySessionId(session_id());
-
-        if ($order->getStatus()->getStatusCode() != OrderStatusCode::$InPayment) {
-            $this->redirect("/basket", ["productAdded" => true]);
-            return;
+        switch ($_POST["payment_type"]) {
+            case "creditCard":
+                //TODO: ADD verification 
+                break;
+            case "paypal":
+                //TODO: ADD verification 
+                break;
+            case "moneyCheck":
+                //TODO: ADD verification 
+                break;
+            default:
+                $this->redirect("/basket");
+                return;
         }
 
-        $order->setUserId($_SESSION["User"]->getId());
-        Order::createNewOrder(session_id());
-        $order->removeSessionId();
-        $order->setStatus(OrderStatusCode::$WaintingPayment);
-        $order->setStatus(OrderStatusCode::$Paid);
-        $this->sendView("viewSucces");
-    }
-
-    public function moneyCheck($data)
-    {
         //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
         //TODO: decompter le stock
         $order = Order::getOrderBySessionId(session_id());
@@ -141,9 +120,15 @@ class BasketController extends Controller
         }
 
         $order->setUserId($_SESSION["User"]->getId());
-        Order::createNewOrder(session_id());
         $order->removeSessionId();
+        $order->setPaymentType($_POST["payment_type"]);
         $order->setStatus(OrderStatusCode::$WaintingPayment);
-        $this->sendView("viewSucces");
+        if ($_POST["payment_type"] != "moneyCheck") {
+            $order->setStatus(OrderStatusCode::$Paid);
+        }
+        $order->save();
+        Facture::generateFacture($order);
+        Order::createNewOrder(session_id(), $_SESSION["User"]->getId());
+        $this->sendView("viewSucces", ["orderId" => $order->getId()]);
     }
 }

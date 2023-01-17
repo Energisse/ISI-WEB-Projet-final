@@ -13,6 +13,7 @@ class User extends Modele
      */
     private int $id;
 
+    //FIXME: USERNAME SHOULD BE UNIQUE
     /**
      * Username
      * @var string
@@ -88,14 +89,21 @@ class User extends Modele
         return User::fetch($sql, [":username" => $username]);
     }
 
-    
-    public static function signin(string $username, string $password){
-        $sql='insert into users(username,password) values(:username,:password)';
-        return User::executeRequest($sql, [":username" => $username,":password" => password_hash( $password, PASSWORD_BCRYPT ) ]);
-    
+
+    /**
+     * Insert a new user and log in
+     * @param string $username
+     * @param string $password
+     * @return User
+     */
+    public static function signin(string $username, string $password): User
+    {
+        $sql = 'insert into users(username,password) values(:username,:password)';
+        User::executeRequest($sql, [":username" => $username, ":password" => password_hash($password, PASSWORD_BCRYPT)]);
+        return User::fetch("select * from Users where id=?", [User::lastInsertId()]);
     }
 
-     /** 
+    /** 
      * Return a User by id
      * @param int $id
      * @return User|null

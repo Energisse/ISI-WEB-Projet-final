@@ -24,6 +24,7 @@ class UserController extends Controller
         $this->get('addresses', '/addresses');
         //TODO: to move in order
         $this->get('order', '/order/:id');
+        $this->get('getFacture', '/order/facture/:id');
     }
 
     /**
@@ -66,6 +67,9 @@ class UserController extends Controller
             $User = User::getUserByUsernameAndPassword($_POST["username"], $_POST["password"]);
             if ($User != null) {
                 $_SESSION["User"] = $User;
+                $order = Order::getOrderBySessionId(session_id());
+                $order->setUserId($_SESSION["User"]->getId());
+                $order->save();
                 //Go to page if aked 
                 if (isset($_GET["goTo"]))  $this->redirect($_GET["goTo"]);
                 else $this->redirect("/categorie");
@@ -108,7 +112,10 @@ class UserController extends Controller
         }
 
         if (isset($_POST["username"]) && $_POST["password"]) {
-            User::signin($_POST["username"], $_POST["password"]);
+            $_SESSION["User"] = User::signin($_POST["username"], $_POST["password"]);
+            $order = Order::getOrderBySessionId(session_id());
+            $order->setUserId($_SESSION["User"]->getId());
+            $order->save();
             $this->redirect("/categorie");
             return;
         }
@@ -177,5 +184,26 @@ class UserController extends Controller
         $order = Order::getOrderByOrderIdAndUserId($data["params"]["id"], $_SESSION["User"]->getId());
 
         $this->sendView("viewOrder", ["order" => $order]);
+    }
+
+    public function getFacture($data)
+    {
+        //SI non connecté 
+        if (!isset($_SESSION["User"])) {
+            $this->redirect("/user/login");
+            return;
+        }
+
+        $order = Order::getOrderByOrderIdAndUserId($data["params"]["id"], $_SESSION["User"]->getId());
+        if (!$order) {
+            $this->redirect("/user/orders");
+            return;
+        }
+        $id = $order->getId();
+        $file = "assets/factures/$id.pdf";
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename="' . basename($file) . '"');
+        header('Content-Length: ' . filesize($file));
+        readfile($file);
     }
 }

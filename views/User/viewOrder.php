@@ -24,4 +24,6 @@ $statusCode = $order->getStatus()->getStatusCode() - OrderStatusCode::$WaintingP
         </li>
     </ul>
 </div>
-<link rel="stylesheet" href="/assets/styles/admin.css">
+<a class="btn btn-link" href="/user/order/facture/<?= $order->getId() ?>">facture</a>
+
+<link rel="stylesheet" href="/assets/public/styles/admin.css">

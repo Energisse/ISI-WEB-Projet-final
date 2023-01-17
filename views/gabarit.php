@@ -9,9 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/9b3d8c993e.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="/assets/scripts/gabarit.js" defer></script>
+    <script src="/assets/public/scripts/gabarit.js" defer></script>
     <link href="https://fonts.cdnfonts.com/css/amazon-ember" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/styles/index.css">
+    <link rel="stylesheet" href="/assets/public/styles/index.css">
     <title>
         <?= $titre ?>
     </title>
@@ -19,7 +19,7 @@
 
 <body>
     <header>
-        <img id="logo" src="/assets/images/Web4ShopHeader.png" alt="image" class="img-responsive d-block mx-auto" />
+        <img id="logo" src="/assets/public/images/Web4ShopHeader.png" alt="image" class="img-responsive d-block mx-auto" />
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="/">Accueil</a>

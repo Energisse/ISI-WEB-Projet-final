@@ -4,7 +4,7 @@ require_once 'views/Components/OrderSummary.php';
 ?>
 
 <div class="d-flex flex-row">
-    <form action="/basket/creditCard" method="post" class="col d-flex flex-row-column justify-content-center">
+    <form action="/basket/pay" method="post" class="col d-flex flex-row-column justify-content-center">
         <div class="col-md-8">
             <div class="col-md-12">
                 <label for="input-card-number" class="form-label">N° de carte:</label>
@@ -25,7 +25,7 @@ require_once 'views/Components/OrderSummary.php';
                 </div>
             </div>
             <input type="submit" class="btn btn-primary" value="payer">
-
+            <input type="hidden" class="btn btn-primary" value="creditCard" name="payment_type">
         </div>
 
     </form>

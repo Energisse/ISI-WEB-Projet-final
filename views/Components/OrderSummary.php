@@ -12,7 +12,7 @@ function OrderSummary(Order $order, DeliveryAddress $deliveryAddress = null)
                     ?>
                         <div class="d-flex flex-row align-items-center">
                             <div class="col" class="p-1">
-                                <img src="/assets/productimages/<?= $item->getProduct()->getImage() ?>" width="32" height="32" />
+                                <img src="/assets/public/productimages/<?= $item->getProduct()->getImage() ?>" width="32" height="32" />
                                 <?= $item->getProduct()->getName() ?>
                             </div>
                             <div class="p-1">

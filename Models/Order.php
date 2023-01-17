@@ -3,6 +3,8 @@ require_once 'Models/Model.php';
 require_once 'Models/Product.php';
 require_once 'Models/OrderItems.php';
 require_once 'Models/OrderStatus.php';
+require_once 'Models/DeliveryAddress.php';
+require_once 'Models/User.php';
 
 
 class Order extends Modele
@@ -55,6 +57,13 @@ class Order extends Modele
      */
     private int|null $quantity;
 
+    /**
+     * session_id
+     * @var string
+     */
+    private string|null $session_id;
+
+
 
     protected function __construct($data)
     {
@@ -64,6 +73,7 @@ class Order extends Modele
         $this->payment_type = $data["payment_type"];
         $this->price = $data["price"];
         $this->quantity = $data["quantity"];
+        $this->session_id = $data["session_id"];
         $this->statusHistory = [];
         $this->orderItems = [];
         if (array_key_exists("statusHistory", $data)) {
@@ -146,10 +156,10 @@ class Order extends Modele
      * @return Order
      */
     // public static function createNewOrder(int $userId, int $deliveryAddressID, array $ordersItems, string $paymentType)
-    public static function createNewOrder(string $sessionId): Order
+    public static function createNewOrder(string $sessionId, int $userId = null): Order
     {
-        $sql = 'INSERT INTO orders( session_id) VALUES (:session_id)';
-        Order::executeRequest($sql, [":session_id" => $sessionId]);
+        $sql = 'INSERT INTO orders( session_id,user_id) VALUES (:session_id,:user_id)';
+        Order::executeRequest($sql, [":session_id" => $sessionId, "user_id" => $userId]);
         $id = Order::lastInsertId();
         OrderStatus::createNewStatus($id);
         return Order::getOrderById($id);
@@ -158,14 +168,11 @@ class Order extends Modele
     /**
      * set AddressId
      * @param int $delivery_add_id
-     * @return Order
+     * @return void
      */
-    public function setAddressId(int $delivery_add_id): Order
+    public function setAddressId(int $delivery_add_id)
     {
-        $sql = 'UPDATE orders set delivery_add_id=:delivery_add_id where id=:id';
-        self::executeRequest($sql, [":delivery_add_id" => $delivery_add_id, ":id" => $this->getId()]);
-
-        return self::getOrderById($this->getId(), true);
+        $this->delivery_add_id = $delivery_add_id;
     }
 
     /**
@@ -208,8 +215,20 @@ class Order extends Modele
      */
     public function removeSessionId()
     {
-        $sql = "UPDATE orders SET session_id=null where id = :id ";
-        self::executeRequest($sql, [":id" => $this->id]);
+        $this->session_id = null;
+    }
+
+    public function save(): Order
+    {
+        $sql = 'UPDATE orders set delivery_add_id=:delivery_add_id,user_id=:user_id,payment_type= :payment_type,session_id=:session_id where id=:id';
+        self::executeRequest($sql, [
+            ":delivery_add_id" => $this->delivery_add_id,
+            ":user_id" => $this->user_id,
+            ":payment_type" => $this->payment_type,
+            ":session_id" => $this->session_id,
+            ":id" => $this->getId()
+        ]);
+        return self::getOrderById($this->getId(), true);
     }
 
     /**
@@ -224,13 +243,11 @@ class Order extends Modele
     /**
      * setUserId
      * @param mixed $user_id
-     * @return Order|null
+     * @return void
      */
     public function setUserId($user_id)
     {
-        $sql = 'UPDATE orders set user_id=:user_id where id=:id';
-        self::executeRequest($sql, [":user_id" => $user_id, ":id" => $this->getId()]);
-        return self::getOrderById($this->getId(), true);
+        $this->user_id = $user_id;
     }
 
     /**
@@ -319,5 +336,24 @@ class Order extends Modele
     public function getQuantity(): int|null
     {
         return $this->quantity;
+    }
+
+    /**
+     * payment_type
+     * @return string|null
+     */
+    public function getPaymentType(): string|null
+    {
+        return $this->payment_type;
+    }
+
+    /**
+     *  setPaymentType
+     * @param string $payementType
+     * @return void
+     */
+    public function setPaymentType(string $payementType): void
+    {
+        $this->payment_type = $payementType;
     }
 }

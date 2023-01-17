@@ -4,7 +4,7 @@ function Product(Product $product)
 ?>
     <div class="card product">
         <a href="/product/<?= $product->getId() ?>">
-            <img src="/assets/productimages/<?= $product->getImage() ?>" class="card-img-top" alt="<?= $product->getName() ?>">
+            <img src="/assets/public/productimages/<?= $product->getImage() ?>" class="card-img-top" alt="<?= $product->getName() ?>">
             <div class="card-body">
                 <h5 class="card-title">
                     <?= $product->getName() ?>
@@ -16,6 +16,6 @@ function Product(Product $product)
         </a>
 
     </div>
-    <link rel="stylesheet" href="/assets/styles/components/product.css">
+    <link rel="stylesheet" href="/assets/public/styles/components/product.css">
 <?php
 }

@@ -25,7 +25,7 @@ $status = ["Validation du payement", "En cours de preparation", "En cours de liv
                         <td><?= OrderProductSummary($order) ?></td>
                         <td> <?= $order->getPrice() ?> €</td>
                         <td><a class="btn btn-primary" href="/user/order/<?= $order->getId() ?>">Plus d'info</a>
-                            <a class="btn btn-link">facture</a>
+                            <a class="btn btn-link" href="/user/order/facture/<?= $order->getId() ?>">facture</a>
                         </td>
                     </tr>
                 <?php

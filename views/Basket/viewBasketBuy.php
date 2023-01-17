@@ -97,5 +97,5 @@ if ($productAdded) {
     </div>
     <?= OrderSummary($order) ?>
 </form>
-<script src="/assets/scripts/basket.js"></script>
-<link rel="stylesheet" href="/assets/styles/basket.css">
+<script src="/assets/public/scripts/basket.js"></script>
+<link rel="stylesheet" href="/assets/public/styles/basket.css">

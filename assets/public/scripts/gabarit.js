@@ -8,7 +8,7 @@ $("#search").on("keyup", function () {
         .then((res) => res.json())
         .then((res) =>
             res.map(({ id, name, image }) =>
-                `<a href="/product/${id}" class="list-search-element"><img src="/assets/productimages/${image}"/>${name}</a>`
+                `<a href="/product/${id}" class="list-search-element"><img src="/assets/public/productimages/${image}"/>${name}</a>`
             ).join("")
         )
         .then((res) => {

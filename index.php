@@ -1,9 +1,8 @@
 <?php
-require_once 'utils/Basket.php';
 require_once 'utils/Cached.php';
-require_once 'Models/User.php';
 require_once 'Models/Order.php';
 require_once 'Models/Session.php';
+require_once 'utils/facture.php';
 
 $handler = new SysSession();
 session_set_save_handler($handler, true);

@@ -44,4 +44,4 @@ if ($statusCode < 3) {
 }
 // OrderProductSummary($order);
 ?>
-<link rel="stylesheet" href="/assets/styles/admin.css">
+<link rel="stylesheet" href="/assets/public/styles/admin.css">
