@@ -1,17 +1,21 @@
-<label for="text">Vos références:</for>
-    <form action="/basket" method="post">
-        <ul> 
-            <li>
-                <label for="text">Mail:</for>
-                <input type="text" name="mail"/>
-            </li>
-            <li>
-                <label for="text">Nom:</for>
-                <input type="text" name="nomadresse"/>
-            </li>
-            </br>  
-                <a href="/CBPaypal/valid" class="btn">Valider</a>
-                <input type="button" value="Annuler"/>
-        </ul>
+<?php
+require_once 'Models/DeliveryAddress.php';
+require_once 'views/Components/OrderSummary.php';
+?>
+
+<div class="d-flex flex-row">
+    <form action="/basket/paypal" method="post" class="col d-flex flex-row-column justify-content-center">
+        <div class="col-md-8">
+            <div class="col-md-12">
+                <label for="input-paypal-mail" class="form-label">Mail</label>
+                <input type="mail" class="form-control " id="input-paypal-mail" name="paypal_mail">
+            </div>
+            <div class="col-md-12">
+                <label for="input-paypal-password" class="form-label">Mot de passe</label>
+                <input type="password" class="form-control " id="input-paypal-password" name="paypal_password">
+            </div>
+            <input type="submit" class="btn btn-primary" value="payer">
+        </div>
     </form>
-<a href="/Paypal/pay"></a>
+    <?= OrderSummary($order, $deliveryAddress) ?>
+</div>

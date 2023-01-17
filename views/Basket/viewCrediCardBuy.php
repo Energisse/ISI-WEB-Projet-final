@@ -29,5 +29,5 @@ require_once 'views/Components/OrderSummary.php';
         </div>
 
     </form>
-    <?= OrderSummary($order) ?>
+    <?= OrderSummary($order, $deliveryAddress) ?>
 </div>

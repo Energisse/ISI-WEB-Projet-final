@@ -1,5 +1,5 @@
 <?php
-function OrderSummary(Order $order)
+function OrderSummary(Order $order, DeliveryAddress $deliveryAddress = null)
 {
 ?>
     <div>
@@ -52,6 +52,32 @@ function OrderSummary(Order $order)
                     </div>
                 </div>
             </li>
+            <?php
+            if ($deliveryAddress) {
+            ?>
+                <li class="list-group-item">
+                    <div class="col" class="p-1">
+                        <?= $deliveryAddress->getForeName() ?>
+                        <?= $deliveryAddress->getSurName() ?>
+                    </div>
+                    <div class="col" class="p-1">
+                        <?= $deliveryAddress->getPhone() ?>
+                    </div>
+                    <div class="col" class="p-1">
+                        <?= $deliveryAddress->getEmail() ?>
+                    </div>
+                    <div class="col" class="p-1">
+                        <?= $deliveryAddress->getAdd1() ?>
+                        <?= $deliveryAddress->getAdd2() ?>
+                    </div>
+                    <div class="col" class="p-1">
+                        <?= $deliveryAddress->getCity() ?>
+                        <?= $deliveryAddress->getPostCode() ?>
+                    </div>
+                </li>
+            <?php
+            }
+            ?>
         </ul>
     </div>
 <?php

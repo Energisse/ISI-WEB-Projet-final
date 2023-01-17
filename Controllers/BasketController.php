@@ -71,13 +71,13 @@ class BasketController extends Controller
 
         switch ($_POST["payement"]) {                   //selon le mode de payement on renvoie vers une pagge dédiée si c'est par CB,Paypal ou chèque
             case "creditCard":
-                $this->sendView("viewCrediCardBuy", ["order" => $order]);
+                $this->sendView("viewCrediCardBuy", ["order" => $order, "deliveryAddress" => $deliveryAddress]);
                 break;
             case "paypal":
-                $this->sendView("viewPaypal", ["order" => $order]);
+                $this->sendView("viewPaypal", ["order" => $order, "deliveryAddress" => $deliveryAddress]);
                 break;
             case "moneyCheck":
-                $this->sendView("viewMoneyCheck", ["order" => $order]);
+                $this->sendView("viewMoneyCheck", ["order" => $order, "deliveryAddress" => $deliveryAddress]);
                 break;
             default:
                 $this->redirect("/basket/buy");
@@ -94,7 +94,14 @@ class BasketController extends Controller
     {
         //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
         //TODO: decompter le stock
+
         $order = Order::getOrderBySessionId(session_id());
+
+        if ($order->getStatus()->getStatusCode() != OrderStatusCode::$InPayment) {
+            $this->redirect("/basket", ["productAdded" => true]);
+            return;
+        }
+
         $order->setUserId($_SESSION["User"]->getId());
         Order::createNewOrder(session_id());
         $order->removeSessionId();
@@ -108,6 +115,12 @@ class BasketController extends Controller
         //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
         //TODO: decompter le stock
         $order = Order::getOrderBySessionId(session_id());
+
+        if ($order->getStatus()->getStatusCode() != OrderStatusCode::$InPayment) {
+            $this->redirect("/basket", ["productAdded" => true]);
+            return;
+        }
+
         $order->setUserId($_SESSION["User"]->getId());
         Order::createNewOrder(session_id());
         $order->removeSessionId();
@@ -121,6 +134,12 @@ class BasketController extends Controller
         //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
         //TODO: decompter le stock
         $order = Order::getOrderBySessionId(session_id());
+
+        if ($order->getStatus()->getStatusCode() != OrderStatusCode::$InPayment) {
+            $this->redirect("/basket", ["productAdded" => true]);
+            return;
+        }
+
         $order->setUserId($_SESSION["User"]->getId());
         Order::createNewOrder(session_id());
         $order->removeSessionId();
