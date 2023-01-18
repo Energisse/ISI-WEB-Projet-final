@@ -7,7 +7,7 @@ CREATE VIEW viewProduct AS
     where o.id not in (
         SELECT order_id 
         from orderstatus 
-        where status > 0
+        where status > 1
         )
     GROUP BY product_id
 )
@@ -63,65 +63,67 @@ SELECT * FROM orderWithData;
 
 drop view orderWithData;
 
-CREATE VIEW orderWithData AS
-SELECT 
-        o.*,
-        ( SELECT 
-            sum(price*oi.quantity)
-            FROM products p join orderitems oi
-            on p.id = oi.product_id
-            where oi.order_id = o.id
-        ) as price, 
-        (
-            SELECT 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'order_id',oi.order_id,
-                        'product_id',oi.product_id,
-                        'quantity',oi.quantity,
-                        'product', JSON_OBJECT(
-                                'id',p.id,
-                                'cat_id',p.cat_id,
-                                'name',p.name,
-                                'description',p.description,
-                                'image',p.image,
-                                'price',p.price,
-                                'quantity_remaining',p.quantity_remaining
-                            ) 
+
+    CREATE VIEW orderWithData AS
+    SELECT 
+            o.*,
+            ( SELECT 
+                sum(price*oi.quantity)
+                FROM products p join orderitems oi
+                on p.id = oi.product_id
+                where oi.order_id = o.id
+            ) as price, 
+            (
+                SELECT 
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'order_id',oi.order_id,
+                            'product_id',oi.product_id,
+                            'quantity',oi.quantity,
+                            'product', JSON_OBJECT(
+                                    'id',p.id,
+                                    'cat_id',p.cat_id,
+                                    'name',p.name,
+                                    'description',p.description,
+                                    'image',p.image,
+                                    'price',p.price,
+                                    'quantity',p.quantity,
+                                    'quantity_remaining',p.quantity_remaining
+                                ) 
+                        ) 
                     ) 
-                ) 
-            FROM  orderitems oi 
-            join viewProduct p on  p.id = oi.product_id 
-            where o.id = oi.order_id
-        ) as orderitems,
-        (
-            SELECT 
-                JSON_ARRAYAGG(
-                    JSON_OBJECT(
-                        'status',os.status,
-                        'order_id',os.order_id,
-                        'date',os.date
-                    )
-                ) 
-            FROM orderStatus os 
-            where o.id = os.order_id  
-        ) as statusHistory,
-        (
-            SELECT 
-                os.status
-            FROM orderStatus os 
-        where o.id= os.order_id  
-        and date = (   
-            SELECT 
-                Max(date)
-            FROM orderStatus os  
-            where o.id= os.order_id 
-            ) ORDER BY status DESC LIMIT 1
-        ) as status,
-        IFNULL((
-            SELECT SUM(quantity) FROM orderitems oi where oi.order_id=o.id
-        ),0) as quantity
-        FROM orders o;
+                FROM  orderitems oi 
+                join viewProduct p on  p.id = oi.product_id 
+                where o.id = oi.order_id
+            ) as orderitems,
+            (
+                SELECT 
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'status',os.status,
+                            'order_id',os.order_id,
+                            'date',os.date
+                        )
+                    ) 
+                FROM orderStatus os 
+                where o.id = os.order_id  
+            ) as statusHistory,
+            (
+                SELECT 
+                    os.status
+                FROM orderStatus os 
+            where o.id= os.order_id  
+            and date = (   
+                SELECT 
+                    Max(date)
+                FROM orderStatus os  
+                where o.id= os.order_id 
+                ) ORDER BY status DESC LIMIT 1
+            ) as status,
+            IFNULL((
+                SELECT SUM(quantity) FROM orderitems oi where oi.order_id=o.id
+            ),0) as quantity
+            FROM orders o;
 
 
 

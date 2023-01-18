@@ -111,12 +111,18 @@ class BasketController extends Controller
         }
 
         //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
-        //TODO: decompter le stock
         $order = Order::getOrderBySessionId(session_id());
 
         if ($order->getStatus()->getStatusCode() != OrderStatusCode::$InPayment) {
             $this->redirect("/basket", ["productAdded" => true]);
             return;
+        }
+
+
+        //remove product quantity
+        foreach ($order->getOrderItems() as $item) {
+            $item->getProduct()->setQuantity($item->getProduct()->getQuantity() - $item->getQuantity());
+            $item->getProduct()->save();
         }
 
         $order->setUserId($_SESSION["User"]->getId());

@@ -40,7 +40,13 @@ class Product extends Modele implements JsonSerializable
     private float $price;
 
     /**
-     * quantityRemaining
+     * total quantity available
+     * @var int
+     */
+    private int $quantity;
+
+    /**
+     * quantityRemaining = quantity - basketsorders
      * @var int
      */
     private int $quantityRemaining;
@@ -64,6 +70,7 @@ class Product extends Modele implements JsonSerializable
         $this->image = $data['image'];
         $this->price = $data['price'];
         $this->quantityRemaining = $data['quantity_remaining'];
+        $this->quantity = $data['quantity'];
     }
 
     /**
@@ -118,14 +125,15 @@ class Product extends Modele implements JsonSerializable
 
     public function save(): self
     {
-        $sql = "UPDATE products SET cat_id=:cat_id,name=:name,description=:description,image=:image,price:=price,quantity:=quantity WHERE id=:id;";
+        $sql = "UPDATE products SET cat_id=:cat_id,name=:name,description=:description,image=:image,price=:price,quantity=:quantity WHERE id=:id;";
         self::executeRequest($sql, [
-            "cat_id" => $this->getCatId(),
-            "name" => $this->getName(),
-            "description" => $this->getDescription(),
-            "image" => $this->getImage(),
-            "price" => $this->getPrice(),
-            "quantity" => $this->getQuantityRemaining()
+            ":cat_id" => $this->getCatId(),
+            ":name" => $this->getName(),
+            ":description" => $this->getDescription(),
+            ":image" => $this->getImage(),
+            ":price" => $this->getPrice(),
+            ":quantity" => $this->getQuantity(),
+            ":id" => $this->getId(),
         ]);
         return $this;
     }
@@ -213,6 +221,29 @@ class Product extends Modele implements JsonSerializable
     public function setQuantityRemaining(int $quantityRemaining): self
     {
         $this->quantityRemaining = $quantityRemaining;
+        return $this;
+    }
+
+    /**
+     * total quantity available
+     * @return int
+     */
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * total quantity available
+     * @param int $quantity total quantity available
+     * @throws ErrorException
+     * @return self
+     */
+    public function setQuantity(int $quantity): self
+    {
+        if ($quantity < 0)
+            throw new ErrorException("Quantity cannot be negative");
+        $this->quantity = $quantity;
         return $this;
     }
 }
