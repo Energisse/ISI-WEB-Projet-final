@@ -8,10 +8,10 @@ class ProductController extends Controller
     function __construct()
     {
         parent::__construct('product');
-        $this->get('getProductById', '/:id');
-        $this->post('buyProduct', '/:id');
         $this->post('review', '/review/:id');
         $this->post('search', '/search');
+        $this->get('getProductById', '/:id');
+        $this->post('buyProduct', '/:id');
     }
 
     public function getProductById($data)
@@ -92,6 +92,7 @@ class ProductController extends Controller
             echo json_encode([]);
             return;
         };
+
         echo json_encode(Product::getProductsByNameLike($input->searchName));
     }
 }
