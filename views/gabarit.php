@@ -87,7 +87,7 @@
 
                                     <li>
                                         <a class="dropdown-item" href="/user/login">Connexion</a>
-                                        <a class="dropdown-item" href="/user/sigin">Créer un compte</a>
+                                        <a class="dropdown-item" href="/user/signin">Créer un compte</a>
                                     </li>
                                 <?php
                                 }
