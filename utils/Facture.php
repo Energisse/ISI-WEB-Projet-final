@@ -83,7 +83,7 @@ class Facture extends FPDF
         $pdf->Cell(0, 10, 'Adresse :' . $order->getDeliveryAddress()->getAdd1() . $order->getDeliveryAddress()->getCity() . $order->getDeliveryAddress()->getPostCode(), 0, 1);
         $pdf->Cell(0, 10, 'Mode de règlement :' . Facture::$payementType[$order->getPaymentType()], 0, 1);
         // Titres des colonnes
-        $header = array('Description', 'Quantité', 'Montant');
+        $header = array('Description', 'Quantité', 'Montant (en €)');
         //Tableau des commandes effectuées
         $pdf->PurchaseTable($header, $order);
         $pdf->Output("F", "assets/factures/" . $order->getID() . ".pdf");
