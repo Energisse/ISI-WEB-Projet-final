@@ -498,8 +498,84 @@ CREATE TABLE IF NOT EXISTS `viewproduct` (
 DROP TABLE IF EXISTS `orderwithdata`;
 
 DROP VIEW IF EXISTS `orderwithdata`;
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `orderwithdata`  AS SELECT `o`.`id` AS `id`, `o`.`user_id` AS `user_id`, `o`.`delivery_add_id` AS `delivery_add_id`, `o`.`payment_type` AS `payment_type`, `o`.`session_id` AS `session_id`, (select sum((`p`.`price` * `oi`.`quantity`)) from (`products` `p` join `orderitems` `oi` on((`p`.`id` = `oi`.`product_id`))) where (`oi`.`order_id` = `o`.`id`)) AS `price`, (select json_object('id',`d`.`id`,'forename',`d`.`forename`,'surname',`d`.`surname`,'add1',`d`.`add1`,'add2',`d`.`add2`,'city',`d`.`city`,'postcode',`d`.`postcode`,'phone',`d`.`phone`,'email',`d`.`email`,'user_id',`d`.`user_id`,'previous_id',`d`.`previous_id`) from `delivery_addresses` `d` where (`o`.`delivery_add_id` = `d`.`id`)) AS `delyveryAddress`, (select json_arrayagg(json_object('order_id',`oi`.`order_id`,'product_id',`oi`.`product_id`,'quantity',`oi`.`quantity`,'product',json_object('id',`p`.`id`,'cat_id',`p`.`cat_id`,'name',`p`.`name`,'description',`p`.`description`,'image',`p`.`image`,'price',`p`.`price`,'quantity',`p`.`quantity`,'quantity_remaining',`p`.`quantity_remaining`))) from (`orderitems` `oi` join `viewproduct` `p` on((`p`.`id` = `oi`.`product_id`))) where (`o`.`id` = `oi`.`order_id`)) AS `orderitems`, (select json_arrayagg(json_object('status',`os`.`status`,'order_id',`os`.`order_id`,'date',`os`.`date`)) from `orderstatus` `os` where (`o`.`id` = `os`.`order_id`)) AS `statusHistory`, (select `os`.`status` from `orderstatus` `os` where ((`o`.`id` = `os`.`order_id`) and (`os`.`date` = (select max(`os`.`date`) from `orderstatus` `os` where (`o`.`id` = `os`.`order_id`)))) order by `os`.`status` desc limit 1) AS `status`, ifnull((select sum(`oi`.`quantity`) from `orderitems` `oi` where (`oi`.`order_id` = `o`.`id`)),0) AS `quantity` FROM `orders` AS `o` ORDER BY `o`.`id` AS `DESCdesc` ASC  ;
-
+CREATE VIEW orderWithData AS
+    SELECT 
+            o.*,
+            ( SELECT 
+                sum(price*oi.quantity)
+                FROM products p join orderitems oi
+                on p.id = oi.product_id
+                where oi.order_id = o.id
+            ) as price,
+            ( SELECT 
+                JSON_OBJECT(
+                    'id', d.id,
+                    'forename', d.forename,
+                    'surname', d.surname,
+                    'add1', d.add1,
+                    'add2', d.add2,
+                    'city', d.city,
+                    'postcode', d.postcode,
+                    'phone', d.phone,
+                    'email', d.email,
+                    'user_id', d.user_id,
+                    'previous_id', d.previous_id
+                    ) 
+                FROM delivery_addresses d
+                where o.delivery_add_id = d.id
+            ) as delyveryAddress,  
+            (
+                SELECT 
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'order_id',oi.order_id,
+                            'product_id',oi.product_id,
+                            'quantity',oi.quantity,
+                            'product', JSON_OBJECT(
+                                    'id',p.id,
+                                    'cat_id',p.cat_id,
+                                    'name',p.name,
+                                    'description',p.description,
+                                    'image',p.image,
+                                    'price',p.price,
+                                    'quantity',p.quantity,
+                                    'quantity_remaining',p.quantity_remaining
+                                ) 
+                        ) 
+                    ) 
+                FROM  orderitems oi 
+                join viewProduct p on  p.id = oi.product_id 
+                where o.id = oi.order_id
+            ) as orderitems,
+            (
+                SELECT 
+                    JSON_ARRAYAGG(
+                        JSON_OBJECT(
+                            'status',os.status,
+                            'order_id',os.order_id,
+                            'date',os.date
+                        )
+                    ) 
+                FROM orderStatus os 
+                where o.id = os.order_id  
+            ) as statusHistory,
+            (
+                SELECT 
+                    os.status
+                FROM orderStatus os 
+            where o.id= os.order_id  
+            and date = (   
+                SELECT 
+                    Max(date)
+                FROM orderStatus os  
+                where o.id= os.order_id 
+                ) ORDER BY status DESC LIMIT 1
+            ) as status,
+            IFNULL((
+                SELECT SUM(quantity) FROM orderitems oi where oi.order_id=o.id
+            ),0) as quantity
+            FROM orders o
+            order by id desc;
 -- --------------------------------------------------------
 
 --
