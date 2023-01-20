@@ -1,8 +1,3 @@
-<?php
-if (!isset($error)) {
-    $error = false;
-}
-?>
 <div class="container">
     <div class="row  justify-content-sm-center">
         <div class="col-sm-10 col-xxl-6">
@@ -10,19 +5,19 @@ if (!isset($error)) {
                 <h1>Création d'un compte utilisateur</h1>
                 <div class="form-group">
                     <label for="username">Identifiant</label>
-                    <input name="username" type="text" class="form-control <?= $error ? "is-invalid" : "" ?>" id="username" placeholder="Nom utilisateur" value="<?= isset($username) ? $username : "" ?>">
+                    <input name="username" type="text" class="form-control <?= $userNameUsed ? "is-invalid" : "" ?>" id="username" placeholder="Nom utilisateur" value="<?= isset($username) ? $username : "" ?>">
                 </div>
                 <div class="form-group">
                     <label for="password">Mot de passe</label>
-                    <input name="password" type="password" class="form-control  <?= $error ? "is-invalid" : "" ?>" id="password" placeholder="Mot de passe">
+                    <input name="password" type="password" class="form-control  <?= $userNameUsed ? "is-invalid" : "" ?>" id="password" placeholder="Mot de passe">
                 </div>
                 <button type="submit" class="btn btn-primary">S'inscrire</button>
             </form>
             <?php
-            if ($error) {
+            if ($userNameUsed) {
             ?>
                 <div class="alert alert-danger">
-                    Connexion incorrecte !
+                    Nom utilisateur déjà utilisé
                 </div>
             <?php
             }

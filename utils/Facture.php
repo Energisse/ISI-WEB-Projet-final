@@ -79,7 +79,7 @@ class Facture extends FPDF
         $pdf->SetFont('Times', '', 12);
         $pdf->Cell(0, 10, 'Date :' . date_format($order->getStatus()->getDate(), 'Y-m-d H:i:s'), 0, 1);
         $pdf->Cell(0, 10, 'Objet : Votre commande n°' . $order->getID(), 0, 1);
-        $pdf->Cell(0, 10, 'Nom :' . $order->getUser()->getUserName(), 0, 1);
+        $pdf->Cell(0, 10, 'Nom :' . $order->getDeliveryAddress()->getForeName() . " " . $order->getDeliveryAddress()->getSurName(), 0, 1);
         $pdf->Cell(0, 10, 'Adresse :' . $order->getDeliveryAddress()->getAdd1() . $order->getDeliveryAddress()->getCity() . $order->getDeliveryAddress()->getPostCode(), 0, 1);
         $pdf->Cell(0, 10, 'Mode de règlement :' . Facture::$payementType[$order->getPaymentType()], 0, 1);
         // Titres des colonnes
