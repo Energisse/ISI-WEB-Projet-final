@@ -99,7 +99,7 @@ class User extends Modele
     public static function signin(string $username, string $password): User
     {
         $sql = 'insert into users(username,password) values(:username,:password)';
-        User::executeRequest($sql, [":username" => $username, ":password" => password_hash($password, PASSWORD_BCRYPT)]);
+        User::executeRequest($sql, [":username" => htmlspecialchars($username), ":password" => password_hash($password, PASSWORD_BCRYPT)]);
         return User::fetch("select * from Users where id=?", [User::lastInsertId()]);
     }
 

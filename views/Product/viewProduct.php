@@ -20,7 +20,7 @@ require_once("Views/Components/Review.php");
             <div class="p-2 flex-fill ">
                 <button type="submit" class="btn btn-primary" <?= $product->getQuantityRemaining() == 0 ? "disabled" : "" ?>><?= $product->getQuantityRemaining() == 0 ? "Rupture" : "Acheter" ?> <?= $product->getPrice() ?>€</button>
                 <input type="number" min="1" max="<?= $product->getQuantityRemaining() ?>" name="quantity" value="1" />
-                <?= "Stock restant :\n".$product->getQuantityRemaining()?>
+                <?= "Stock restant :\n" . $product->getQuantityRemaining() ?>
             </div>
         </div>
     </form>
@@ -70,14 +70,14 @@ require_once("Views/Components/Review.php");
                     </div>
                     <div class="col-md-4">
                         <label class="form-label">Titre</label>
-                        <input type="text" class="form-control <?= $error && $error->getAttributName() ==  "title" ? "is-invalid" : ""  ?>" name="title" placeholder="titre" value="<?= isset($_POST["title"]) ? $_POST["title"] : ($userReview ? $userReview->getTitle() : "") ?>" required>
+                        <input type="text" class="form-control <?= $error && $error->getAttributName() ==  "title" ? "is-invalid" : ""  ?>" name="title" placeholder="titre" value="<?= $userReview ? $userReview->getTitle()  : "" ?>" required>
                         <div class="invalid-feedback">
                             <?= $error ? $error->getMessage() : "" ?>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <label class="form-label">Description</label>
-                        <textarea class="form-control <?= $error && $error->getAttributName() ==  "description" ? "is-invalid" : ""  ?>" name="description" placeholder="description" required><?= isset($_POST["description"]) ? $_POST["description"] : ($userReview ?  $userReview->getDescription() : "") ?></textarea>
+                        <textarea class="form-control <?= $error && $error->getAttributName() ==  "description" ? "is-invalid" : ""  ?>" name="description" placeholder="description" required><?= $userReview ?  $userReview->getDescription() : "" ?></textarea>
                         <div class="invalid-feedback">
                             <?= $error ? $error->getMessage() : "" ?>
                         </div>

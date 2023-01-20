@@ -60,7 +60,7 @@
                                         $basketQuantity > 99 ? "99+" : $basketQuantity
                                         ?>
                                     </div>
-                                    <i class=" fa-solid fa-basket-shopping "></i>Ajouter au panier
+                                    <i class=" fa-solid fa-basket-shopping "></i>Panier
                                 </div>
                             </a>
                         </li>

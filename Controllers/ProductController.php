@@ -35,7 +35,7 @@ class ProductController extends Controller
             'reviews' => $reviews,
             'quantityBought' => isset($data["prevRequestData"]["quantityBought"]) ? $data["prevRequestData"]["quantityBought"] : 0,
             'reviewEdited' => isset($data["prevRequestData"]["reviewEdited"]) ? $data["prevRequestData"]["reviewEdited"] : false,
-            'error' => isset($data["error"]) ? $data["error"] : null,
+            'error' => isset($data["prevRequestData"]["error"]) ? $data["prevRequestData"]["error"] : null,
         ]);
     }
 
@@ -70,6 +70,10 @@ class ProductController extends Controller
 
     public function review($data)
     {
+        if (!isset($_SESSION["User"])) {
+            $this->redirect("/product" . "/" . $data['params']['id']);
+            return;
+        }
         $params = [];
         try {
             Review::createOrEditReviewByProductIdANdUserId($data["params"]["id"], $_SESSION["User"]->getId(), $_POST);

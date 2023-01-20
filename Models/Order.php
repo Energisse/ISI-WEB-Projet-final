@@ -245,6 +245,20 @@ class Order extends Modele
     }
 
     /**
+     *  removeItem
+     * @param int $prodcuctId
+     * @return void
+     */
+    function removeItem(int $prodcuctId): void
+    {
+        $sql = 'DELETE FROM orderitems  where product_id=:prodcuctId and order_id =:orderId';
+        self::executeRequest($sql, [
+            ":prodcuctId" => $prodcuctId,
+            ":orderId" => $this->getId()
+        ]);
+    }
+
+    /**
      * Return user link to this order
      * @return User
      */

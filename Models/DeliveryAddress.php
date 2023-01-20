@@ -126,14 +126,14 @@
         {
             $sql = '';
             $params = [];
-            $params[":forename"] = self::checkForeName($data["forename"]);
-            $params[":surname"] = self::checkSureName($data["surname"]);
-            $params[":add1"] = self::checkAdd1($data["add1"]);
-            $params[":add2"] = self::checkAdd2($data["add2"]);
-            $params[":city"] = self::checkCity($data["city"]);
-            $params[":postCode"] = self::checPostCode($data["postcode"]);
-            $params[":phone"] = self::checkPhone($data["phone"]);
-            $params[":email"] = self::checkEmail($data["email"]);
+            $params[":forename"] = self::checkForeName(htmlspecialchars($data["forename"]));
+            $params[":surname"] = self::checkSureName(htmlspecialchars($data["surname"]));
+            $params[":add1"] = self::checkAdd1(htmlspecialchars($data["add1"]));
+            $params[":add2"] = self::checkAdd2(htmlspecialchars($data["add2"]));
+            $params[":city"] = self::checkCity(htmlspecialchars($data["city"]));
+            $params[":postCode"] = self::checPostCode(htmlspecialchars($data["postcode"]));
+            $params[":phone"] = self::checkPhone(htmlspecialchars($data["phone"]));
+            $params[":email"] = self::checkEmail(htmlspecialchars($data["email"]));
             $params[":id"] = $id;
             $params[":user_id"] = $userId;
             //If deliveryAddress is already used wee need to create a new one and disable the last one
@@ -158,14 +158,14 @@
         {
             $sql = 'INSERT INTO delivery_addresses (forename, surname,add1,add2,city,postCode,phone,email,user_id) VALUES (:forename, :surname, :add1, :add2, :city, :postCode, :phone, :email ,:user_id)';
             $params = [];
-            $params[":forename"] = self::checkForeName($data["forename"]);
-            $params[":surname"] = self::checkSureName($data["surname"]);
-            $params[":add1"] = self::checkAdd1($data["add1"]);
-            $params[":add2"] = self::checkAdd2($data["add2"]);
-            $params[":city"] = self::checkCity($data["city"]);
-            $params[":postCode"] = self::checPostCode($data["postcode"]);
-            $params[":phone"] = self::checkPhone($data["phone"]);
-            $params[":email"] = self::checkEmail($data["email"]);
+            $params[":forename"] = self::checkForeName(htmlspecialchars($data["forename"]));
+            $params[":surname"] = self::checkSureName(htmlspecialchars($data["surname"]));
+            $params[":add1"] = self::checkAdd1(htmlspecialchars($data["add1"]));
+            $params[":add2"] = self::checkAdd2(htmlspecialchars($data["add2"]));
+            $params[":city"] = self::checkCity(htmlspecialchars($data["city"]));
+            $params[":postCode"] = self::checPostCode(htmlspecialchars($data["postcode"]));
+            $params[":phone"] = self::checkPhone(htmlspecialchars($data["phone"]));
+            $params[":email"] = self::checkEmail(htmlspecialchars($data["email"]));
             $params[":user_id"] = $userId;
             DeliveryAddress::executeRequest($sql, $params);
         }

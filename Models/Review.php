@@ -92,9 +92,9 @@ class Review extends Modele
         self::fetch($sql, [
             ":product_id" => $productId,
             ":user_id" => $userId,
-            ":title" =>  self::checkTitle($data["title"]),
+            ":title" =>  self::checkTitle(htmlspecialchars($data["title"])),
             ":stars" => self::checkStars($data["stars"]),
-            ":description" =>  self::checkDescription($data["description"])
+            ":description" =>  self::checkDescription(htmlspecialchars($data["description"]))
         ]);
     }
 
