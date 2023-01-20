@@ -5,8 +5,8 @@
             <thead>
                 <tr>
                     <th scope="col">Produit</th>
-                    <th scope="col">quantité</th>
-                    <th scope="col">suprimer</th>
+                    <th scope="col">Quantité</th>
+                    <th scope="col">Supprimer</th>
                 </tr>
             </thead>
             <tbody>

@@ -41,6 +41,7 @@ class ProductController extends Controller
 
     public function buyProduct($data)
     {
+        
         if (!isset($data['params']['id'])) {
             return $this->redirect("accueil"); //A tester
         }

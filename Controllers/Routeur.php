@@ -43,7 +43,7 @@ class Routeur
             //Retourne 404
             (new View("404"))->generer();
         } catch (Exception $e) {
-            echo ($e);
+            include('views/500.php');
             //$this->erreur($e->getMessage());
         }
     }
