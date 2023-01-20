@@ -45,6 +45,11 @@ footer ul {
   height: 75px;
 }
 
+.accueil {
+  width:130px;
+  height:100px;
+}
+
 #contenu {
   padding: 25px 0;
 }

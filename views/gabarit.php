@@ -30,7 +30,7 @@
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Categorie
+                                Nos offres par catégorie
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <?php foreach ($categories as $categorie) { ?>
@@ -51,6 +51,7 @@
                         <?php
                         }
                         ?>
+                        <p>&emsp;</p>
                         <li class="nav-item  d-flex justify-content-center align-items-center">
                             <a href="/basket">
                                 <div class="basket-container">
@@ -59,10 +60,11 @@
                                         $basketQuantity > 99 ? "99+" : $basketQuantity
                                         ?>
                                     </div>
-                                    <i class=" fa-solid fa-basket-shopping "></i>
+                                    <i class=" fa-solid fa-basket-shopping "></i>Ajouter au panier
                                 </div>
                             </a>
                         </li>
+                        <p>&emsp;</p>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fa-solid fa-user"></i>
@@ -78,7 +80,7 @@
                                         <a class="dropdown-item" href="/user/orders">Mes commandes</a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="/user/logout">Deconnexion</a>
+                                        <a class="dropdown-item" href="/user/logout">Déconnexion</a>
                                     </li>
 
                                 <?php

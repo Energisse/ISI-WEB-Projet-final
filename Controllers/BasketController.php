@@ -67,7 +67,7 @@ class BasketController extends Controller
 
         $order->setAddressId($deliveryAddress->getID());
         $order = $order->save();
-        switch ($_POST["payement"]) {                   //selon le mode de payement on renvoie vers une pagge dédiée si c'est par CB,Paypal ou chèque
+        switch ($_POST["payement"]) {                   //selon le mode de payement on renvoie vers une page dédiée si c'est par CB,Paypal ou chèque
             case "creditCard":
                 $this->sendView("viewCrediCardBuy", ["order" => $order, "deliveryAddress" => $deliveryAddress]);
                 break;
@@ -110,7 +110,7 @@ class BasketController extends Controller
                 return;
         }
 
-        //TODO:verifier avant que tout soit bien saisie ( dans ce cas la que l'address car on s'en fout un peu du payement)
+        //TODO:vérifier avant que tout soit bien saisi ( dans ce cas là uniquement l'addresse car on se moque un peu du payement)
         $order = Order::getOrderBySessionId(session_id());
 
         if ($order->getStatus()->getStatusCode() != OrderStatusCode::$InPayment) {

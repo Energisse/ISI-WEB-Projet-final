@@ -6,7 +6,7 @@ class Facture extends FPDF
 {
     static $payementType = [
         "creditCard" => "carte bancaire",
-        "moneyCheck" => "chéque",
+        "moneyCheck" => "chèque",
         "paypal" => "paypal",
     ];
 
