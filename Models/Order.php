@@ -10,6 +10,12 @@ require_once 'Models/User.php';
 class Order extends Modele
 {
     /**
+     * Current basket order
+     * @var Order|null
+     */
+    private static Order|null $currentOrder = null;
+
+    /**
      * Unique id
      * @var int
      */
@@ -86,6 +92,9 @@ class Order extends Modele
                 $this->orderItems[] = &OrderItem::create($address);
             }
         }
+        if ($data["delyveryAddress"]) {
+            DeliveryAddress::create(json_decode($data["delyveryAddress"], true));
+        }
     }
 
     /**
@@ -143,8 +152,11 @@ class Order extends Modele
      */
     public static function getOrderBySessionId(string $session_id): ?Order
     {
-        $sql = "SELECT * FROM orderWithData o where o.session_id = :session_id";
-        return Order::fetch($sql, [":session_id" => $session_id]);
+        if (!self::$currentOrder) {
+            $sql = "SELECT * FROM orderWithData o where o.session_id = :session_id";
+            self::$currentOrder =  Order::fetch($sql, [":session_id" => $session_id]);
+        }
+        return self::$currentOrder;
     }
 
     /**
@@ -162,7 +174,8 @@ class Order extends Modele
         Order::executeRequest($sql, [":session_id" => $sessionId, "user_id" => $userId]);
         $id = Order::lastInsertId();
         OrderStatus::createNewStatus($id);
-        return Order::getOrderById($id);
+        self::$currentOrder = Order::getOrderById($id);
+        return self::$currentOrder;
     }
 
     /**

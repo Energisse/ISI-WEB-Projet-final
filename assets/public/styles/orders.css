@@ -1,0 +1,5 @@
+/* Style des lignes d'informations supplementaire */
+table tr:nth-child(2n) td {
+  border: none;
+  padding: 0;
+}

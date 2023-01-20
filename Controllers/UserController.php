@@ -22,8 +22,6 @@ class UserController extends Controller
         $this->get('orders', '/orders');
         //All addresses from user
         $this->get('addresses', '/addresses');
-        //TODO: to move in order
-        $this->get('order', '/order/:id');
         $this->get('getFacture', '/order/facture/:id');
     }
 
@@ -171,19 +169,6 @@ class UserController extends Controller
         $orders = Order::getOrdersByUserId($_SESSION["User"]->getId());
 
         $this->sendView("viewOrders", ["orders" => $orders]);
-    }
-
-    public function order($data)
-    {
-        //SI non connecté 
-        if (!isset($_SESSION["User"])) {
-            $this->redirect("/user/login");
-            return;
-        }
-
-        $order = Order::getOrderByOrderIdAndUserId($data["params"]["id"], $_SESSION["User"]->getId());
-
-        $this->sendView("viewOrder", ["order" => $order]);
     }
 
     public function getFacture($data)

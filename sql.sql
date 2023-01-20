@@ -72,7 +72,24 @@ drop view orderWithData;
                 FROM products p join orderitems oi
                 on p.id = oi.product_id
                 where oi.order_id = o.id
-            ) as price, 
+            ) as price,
+            ( SELECT 
+                JSON_OBJECT(
+                    'id', d.id,
+                    'forename', d.forename,
+                    'surname', d.surname,
+                    'add1', d.add1,
+                    'add2', d.add2,
+                    'city', d.city,
+                    'postcode', d.postcode,
+                    'phone', d.phone,
+                    'email', d.email,
+                    'user_id', d.user_id,
+                    'previous_id', d.previous_id
+                    ) 
+                FROM delivery_addresses d
+                where o.delivery_add_id = d.id
+            ) as delyveryAddress,  
             (
                 SELECT 
                     JSON_ARRAYAGG(
@@ -123,7 +140,8 @@ drop view orderWithData;
             IFNULL((
                 SELECT SUM(quantity) FROM orderitems oi where oi.order_id=o.id
             ),0) as quantity
-            FROM orders o;
+            FROM orders o
+            order by id desc;
 
 
 

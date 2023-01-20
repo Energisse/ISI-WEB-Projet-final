@@ -71,30 +71,33 @@ if ($productAdded) {
                 <a href="/address?goTo=/basket" class="btn btn-link">Ajouter une addresse</a>
             </div>
         </div>
-        <h1>Facturation</h1>
+        <div class="container-xxl">
+            <h1>Facturation</h1>
 
-        <label class="form-check-label">
-            <input class="form-check-input radio-payement" type="radio" name="payement" value="moneyCheck">
-            <i class="fa-solid fa-money-check fa-2xl"></i>
-            Cheque
-        </label>
+            <label class="form-check-label">
+                <input class="form-check-input radio-payement" type="radio" name="payement" value="moneyCheck">
+                <i class="fa-solid fa-money-check fa-2xl"></i>
+                Cheque
+            </label>
 
 
-        <label class="form-check-label">
-            <input class="form-check-input radio-payement" type="radio" name="payement" value="paypal">
-            <i class="fa-brands fa-paypal fa-2xl"></i>
-            Paypal
-        </label>
+            <label class="form-check-label">
+                <input class="form-check-input radio-payement" type="radio" name="payement" value="paypal">
+                <i class="fa-brands fa-paypal fa-2xl"></i>
+                Paypal
+            </label>
 
-        <label class="form-check-label">
-            <input class="form-check-input radio-payement" type="radio" name="payement" value="creditCard">
-            <i class="fa-solid fa-credit-card fa-2xl"></i>
-            Carte bancaire
-        </label>
-        </br></br>
-        <input type="submit" class="btn btn-primary" value="Payer" />
-        <a href="/basket/clear" class="btn btn-danger">Vider</a>
+            <label class="form-check-label">
+                <input class="form-check-input radio-payement" type="radio" name="payement" value="creditCard">
+                <i class="fa-solid fa-credit-card fa-2xl"></i>
+                Carte bancaire
+            </label>
+            </br></br>
+            <input type="submit" class="btn btn-primary" value="Payer" />
+            <a href="/basket/clear" class="btn btn-danger">Vider</a>
+        </div>
     </div>
+
     <?= OrderSummary($order) ?>
 </form>
 <script src="/assets/public/scripts/basket.js"></script>
