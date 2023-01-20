@@ -85,14 +85,16 @@ class UserController extends Controller
      * @param mixed $data
      * @return void
      */
-    public function signinForm()
+    public function signinForm($data)
     {
         //check if user is already connected
         if (isset($_SESSION["User"])) {
             $this->redirect("/categorie");
             return;
         }
-        $this->sendView("viewSignin");
+        $this->sendView("viewSignin", [
+            "userNameUsed" => isset($data["prevRequestData"]["userNameUsed"]) ? $data["prevRequestData"]["userNameUsed"] : null
+        ]);
     }
 
     /**
@@ -110,6 +112,10 @@ class UserController extends Controller
         }
 
         if (isset($_POST["username"]) && $_POST["password"]) {
+            if (User::getUserByUserName($_POST["username"])) {
+                $this->redirect("/user/signin", ["userNameUsed" => true]);
+                return;
+            }
             $_SESSION["User"] = User::signin($_POST["username"], $_POST["password"]);
             $order = Order::getOrderBySessionId(session_id());
             $order->setUserId($_SESSION["User"]->getId());
